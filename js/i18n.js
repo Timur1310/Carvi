@@ -400,7 +400,12 @@ const TRANSLATIONS = {
 /* ================================================================
    ENGINE
    ================================================================ */
-let _lang = localStorage.getItem('carbattle_lang') || 'en';
+/* Default to Russian for CIS visitors (by browser language), English otherwise.
+   A saved choice always wins. */
+const _CIS_LANGS = ['ru', 'uk', 'be', 'kk', 'uz', 'ky', 'tg', 'hy', 'az'];
+const _navLang = (navigator.language || 'en').toLowerCase().slice(0, 2);
+let _lang = localStorage.getItem('carbattle_lang')
+        || (_CIS_LANGS.includes(_navLang) ? 'ru' : 'en');
 
 function getLang() { return _lang; }
 

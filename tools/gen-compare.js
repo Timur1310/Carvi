@@ -242,6 +242,17 @@ function buildPage(a, b, allKeys) {
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(desc)}">
   <link rel="canonical" href="${ORIGIN}/vs/${a.id}-vs-${b.id}.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Carvi">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="${esc(title)}">
+  <meta property="og:description" content="${esc(desc)}">
+  <meta property="og:image" content="${ORIGIN}/og.png">
+  <meta property="og:url" content="${ORIGIN}/vs/${a.id}-vs-${b.id}.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${esc(title)}">
+  <meta name="twitter:description" content="${esc(desc)}">
+  <meta name="twitter:image" content="${ORIGIN}/og.png">
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/themes.css">
   <script src="../js/theme.js"></script>
@@ -330,6 +341,15 @@ function buildIndex(keys) {
   <title>Сравнения автомобилей — Carvi</title>
   <meta name="description" content="Сравнения популярных автомобилей по характеристикам: цена, мощность, разгон, расход, клиренс. Китайские кроссоверы, бюджетные седаны и другие.">
   <link rel="canonical" href="${ORIGIN}/vs/index.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Carvi">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Сравнения автомобилей — Carvi">
+  <meta property="og:description" content="${keys.length} сравнений популярных машин по цене, мощности, разгону, расходу и клиренсу.">
+  <meta property="og:image" content="${ORIGIN}/og.png">
+  <meta property="og:url" content="${ORIGIN}/vs/index.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="${ORIGIN}/og.png">
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/themes.css">
   <script src="../js/theme.js"></script>
