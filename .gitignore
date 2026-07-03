@@ -7,3 +7,6 @@ Desktop.ini
 
 # Node (only tools/ uses node, no deps committed)
 node_modules/
+
+# local screenshots
+.shots/

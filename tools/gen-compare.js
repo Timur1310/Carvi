@@ -153,6 +153,7 @@ function navHTML() {
     <a href="index.html" class="nav-link active">📊 Сравнения</a>
     <a href="../learn.html" class="nav-link">📚 Learn</a>
     <a href="../quiz.html" class="nav-link">🧠 Quiz</a>
+    <button class="theme-toggle" id="themeBtn" onclick="cbCycleTheme()" title="Сменить тему" aria-label="Сменить тему">☀️</button>
   </div>
 </nav>`;
 }
@@ -232,7 +233,7 @@ function buildPage(a, b, allKeys) {
   }).join('\n      ');
 
   return `<!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -242,6 +243,8 @@ function buildPage(a, b, allKeys) {
   <meta name="description" content="${esc(desc)}">
   <link rel="canonical" href="${ORIGIN}/vs/${a.id}-vs-${b.id}.html">
   <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <script src="../js/theme.js"></script>
   <style>${PAGE_CSS}</style>
   <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head>
@@ -318,7 +321,7 @@ function buildIndex(keys) {
   }).join('\n\n  ');
 
   return `<!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -328,6 +331,8 @@ function buildIndex(keys) {
   <meta name="description" content="Сравнения популярных автомобилей по характеристикам: цена, мощность, разгон, расход, клиренс. Китайские кроссоверы, бюджетные седаны и другие.">
   <link rel="canonical" href="${ORIGIN}/vs/index.html">
   <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <script src="../js/theme.js"></script>
   <style>${PAGE_CSS}</style>
 </head>
 <body>

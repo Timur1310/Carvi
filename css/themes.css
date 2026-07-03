@@ -1,0 +1,75 @@
+/* ============================================================
+   CarBattle — Selectable themes (layer over styles.css)
+   Applied via <html data-theme="...">. Switcher: js/theme.js
+   Default (no attribute) falls back to the base styles.css look.
+   ============================================================ */
+
+/* ─────────────── LIGHT — trustworthy (carwow-style) ─────────────── */
+html[data-theme="light"]{
+  --bg-0:#ffffff; --bg-1:#f6f8fa; --bg-2:#eef1f5; --bg-3:#e5e9ef;
+  --bg-card:#ffffff; --bg-card-hover:#f6f8fa;
+  --accent:#0ea672; --accent-2:#0891b2;
+  --accent-gradient:linear-gradient(135deg,#0ea672 0%,#0891b2 100%);
+  --text-1:#0f1720; --text-2:#586472; --text-3:#93a0ad;
+  --border:rgba(15,23,32,0.10); --border-light:rgba(15,23,32,0.06);
+  --shadow-sm:0 1px 3px rgba(15,23,32,0.08);
+  --shadow-md:0 6px 24px rgba(15,23,32,0.10);
+  --shadow-lg:0 20px 48px rgba(15,23,32,0.14);
+  --glow:0 0 0 rgba(0,0,0,0);
+}
+html[data-theme="light"] body{
+  background-color:#ffffff;
+  background-image:
+    radial-gradient(ellipse 70% 45% at 15% 0%, rgba(14,166,114,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 40% at 85% 100%, rgba(8,145,178,0.05) 0%, transparent 60%);
+  color:var(--text-1);
+}
+html[data-theme="light"] .navbar{background:rgba(255,255,255,0.85);border-bottom:1px solid var(--border);}
+html[data-theme="light"] .nav-link{color:var(--text-2);}
+html[data-theme="light"] .nav-link.active{color:var(--accent);background:rgba(14,166,114,0.10);}
+html[data-theme="light"] .badge-blue{background:rgba(14,166,114,0.12);color:var(--accent);}
+html[data-theme="light"] .badge-purple{background:rgba(8,145,178,0.12);color:var(--accent-2);}
+html[data-theme="light"] .search-input:focus,
+html[data-theme="light"] .select-custom:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(14,166,114,0.15);}
+html[data-theme="light"] .battle-card{background:#ffffff;border:1px solid var(--border);}
+html[data-theme="light"] .car-card,
+html[data-theme="light"] .vs-card,
+html[data-theme="light"] .vs-verdict,
+html[data-theme="light"] .vs-faq details,
+html[data-theme="light"] .vs-rel a,
+html[data-theme="light"] table.vs-tab{background:#ffffff;}
+html[data-theme="light"] .car-placeholder,
+html[data-theme="light"] .car-card-img{background:linear-gradient(135deg,#f2f5f8,#e8edf2);}
+html[data-theme="light"] .bg-text{color:rgba(15,23,32,0.05)!important;}
+
+/* ─────────────── RACING — dark automotive (no purple) ─────────────── */
+html[data-theme="racing"]{
+  --bg-0:#0a0a0b; --bg-1:#121214; --bg-2:#1a1a1d; --bg-3:#242428;
+  --bg-card:rgba(255,255,255,0.035); --bg-card-hover:rgba(255,255,255,0.06);
+  --accent:#ff3b2f; --accent-2:#ff9f0a;
+  --accent-gradient:linear-gradient(135deg,#ff3b2f 0%,#ff9f0a 100%);
+  --text-1:#f5f5f7; --text-2:#a1a1aa; --text-3:#565660;
+  --border:rgba(255,255,255,0.09); --border-light:rgba(255,255,255,0.05);
+  --glow:0 0 40px rgba(255,59,47,0.18);
+}
+html[data-theme="racing"] body{
+  background-color:#0a0a0b;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(255,59,47,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255,159,10,0.06) 0%, transparent 60%);
+  color:var(--text-1);
+}
+html[data-theme="racing"] .nav-link.active{color:var(--accent);background:rgba(255,59,47,0.12);}
+html[data-theme="racing"] .badge-blue{background:rgba(255,59,47,0.15);color:var(--accent);}
+html[data-theme="racing"] .badge-purple{background:rgba(255,159,10,0.15);color:var(--accent-2);}
+html[data-theme="racing"] .search-input:focus,
+html[data-theme="racing"] .select-custom:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,59,47,0.15);}
+
+/* ─────────────── Theme toggle button ─────────────── */
+.theme-toggle{
+  background:var(--bg-card); border:1px solid var(--border); color:var(--text-1);
+  border-radius:var(--r-sm,8px); width:34px; height:34px; cursor:pointer;
+  font-size:1rem; line-height:1; display:inline-flex; align-items:center;
+  justify-content:center; transition:var(--t,0.2s); font-family:inherit;
+}
+.theme-toggle:hover{border-color:var(--accent); box-shadow:0 0 0 3px rgba(0,0,0,0.04);}
