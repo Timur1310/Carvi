@@ -1,5 +1,5 @@
 /* ================================================================
-   CarBattle — Car Database
+   Carvi — Car Database
    All specs are real-world accurate for the 2023 model year
    ================================================================ */
 

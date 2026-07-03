@@ -1,4 +1,4 @@
-# CarBattle
+# Carvi
 
 Static car-comparison web app. Swipe battles, car database (242 cars), side-by-side compare, quiz, and programmatic Russian SEO comparison pages.
 

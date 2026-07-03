@@ -1,5 +1,5 @@
 /* ================================================================
-   CarBattle — Internationalization (i18n)
+   Carvi — Internationalization (i18n)
    Supports: EN (English) | RU (Russian)
    ================================================================ */
 
@@ -179,7 +179,7 @@ const TRANSLATIONS = {
     'learn.sec.safety':       '🛡️ Modern Safety Technology',
     'learn.sec.buying':       "🛒 Used Car Buyer's Complete Guide",
     'learn.sec.glossary':     '📖 Car Terminology Glossary',
-    'learn.footer':           'CarBattle — Educational car information platform · ← Go to Battle',
+    'learn.footer':           'Carvi — Educational car information platform · ← Go to Battle',
 
     /* ── Quiz page ── */
     'quiz.hero.title':   '🧠 Car Quiz',
@@ -375,7 +375,7 @@ const TRANSLATIONS = {
     'learn.sec.safety':       '🛡️ Современные системы безопасности',
     'learn.sec.buying':       '🛒 Полный гайд покупателя б/у авто',
     'learn.sec.glossary':     '📖 Глоссарий автомобильных терминов',
-    'learn.footer':           'CarBattle — Образовательная платформа об автомобилях · ← На батл',
+    'learn.footer':           'Carvi — Образовательная платформа об автомобилях · ← На батл',
 
     /* ── Quiz ── */
     'quiz.hero.title':   '🧠 Автовикторина',

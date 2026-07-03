@@ -1,5 +1,5 @@
 /* ============================================================
-   CarBattle — Programmatic SEO comparison-page generator
+   Carvi — Programmatic SEO comparison-page generator
    Reads js/cars-data.js, emits static Russian /vs/*.html pages
    for meaningful car pairs (same body type + similar price),
    a hub index, and sitemap.xml.
@@ -13,7 +13,7 @@ const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..');
 const OUT_DIR = path.join(ROOT, 'vs');
-const ORIGIN = (process.argv[2] || 'https://carbattle.app').replace(/\/$/, '');
+const ORIGIN = (process.argv[2] || 'https://carvi.app').replace(/\/$/, '');
 
 /* ── Load car data by evaluating cars-data.js in a sandbox ── */
 const sandbox = {};
@@ -146,7 +146,7 @@ const CSP = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 's
 
 function navHTML() {
   return `<nav class="navbar">
-  <a href="../index.html" class="nav-brand"><div class="logo-icon">🏎</div>CarBattle</a>
+  <a href="../index.html" class="nav-brand"><div class="logo-icon">🏎</div>Carvi</a>
   <div class="nav-links">
     <a href="../index.html" class="nav-link">⚔️ Battle</a>
     <a href="../cars.html" class="nav-link">🚗 Cars</a>
@@ -251,7 +251,7 @@ function buildPage(a, b, allKeys) {
 <body>
 ${navHTML()}
 <div class="vs-wrap">
-  <div class="vs-crumbs"><a href="../index.html">CarBattle</a> → <a href="index.html">Сравнения</a> → ${esc(name(a))} vs ${esc(name(b))}</div>
+  <div class="vs-crumbs"><a href="../index.html">Carvi</a> → <a href="index.html">Сравнения</a> → ${esc(name(a))} vs ${esc(name(b))}</div>
   <h1 class="vs-h1">${esc(name(a))} или ${esc(name(b))} — что выбрать?</h1>
   <p class="vs-lede">${esc(lede)}</p>
 
@@ -327,7 +327,7 @@ function buildIndex(keys) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="${CSP}">
   <meta name="referrer" content="no-referrer">
-  <title>Сравнения автомобилей — CarBattle</title>
+  <title>Сравнения автомобилей — Carvi</title>
   <meta name="description" content="Сравнения популярных автомобилей по характеристикам: цена, мощность, разгон, расход, клиренс. Китайские кроссоверы, бюджетные седаны и другие.">
   <link rel="canonical" href="${ORIGIN}/vs/index.html">
   <link rel="stylesheet" href="../css/styles.css">

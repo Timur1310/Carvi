@@ -1,4 +1,4 @@
-/* CarBattle — theme switcher (light <-> racing), persisted in localStorage.
+/* Carvi — theme switcher (light <-> racing), persisted in localStorage.
    Loaded synchronously in <head> so data-theme is set before first paint. */
 (function () {
   try {
