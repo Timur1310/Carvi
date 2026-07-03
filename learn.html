@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="no-referrer">
+  <title>Learn About Cars — CarBattle</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .learn-icon.blue   { background: rgba(79,142,247,0.15);  color: var(--accent); }
+    .learn-icon.purple { background: rgba(168,85,247,0.15);  color: var(--accent-2); }
+    .learn-icon.green  { background: rgba(34,197,94,0.15);   color: var(--success); }
+    .learn-icon.amber  { background: rgba(245,158,11,0.15);  color: var(--warning); }
+    .learn-icon.red    { background: rgba(239,68,68,0.15);   color: var(--danger); }
+
+    .engine-type-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .engine-type-card {
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 14px;
+    }
+    .engine-type-card .etc-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .engine-type-card h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 6px; }
+    .engine-type-card p { font-size: 0.8rem; color: var(--text-2); line-height: 1.5; margin: 0; }
+
+    .quick-fact {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(79,142,247,0.06);
+      border: 1px solid rgba(79,142,247,0.15);
+      border-radius: var(--r-sm);
+      margin: 10px 0;
+    }
+    .quick-fact .qf-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .quick-fact p { font-size: 0.85rem; color: var(--text-1); margin: 0; line-height: 1.5; }
+
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+      gap: 12px;
+    }
+    .glossary-item {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 12px 14px;
+    }
+    .glossary-item .term { font-weight: 700; font-size: 0.9rem; color: var(--accent); margin-bottom: 4px; }
+    .glossary-item .def  { font-size: 0.82rem; color: var(--text-2); line-height: 1.5; }
+
+    .nav-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 24px;
+    }
+    .nav-pill {
+      padding: 7px 16px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-2);
+      border-radius: 20px;
+      font-size: 0.83rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--t);
+    }
+    .nav-pill:hover { color: var(--accent); border-color: var(--accent); background: rgba(79,142,247,0.08); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="logo-icon">🏎</div>
+    CarBattle
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link" data-i18n="nav.battle">⚔️ Battle</a>
+    <a href="cars.html" class="nav-link" data-i18n="nav.cars">🚗 Cars</a>
+    <a href="compare.html" class="nav-link" data-i18n="nav.compare">📊 Compare</a>
+    <a href="vs/index.html" class="nav-link">🇷🇺 Сравнения</a>
+    <a href="learn.html" class="nav-link active" data-i18n="nav.learn">📚 Learn</a>
+    <a href="quiz.html" class="nav-link" data-i18n="nav.quiz">🧠 Quiz</a>
+    <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
+  </div>
+</nav>
+
+<div class="page-hero animate-up">
+  <h1 data-i18n="learn.hero.title">Car Education Hub</h1>
+  <p data-i18n="learn.hero.sub">Everything you need to know about how cars work — so you can buy with confidence.</p>
+</div>
+
+<!-- Quick navigation pills -->
+<div class="nav-pills animate-up delay-1">
+  <a class="nav-pill" href="#engines" data-i18n="learn.pill.engines">🔧 Engines</a>
+  <a class="nav-pill" href="#transmission" data-i18n="learn.pill.trans">⚙️ Transmission</a>
+  <a class="nav-pill" href="#suspension" data-i18n="learn.pill.susp">🛞 Suspension</a>
+  <a class="nav-pill" href="#brakes" data-i18n="learn.pill.brakes">🛑 Brakes</a>
+  <a class="nav-pill" href="#safety-tech" data-i18n="learn.pill.safety">🛡️ Safety Tech</a>
+  <a class="nav-pill" href="#buying" data-i18n="learn.pill.buying">🛒 Buying Guide</a>
+  <a class="nav-pill" href="#glossary" data-i18n="learn.pill.glossary">📖 Glossary</a>
+</div>
+
+<div class="section" style="padding-top:0;">
+
+  <!-- ── ENGINES ── -->
+  <div class="learn-section" id="engines">
+    <div class="learn-section-title" data-i18n="learn.sec.engines">🔧 Engines</div>
+    <div class="learn-grid">
+
+      <div class="learn-card animate-up">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon blue">🔥</div>
+          <div>
+            <h3 data-lang="en">How a Petrol Engine Works</h3>
+            <h3 data-lang="ru">Как работает бензиновый двигатель</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">The 4-stroke cycle explained</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Цикл из 4 тактов</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <p>A petrol engine converts fuel into motion through a repeating 4-stroke cycle. Each cylinder has a piston that moves up and down, and this motion is converted into rotation by the crankshaft.</p>
+          <h4>The 4 Strokes:</h4>
+          <ol>
+            <li><strong>Intake</strong> — Piston moves DOWN, intake valve opens, air+fuel mixture enters the cylinder</li>
+            <li><strong>Compression</strong> — Piston moves UP, both valves closed, mixture is compressed to 1/10th of its volume</li>
+            <li><strong>Power (Combustion)</strong> — Spark plug fires, mixture explodes, piston is pushed DOWN with force — this is the stroke that actually drives the car</li>
+            <li><strong>Exhaust</strong> — Piston moves UP again, exhaust valve opens, burnt gases exit through the exhaust system</li>
+          </ol>
+          <div class="quick-fact"><span class="qf-icon">💡</span><p>A 4-cylinder engine at 3,000 RPM fires 6,000 power strokes per minute — that's 100 explosions per second!</p></div>
+          <h4>Key Terms:</h4>
+          <ul>
+            <li><strong>Displacement</strong> — Total volume swept by all pistons (e.g., 2.0L = 2000cc). More displacement = more air+fuel = more power potential</li>
+            <li><strong>Compression Ratio</strong> — How much the mixture is compressed (e.g., 10:1). Higher ratio = more efficiency and power, but requires better fuel</li>
+            <li><strong>Bore × Stroke</strong> — Bore is piston diameter; stroke is how far it moves. Short stroke = high revving; long stroke = more torque</li>
+          </ul>
+          </div>
+          <div data-lang="ru">
+          <p>Бензиновый двигатель преобразует топливо в движение через повторяющийся 4-тактный цикл. Поршень движется вверх-вниз в цилиндре, это движение преобразуется во вращение коленчатым валом.</p>
+          <h4>4 такта:</h4>
+          <ol>
+            <li><strong>Впуск</strong> — поршень движется вниз, впускной клапан открыт, воздушно-топливная смесь заходит в цилиндр</li>
+            <li><strong>Сжатие</strong> — поршень движется вверх, оба клапана закрыты, смесь сжимается примерно в 10 раз</li>
+            <li><strong>Рабочий ход</strong> — свеча поджигает смесь, взрыв толкает поршень вниз — это единственный такт, создающий мощность</li>
+            <li><strong>Выпуск</strong> — поршень движется вверх, выпускной клапан открыт, отработавшие газы выходят в выхлоп</li>
+          </ol>
+          <div class="quick-fact"><span class="qf-icon">💡</span><p>4-цилиндровый двигатель на 3 000 об/мин производит 6 000 вспышек в минуту — 100 взрывов в секунду!</p></div>
+          <h4>Ключевые термины:</h4>
+          <ul>
+            <li><strong>Рабочий объём</strong> — суммарный объём всех цилиндров (напр., 2.0 л = 2000 куб. см). Больше объём = больше потенциальная мощность</li>
+            <li><strong>Степень сжатия</strong> — во сколько раз сжимается смесь (напр., 10:1). Выше = эффективнее и мощнее, но нужно лучшее топливо</li>
+            <li><strong>Диаметр × ход поршня</strong> — короткий ход = высокооборотистый характер; длинный ход = больше тяги</li>
+          </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="learn-card animate-up delay-1">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon purple">⚡</div>
+          <div>
+            <h3 data-lang="en">Engine Types Compared</h3>
+            <h3 data-lang="ru">Типы двигателей</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Petrol, diesel, hybrid, electric</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Бензин, дизель, гибрид, электро</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <div class="engine-type-grid">
+            <div class="engine-type-card"><div class="etc-icon">⛽</div><h4>Petrol (Gasoline)</h4><p>Spark ignition. Great power at high RPM. Best for: daily driving, performance cars. Fuel: 92–98 octane.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">🛢️</div><h4>Diesel</h4><p>Compression ignition. Higher torque at low RPM. Better fuel economy for highway. Best for: long distances, SUVs, trucks.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">⚡</div><h4>Hybrid (HEV)</h4><p>Petrol engine + electric motor + small battery. Engine charges battery; no plug-in needed. Best for: city drivers wanting efficiency.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">🔋</div><h4>Plug-in Hybrid (PHEV)</h4><p>Larger battery; can drive 30–80km on electric only. Charge at home. Best for: commuters with short daily ranges.</p></div>
+          </div>
+          </div>
+          <div data-lang="ru">
+          <div class="engine-type-grid">
+            <div class="engine-type-card"><div class="etc-icon">⛽</div><h4>Бензиновый</h4><p>Воспламенение от искры. Отличная мощность на высоких оборотах. Для: повседневной езды, спорткаров. Топливо: АИ-92–98.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">🛢️</div><h4>Дизельный</h4><p>Воспламенение от сжатия. Высокий момент на низких оборотах. Экономичнее на трассе. Для: дальних поездок, внедорожников, грузовиков.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">⚡</div><h4>Гибрид (HEV)</h4><p>Бензиновый + электромотор + небольшая батарея. Двигатель сам заряжает батарею, зарядка не нужна. Для: городских водителей, которым важна экономия.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">🔋</div><h4>Plug-in гибрид (PHEV)</h4><p>Большая батарея — 30–80 км на электротяге. Заряжается дома. Для: тех, кто ездит недалеко каждый день.</p></div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="learn-card animate-up delay-2">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon green">💨</div>
+          <div>
+            <h3 data-lang="en">Turbochargers & Superchargers</h3>
+            <h3 data-lang="ru">Турбо и компрессор</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">What "forced induction" means</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Что такое принудительный наддув</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <p>A naturally aspirated engine only uses atmospheric pressure to fill the cylinder with air. A forced induction system pumps extra air in at higher pressure, allowing more fuel to be burned — more power from the same displacement.</p>
+          <h4>Turbocharger:</h4>
+          <p>Uses waste exhaust gases to spin a turbine that compresses intake air. Free energy from exhaust! Slight delay before boost builds ("turbo lag"). Most modern engines use turbos — that's why a 1.5T can make similar power to an old 2.5L.</p>
+          <h4>Supercharger:</h4>
+          <p>Driven directly by the engine (belt or chain), so there's no lag. Instant response. Less efficient than a turbo since it takes engine power to run. Common in American V8s and some Mercedes AMG engines.</p>
+          <div class="quick-fact"><span class="qf-icon">💡</span><p>A twin-scroll turbo (like in the BMW 3 Series) feeds exhaust from alternating cylinders to each scroll, reducing turbo lag significantly.</p></div>
+          </div>
+          <div data-lang="ru">
+          <p>Атмосферный двигатель использует только атмосферное давление для наполнения цилиндра. Системы наддува подают воздух под давлением — можно сжечь больше топлива и получить больше мощности с того же объёма.</p>
+          <h4>Турбокомпрессор:</h4>
+          <p>Использует энергию выхлопных газов для раскрутки турбины. Бесплатная энергия из выхлопа! Небольшая задержка при наборе давления («турбояма»). Большинство современных двигателей используют турбо — вот почему 1.5Т может выдавать столько же, сколько старый 2.5 л.</p>
+          <h4>Компрессор (Supercharger):</h4>
+          <p>Приводится напрямую от двигателя (ремнём), поэтому нет задержки. Мгновенный отклик. Менее эффективен, так как забирает мощность от двигателя. Распространён в американских V8 и некоторых Mercedes-AMG.</p>
+          <div class="quick-fact"><span class="qf-icon">💡</span><p>Двухспиральное турбо (как в BMW 3-й серии) питается выхлопом из разных цилиндров попеременно, что значительно снижает «турбояму».</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="learn-card animate-up delay-3">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon amber">📊</div>
+          <div>
+            <h3 data-lang="en">Power vs Torque — What's the Difference?</h3>
+            <h3 data-lang="ru">Мощность и крутящий момент</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Understanding hp and Nm</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Что значат л.с. и Нм</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <p><strong style="color:var(--text-1);">Torque (Nm)</strong> is the rotational force the engine produces. High torque at low RPM means the car feels strong and effortless from a standstill — think diesel trucks and SUVs that can tow heavy loads at low speed.</p>
+          <p><strong style="color:var(--text-1);">Power (hp)</strong> is torque × rotational speed. High power at high RPM means the car keeps accelerating strongly even at speed — think sports cars and F1 engines that scream to 8,000 RPM.</p>
+          <div class="quick-fact"><span class="qf-icon">💡</span><p>Simple rule: <strong>Torque = how hard you're pushed back in your seat from a standstill. Power = how fast the car can ultimately go.</strong></p></div>
+          <h4>Real-world example:</h4>
+          <ul>
+            <li>Toyota Land Cruiser: 650 Nm torque → tows 3,500kg from a standstill with ease</li>
+            <li>Ford Mustang GT: 529 Nm torque but 450 hp → fast from the start AND at speed</li>
+            <li>Kia Rio: 132 Nm torque → sufficient for city driving but slow on highway overtakes</li>
+          </ul>
+          </div>
+          <div data-lang="ru">
+          <p><strong style="color:var(--text-1);">Крутящий момент (Нм)</strong> — вращательная сила, которую создаёт двигатель. Высокий момент на низких оборотах = уверенное движение с места — вспомните дизельные внедорожники, тянущие прицепы.</p>
+          <p><strong style="color:var(--text-1);">Мощность (л.с.)</strong> = момент × обороты. Высокая мощность на высоких оборотах = автомобиль хорошо ускоряется даже на скорости — как спорткары, раскручивающиеся до 8 000 об/мин.</p>
+          <div class="quick-fact"><span class="qf-icon">💡</span><p>Простое правило: <strong>Момент = насколько вдавливает в кресло при старте. Мощность = насколько быстро авто разгоняется на скорости.</strong></p></div>
+          <h4>Примеры из жизни:</h4>
+          <ul>
+            <li>Toyota Land Cruiser: 650 Нм → буксирует 3 500 кг без усилий</li>
+            <li>Ford Mustang GT: 529 Нм, но 450 л.с. → быстр и с места, и на скорости</li>
+            <li>Kia Rio: 132 Нм → достаточно для города, но медленно на обгонах трассе</li>
+          </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── TRANSMISSION ── -->
+  <div class="learn-section" id="transmission">
+    <div class="learn-section-title" data-i18n="learn.sec.trans">⚙️ Transmission</div>
+    <div class="learn-grid">
+
+      <div class="learn-card animate-up">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon blue">🎛️</div>
+          <div>
+            <h3 data-lang="en">Manual Gearbox (MT)</h3>
+            <h3 data-lang="ru">Механическая КПП (МКПП)</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Driver controls every gear change</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Водитель управляет каждым переключением</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <p>The driver uses a clutch pedal and gear lever to manually select gears. A clutch disc connects and disconnects the engine from the gearbox. When you press the clutch, the engine disconnects so you can change gear without stalling.</p>
+          <h4>Pros:</h4>
+          <ul>
+            <li>Full driver control and engagement</li>
+            <li>Generally more reliable and cheaper to repair</li>
+            <li>Usually faster in sporty driving (in skilled hands)</li>
+            <li>Engine braking on downshifts</li>
+          </ul>
+          <h4>Cons:</h4>
+          <ul>
+            <li>Requires practice — especially in city traffic</li>
+            <li>Clutch wear if driven poorly</li>
+            <li>Tiring in stop-start traffic</li>
+          </ul>
+          <div class="quick-fact"><span class="qf-icon">🔧</span><p>Clutch replacement on a manual car is typically needed every 100,000–150,000 km. Signs of wear: slipping under load, high engagement point, burning smell.</p></div>
+          </div>
+          <div data-lang="ru">
+          <p>Водитель использует педаль сцепления и рычаг КПП для ручного выбора передачи. При нажатии сцепления двигатель отключается, что позволяет переключить передачу без остановки двигателя.</p>
+          <h4>Плюсы:</h4>
+          <ul>
+            <li>Полный контроль и вовлечённость водителя</li>
+            <li>Как правило, надёжнее и дешевле в ремонте</li>
+            <li>Быстрее в спортивной езде (в умелых руках)</li>
+            <li>Торможение двигателем при понижении передачи</li>
+          </ul>
+          <h4>Минусы:</h4>
+          <ul>
+            <li>Требует практики — особенно в городских пробках</li>
+            <li>Износ сцепления при неправильной езде</li>
+            <li>Утомляет в режиме «старт-стоп»</li>
+          </ul>
+          <div class="quick-fact"><span class="qf-icon">🔧</span><p>Замена сцепления обычно нужна каждые 100 000–150 000 км. Признаки износа: пробуксовка под нагрузкой, высокая точка включения, запах гари.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="learn-card animate-up delay-1">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon purple">🤖</div>
+          <div>
+            <h3 data-lang="en">Automatic Gearboxes — AT, DCT, CVT</h3>
+            <h3 data-lang="ru">Автоматические КПП — AT, DCT, CVT</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Which auto transmission is best?</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Какой автомат лучший?</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <h4>Traditional Automatic (AT / Torque Converter)</h4>
+          <p>Uses hydraulic fluid coupling (torque converter) instead of a clutch. Smooth and reliable. Modern 8–10 speed ATs are very efficient. Used in Toyota Camry, BMW 3 Series, Land Cruiser.</p>
+          <h4>Dual-Clutch (DCT / DSG / PDK)</h4>
+          <p>Two separate clutches handle odd and even gears. Gear changes are lightning-fast (100ms). Can feel jerky at low speed. Brilliant for performance driving. Used in VW Polo (DSG), BMW M cars.</p>
+          <div class="quick-fact"><span class="qf-icon">⚠️</span><p>VW/Audi dry-clutch DSG (DQ200, 7-speed) is known for judder in stop-start traffic. Get it scanned before buying any used DSG car.</p></div>
+          <h4>CVT (Continuously Variable Transmission)</h4>
+          <p>No fixed gears — uses a belt between two variable-diameter pulleys. Infinitely variable ratio. Very efficient. Feels "rubber-band-like" under hard acceleration. Used in Toyota Corolla, Honda Civic, Kia Rio.</p>
+          <ul><li>CVT fluid must be changed every 60,000 km — neglected CVTs fail expensively</li><li>Not suitable for high-power applications (>200hp) in most designs</li></ul>
+          </div>
+          <div data-lang="ru">
+          <h4>Традиционный автомат (AT / гидротрансформатор)</h4>
+          <p>Вместо сцепления — гидравлическая муфта. Плавный и надёжный. Современные 8–10-ступенчатые AT очень экономичны. Применяется в Toyota Camry, BMW 3-й серии, Land Cruiser.</p>
+          <h4>Роботизированная КПП с двойным сцеплением (DCT / DSG / PDK)</h4>
+          <p>Два отдельных сцепления для чётных и нечётных передач. Переключение молниеносно (100 мс). На малой скорости может дёргаться. Применяется в VW Polo (DSG), BMW M-серия.</p>
+          <div class="quick-fact"><span class="qf-icon">⚠️</span><p>DSG с сухим сцеплением VW/Audi (DQ200, 7-ступ.) склонен к рывкам в режиме «старт-стоп». Обязательно проверяйте диагностикой перед покупкой б/у авто с DSG.</p></div>
+          <h4>Вариатор (CVT)</h4>
+          <p>Нет фиксированных передач — ремень между шкивами переменного диаметра. Бесступенчатое изменение. Очень экономичен. Ощущается «резинкой» при интенсивном разгоне. Применяется в Toyota Corolla, Honda Civic, Kia Rio.</p>
+          <ul><li>Масло вариатора нужно менять каждые 60 000 км — запущенный вариатор выходит из строя дорогостоящим образом!</li><li>Не подходит для мощных двигателей (>200 л.с.) в большинстве конструкций</li></ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SUSPENSION ── -->
+  <div class="learn-section" id="suspension">
+    <div class="learn-section-title" data-i18n="learn.sec.susp">🛞 Suspension & Steering</div>
+    <div class="learn-grid">
+
+      <div class="learn-card animate-up">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon green">🔩</div>
+          <div>
+            <h3 data-lang="en">How Suspension Works</h3>
+            <h3 data-lang="ru">Как работает подвеска</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Springs, dampers, and wheel geometry</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Пружины, амортизаторы и геометрия колёс</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <p>Suspension has two jobs: keep the tyres in contact with the road (handling) and absorb bumps so passengers aren't thrown around (comfort). These two goals are often in conflict — stiffer suspension = better handling but harsher ride.</p>
+          <h4>Key Components:</h4>
+          <ul>
+            <li><strong>Springs</strong> — Absorb initial impact. Coil springs are most common. Softer = more comfort; stiffer = better handling</li>
+            <li><strong>Dampers (Shock Absorbers)</strong> — Control how fast the spring compresses and rebounds. Without them, the car would bounce continuously after every bump</li>
+            <li><strong>Anti-roll bar (Sway bar)</strong> — Connects left and right wheels; reduces body roll in corners</li>
+            <li><strong>Wheel geometry</strong> — Camber, toe, and castor angles affect tyre wear and handling. Must be set correctly after lowering or accident repairs</li>
+          </ul>
+          <h4>MacPherson Strut (front, most cars)</h4>
+          <p>Combines spring and damper into one unit. Simple, cost-effective. Used in: Toyota Corolla, Kia Rio, VW Polo.</p>
+          <h4>Multi-link (rear, better cars)</h4>
+          <p>Multiple arms allow independent wheel movement. Better handling and ride. Used in: BMW 3 Series, Mercedes C-Class, Honda Civic.</p>
+          </div>
+          <div data-lang="ru">
+          <p>Подвеска решает две задачи: сохранить контакт шин с дорогой (управляемость) и поглощать толчки (комфорт). Эти цели часто противоречат: жёсткая подвеска = лучше управляемость, но жёстче езда.</p>
+          <h4>Ключевые элементы:</h4>
+          <ul>
+            <li><strong>Пружины</strong> — поглощают первоначальный удар. Чаще всего витые. Мягче = комфорт; жёстче = управляемость</li>
+            <li><strong>Амортизаторы</strong> — контролируют скорость сжатия и отбоя пружины. Без них авто будет раскачиваться после каждой кочки</li>
+            <li><strong>Стабилизатор поперечной устойчивости</strong> — соединяет левое и правое колёса; снижает крен в поворотах</li>
+            <li><strong>Геометрия колёс</strong> — развал, схождение и кастер влияют на износ шин и управляемость. Проверяйте после занижения или ремонта после ДТП</li>
+          </ul>
+          <h4>Стойка МакФерсон (передняя подвеска большинства авто)</h4>
+          <p>Объединяет пружину и амортизатор. Проста и экономична. Применяется в Toyota Corolla, Kia Rio, VW Polo.</p>
+          <h4>Многорычажная подвеска (задняя, у более дорогих авто)</h4>
+          <p>Несколько рычагов обеспечивают независимое движение колёс. Лучшая управляемость и комфорт. Применяется в BMW 3-й серии, Mercedes C-Class, Honda Civic.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── BRAKES ── -->
+  <div class="learn-section" id="brakes">
+    <div class="learn-section-title" data-i18n="learn.sec.brakes">🛑 Braking Systems</div>
+    <div class="learn-grid">
+
+      <div class="learn-card animate-up">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon red">🛑</div>
+          <div>
+            <h3 data-lang="en">Disc Brakes & Brake Pads</h3>
+            <h3 data-lang="ru">Дисковые тормоза и колодки</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">How braking actually works</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Как на самом деле работает торможение</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <p>When you press the brake pedal, hydraulic pressure pushes brake pads against a spinning rotor (disc). Friction converts kinetic energy to heat — stopping the car. This is why brakes get hot and wear out over time.</p>
+          <h4>Disc vs Drum Brakes:</h4>
+          <ul>
+            <li><strong>Disc brakes</strong> — Open design, dissipate heat well, consistent performance. Standard on all modern car fronts and most rears</li>
+            <li><strong>Drum brakes</strong> — Older design, used on some rear axles of budget cars. Cheaper but prone to fading when hot</li>
+          </ul>
+          <h4>Key systems:</h4>
+          <ul>
+            <li><strong>ABS (Anti-lock Braking System)</strong> — Prevents wheels locking up during hard braking, so you can steer while braking</li>
+            <li><strong>EBD (Electronic Brake Distribution)</strong> — Automatically adjusts brake force front/rear based on load</li>
+            <li><strong>Brake Assist</strong> — Detects emergency stops and applies full brake force automatically</li>
+          </ul>
+          <div class="quick-fact"><span class="qf-icon">🔧</span><p>Brake pads typically last 40,000–70,000 km. Rotors last 80,000–120,000 km. Signs of wear: squealing, grinding, vibration under braking, pulling to one side.</p></div>
+          </div>
+          <div data-lang="ru">
+          <p>При нажатии педали тормоза гидравлическое давление прижимает колодки к вращающемуся диску. Трение преобразует кинетическую энергию в тепло. Именно поэтому тормоза нагреваются и изнашиваются.</p>
+          <h4>Дисковые vs. барабанные тормоза:</h4>
+          <ul>
+            <li><strong>Дисковые</strong> — открытая конструкция, хорошо рассеивают тепло. Стандарт для всех современных авто спереди и большинства сзади</li>
+            <li><strong>Барабанные</strong> — старая конструкция, встречается сзади у бюджетных авто. Дешевле, но склонны к «фэйду» при перегреве</li>
+          </ul>
+          <h4>Ключевые системы:</h4>
+          <ul>
+            <li><strong>ABS</strong> — предотвращает блокировку колёс: можно рулить и тормозить одновременно</li>
+            <li><strong>EBD</strong> — автоматически распределяет тормозное усилие между осями в зависимости от нагрузки</li>
+            <li><strong>Brake Assist</strong> — определяет экстренное торможение и применяет максимальную силу тормозов автоматически</li>
+          </ul>
+          <div class="quick-fact"><span class="qf-icon">🔧</span><p>Колодки служат 40 000–70 000 км. Диски — 80 000–120 000 км. Признаки износа: скрип, скрежет, вибрация при торможении, увод в сторону.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SAFETY TECH ── -->
+  <div class="learn-section" id="safety-tech">
+    <div class="learn-section-title" data-i18n="learn.sec.safety">🛡️ Modern Safety Technology</div>
+    <div class="learn-grid">
+
+      <div class="learn-card animate-up">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon blue">🔍</div>
+          <div>
+            <h3 data-lang="en">ADAS — Advanced Driver Assistance Systems</h3>
+            <h3 data-lang="ru">ADAS — системы помощи водителю</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Cameras, radar, and lidar explained</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Камеры, радар и ультразвук</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <p>Modern cars have cameras, radar, and ultrasonic sensors that detect the environment and assist (or automatically react) in dangerous situations.</p>
+          <div class="engine-type-grid">
+            <div class="engine-type-card"><div class="etc-icon">📷</div><h4>Front Camera</h4><p>Detects lane markings, traffic signs, pedestrians, cyclists, and vehicles ahead.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">📡</div><h4>Front Radar</h4><p>Measures distance and speed of vehicles ahead. Works in fog, rain, and darkness.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">🔊</div><h4>Ultrasonic</h4><p>Short-range detection for parking sensors and low-speed obstacle alerts.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">👁️</div><h4>Blind Spot Radar</h4><p>Side-mounted radar monitors the lane to your left and right for approaching vehicles.</p></div>
+          </div>
+          <h4>Common ADAS features:</h4>
+          <ul>
+            <li><strong>AEB</strong> — Car brakes itself if you're about to hit something and don't react</li>
+            <li><strong>Adaptive Cruise Control (ACC)</strong> — Maintains speed and following distance automatically</li>
+            <li><strong>Lane Keep Assist (LKA)</strong> — Gently steers back if you drift out of lane</li>
+            <li><strong>Blind Spot Monitor (BSM)</strong> — Warning light in mirror when a car is in your blind spot</li>
+          </ul>
+          <div class="quick-fact"><span class="qf-icon">⚠️</span><p>ADAS sensors must be recalibrated after windscreen replacement, front bumper repair, or wheel alignment changes. This is often overlooked on used cars — scan for related fault codes.</p></div>
+          </div>
+          <div data-lang="ru">
+          <p>Современные авто оснащены камерами, радаром и ультразвуковыми датчиками, которые отслеживают обстановку и помогают (или автоматически реагируют) в опасных ситуациях.</p>
+          <div class="engine-type-grid">
+            <div class="engine-type-card"><div class="etc-icon">📷</div><h4>Фронтальная камера</h4><p>Распознаёт разметку, знаки, пешеходов, велосипедистов и автомобили.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">📡</div><h4>Фронтальный радар</h4><p>Измеряет расстояние и скорость авто впереди. Работает в тумане и дожде.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">🔊</div><h4>Ультразвук</h4><p>Обнаружение на малых расстояниях для парктроников.</p></div>
+            <div class="engine-type-card"><div class="etc-icon">👁️</div><h4>Радар слепых зон</h4><p>Следит за машинами в слепых зонах зеркал.</p></div>
+          </div>
+          <h4>Основные функции ADAS:</h4>
+          <ul>
+            <li><strong>AEB (автоматическое экстренное торможение)</strong> — авто тормозит само, если вы не реагируете на препятствие</li>
+            <li><strong>Адаптивный круиз-контроль (ACC)</strong> — поддерживает скорость и дистанцию автоматически</li>
+            <li><strong>Lane Keep Assist (LKA)</strong> — мягко корректирует руль при выезде из полосы</li>
+            <li><strong>Blind Spot Monitor (BSM)</strong> — предупреждает когда авто в слепой зоне</li>
+          </ul>
+          <div class="quick-fact"><span class="qf-icon">⚠️</span><p>Датчики ADAS нужно перекалибровать после замены лобового стекла, ремонта бампера или регулировки углов колёс. Проверяйте диагностикой при покупке б/у авто.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="learn-card animate-up delay-1">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon purple">🌟</div>
+          <div>
+            <h3 data-lang="en">Airbags & Passive Safety</h3>
+            <h3 data-lang="ru">Подушки безопасности и пассивная защита</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">What protects you in a crash</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Что защищает вас в аварии</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <p>Passive safety systems protect occupants after a crash has already started. They work in milliseconds — far faster than any human reaction.</p>
+          <h4>Airbags:</h4>
+          <ul>
+            <li><strong>Front airbags</strong> — Driver and passenger; inflate in 30 milliseconds during frontal crash</li>
+            <li><strong>Side/curtain airbags</strong> — Protect heads in side impacts; curtain airbags run along the roofline</li>
+            <li><strong>Knee airbags</strong> — Prevent legs from sliding under the dashboard</li>
+            <li><strong>Centre airbag</strong> — Prevents driver and passenger from hitting each other in a side impact</li>
+          </ul>
+          <h4>Crumple Zones:</h4>
+          <p>Modern cars are designed to crumple in specific areas (front and rear) to absorb crash energy. The passenger cell (where you sit) is reinforced to remain intact. A heavily bent car front after a crash is not a "badly built car" — the crumple zone did its job.</p>
+          <div class="quick-fact"><span class="qf-icon">⚠️</span><p>If an airbag has deployed, the car may look repaired but the airbag control unit, clock spring, and belt tensioners also need replacement. Always run a VIN check and ask for repair invoices.</p></div>
+          </div>
+          <div data-lang="ru">
+          <p>Системы пассивной безопасности защищают пассажиров после начала аварии. Они срабатывают за миллисекунды — намного быстрее любой реакции человека.</p>
+          <h4>Подушки безопасности:</h4>
+          <ul>
+            <li><strong>Фронтальные</strong> — для водителя и пассажира; надуваются за 30 мс при лобовом ударе</li>
+            <li><strong>Боковые/шторки</strong> — защищают головы при боковом ударе; шторки растянуты вдоль потолка</li>
+            <li><strong>Коленные</strong> — предотвращают сдвиг ног под панель приборов</li>
+            <li><strong>Центральная</strong> — между водителем и пассажиром при боковом ударе</li>
+          </ul>
+          <h4>Зоны деформации:</h4>
+          <p>Современные авто специально деформируются в зонах (спереди и сзади), поглощая энергию удара. Пассажирская ячейка усилена. Сильно смятый кузов после аварии — это НЕ «плохой автомобиль»: зона деформации сделала своё дело.</p>
+          <div class="quick-fact"><span class="qf-icon">⚠️</span><p>После срабатывания подушек нужно менять блок управления подушками, контактное кольцо руля и пиропатроны ремней. Всегда запрашивайте инвойсы на ремонтные работы.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── BUYING GUIDE ── -->
+  <div class="learn-section" id="buying">
+    <div class="learn-section-title" data-i18n="learn.sec.buying">🛒 Used Car Buyer's Complete Guide</div>
+    <div class="learn-grid">
+
+      <div class="learn-card animate-up">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon amber">🔎</div>
+          <div>
+            <h3 data-lang="en">Before You Go to View the Car</h3>
+            <h3 data-lang="ru">До просмотра автомобиля</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Research phase</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Этап подготовки</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <ul class="checklist">
+            <li><span class="ci">📋</span><span class="ct"><strong>VIN History Check</strong><span>Use a paid service to check for accidents, stolen status, mileage discrepancies, and outstanding finance</span></span></li>
+            <li><span class="ci">💰</span><span class="ct"><strong>Research Market Price</strong><span>Check multiple listings. Know the fair price range before negotiating</span></span></li>
+            <li><span class="ci">⚠️</span><span class="ct"><strong>Check for Recalls</strong><span>Enter the VIN on your country's government recall database — ensure all recalls were completed</span></span></li>
+            <li><span class="ci">🔧</span><span class="ct"><strong>Know the Known Issues</strong><span>Research the specific model's common problems (see our Buyer's Guide tab on each car page)</span></span></li>
+            <li><span class="ci">📞</span><span class="ct"><strong>Ask the Right Questions</strong><span>"How many previous owners? Why are you selling? Any accident history? Full service history?"</span></span></li>
+          </ul>
+          </div>
+          <div data-lang="ru">
+          <ul class="checklist">
+            <li><span class="ci">📋</span><span class="ct"><strong>Проверка по VIN</strong><span>Закажите платную проверку истории: ДТП, перебитый одометр, залог в банке</span></span></li>
+            <li><span class="ci">💰</span><span class="ct"><strong>Рыночная цена</strong><span>Изучите несколько объявлений. Знайте справедливый диапазон цен до переговоров</span></span></li>
+            <li><span class="ci">⚠️</span><span class="ct"><strong>Проверка отзывов</strong><span>Введите VIN на сайте производителя или Росстандарта — убедитесь, что все отзывные кампании проведены</span></span></li>
+            <li><span class="ci">🔧</span><span class="ct"><strong>Известные проблемы модели</strong><span>Изучите типичные неисправности данной версии (раздел «Гайд покупателя» в карточке каждого авто)</span></span></li>
+            <li><span class="ci">📞</span><span class="ct"><strong>Правильные вопросы</strong><span>«Сколько владельцев? Почему продаёте? Были ли ДТП? Полная сервисная история?»</span></span></li>
+          </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="learn-card animate-up delay-1">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon green">🔍</div>
+          <div>
+            <h3 data-lang="en">Physical Inspection — What to Look For</h3>
+            <h3 data-lang="ru">Осмотр автомобиля — что искать</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">At the viewing</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">На месте просмотра</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <ul class="checklist">
+            <li><span class="ci">☀️</span><span class="ct"><strong>View in Daylight</strong><span>Never inspect a car at night or in the rain — you'll miss paint imperfections</span></span></li>
+            <li><span class="ci">🎨</span><span class="ct"><strong>Paint Consistency</strong><span>Look along the panels from a low angle — orange-peel texture or color variation = repaint after accident</span></span></li>
+            <li><span class="ci">📐</span><span class="ct"><strong>Panel Gaps</strong><span>All gaps between panels (doors, hood, boot) should be uniform. Uneven gaps = accident repair</span></span></li>
+            <li><span class="ci">🔩</span><span class="ct"><strong>Chassis / Sill Welds</strong><span>Look under the car — grinding marks or fresh paint on structural welds indicates serious accident repair</span></span></li>
+            <li><span class="ci">🛢️</span><span class="ct"><strong>Fluid Check</strong><span>Engine oil (dark = old, milky = coolant contamination), coolant (rust color = bad), power steering fluid</span></span></li>
+            <li><span class="ci">💧</span><span class="ct"><strong>Exhaust Smoke</strong><span>Cold start: white smoke = head gasket. Blue smoke = burning oil. Black smoke (diesel) = fuel system issue</span></span></li>
+            <li><span class="ci">🛞</span><span class="ct"><strong>Tyre Wear Pattern</strong><span>Wear on inner/outer edge only = alignment or suspension problem. Patches = emergency braking marks</span></span></li>
+          </ul>
+          </div>
+          <div data-lang="ru">
+          <ul class="checklist">
+            <li><span class="ci">☀️</span><span class="ct"><strong>Смотрите при дневном свете</strong><span>Никогда не осматривайте авто ночью или под дождём — упустите дефекты покраски</span></span></li>
+            <li><span class="ci">🎨</span><span class="ct"><strong>Однородность покраски</strong><span>Смотрите вдоль панелей под углом — «апельсиновая корка» или разница оттенка = перекраска после ДТП</span></span></li>
+            <li><span class="ci">📐</span><span class="ct"><strong>Зазоры между панелями</strong><span>Зазоры между дверями, капотом, крышкой багажника должны быть равномерными. Неравномерные = кузовной ремонт</span></span></li>
+            <li><span class="ci">🔩</span><span class="ct"><strong>Швы кузова</strong><span>Загляните под авто — следы шлифовки или свежая краска на швах = серьёзный ремонт после ДТП</span></span></li>
+            <li><span class="ci">🛢️</span><span class="ct"><strong>Проверка жидкостей</strong><span>Масло (тёмное = старое, белёсое = пробой прокладки), охлаждайка (ржавый цвет = запущено), рулевая жидкость</span></span></li>
+            <li><span class="ci">💧</span><span class="ct"><strong>Дым из выхлопа</strong><span>Холодный пуск: белый = пробой прокладки ГБЦ. Синий = сгорание масла. Чёрный (дизель) = проблема с топливом</span></span></li>
+            <li><span class="ci">🛞</span><span class="ct"><strong>Износ шин</strong><span>Неравномерный износ по краям = проблемы с углами или подвеской</span></span></li>
+          </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="learn-card animate-up delay-2">
+        <div class="learn-card-header" onclick="toggleCard(this)">
+          <div class="learn-icon red">🏎️</div>
+          <div>
+            <h3 data-lang="en">Test Drive Checklist</h3>
+            <h3 data-lang="ru">Чеклист тест-драйва</h3>
+            <p data-lang="en" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">What to test and listen for</p>
+            <p data-lang="ru" style="font-size:0.82rem;color:var(--text-3);margin-top:4px;">Что тестировать и слушать</p>
+          </div>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="learn-card-body">
+          <div data-lang="en">
+          <ul class="checklist">
+            <li><span class="ci">❄️</span><span class="ct"><strong>Cold Start</strong><span>Start from completely cold. Rough idle, misfires, or smoke at cold start reveals problems that disappear when warm</span></span></li>
+            <li><span class="ci">🚶</span><span class="ct"><strong>Low Speed Maneuvers</strong><span>Listen for CV joint clicking when turning. Clunking = worn suspension bushings</span></span></li>
+            <li><span class="ci">🚀</span><span class="ct"><strong>Hard Acceleration</strong><span>Does the car pull evenly? Hesitation, misfires, or vibration under load indicates engine issues</span></span></li>
+            <li><span class="ci">🛑</span><span class="ct"><strong>Hard Braking</strong><span>Brake firmly from 60 km/h. Does it pull left or right? Judder? Both indicate brake problems</span></span></li>
+            <li><span class="ci">🛣️</span><span class="ct"><strong>Highway Speed</strong><span>Check for steering wheel vibration (wheel balance issue) and wind noise (door seals)</span></span></li>
+            <li><span class="ci">↩️</span><span class="ct"><strong>Gear Shifts</strong><span>Auto: smooth shifts through all gears, no hesitation, no harsh downshifts</span></span></li>
+            <li><span class="ci">❄️</span><span class="ct"><strong>Test All Electrics</strong><span>Every window, mirror, A/C, heated seats, sunroof, USB ports, and every button on the infotainment</span></span></li>
+          </ul>
+          </div>
+          <div data-lang="ru">
+          <ul class="checklist">
+            <li><span class="ci">❄️</span><span class="ct"><strong>Холодный пуск</strong><span>Запускайте с полностью холодного. Неровный холостой ход, мисфайры или дым скрывают проблемы, пропадающие когда тепло</span></span></li>
+            <li><span class="ci">🚶</span><span class="ct"><strong>Манёвры на малой скорости</strong><span>Прислушайтесь к щелчкам ШРУСов при повороте руля. Стуки = изношенные втулки подвески</span></span></li>
+            <li><span class="ci">🚀</span><span class="ct"><strong>Резкий разгон</strong><span>Тянет ли авто равномерно? Провалы, мисфайры или вибрация под нагрузкой — проблема двигателя</span></span></li>
+            <li><span class="ci">🛑</span><span class="ct"><strong>Резкое торможение</strong><span>Тормозите с 60 км/ч. Уводит в сторону? Вибрирует? Оба признака — проблемы с тормозами</span></span></li>
+            <li><span class="ci">🛣️</span><span class="ct"><strong>Трасса</strong><span>Проверьте вибрацию руля (балансировка колёс) и ветровой шум (уплотнители дверей)</span></span></li>
+            <li><span class="ci">↩️</span><span class="ct"><strong>Переключения передач</strong><span>Автомат: плавные переключения через все ступени, нет задержек и резких включений</span></span></li>
+            <li><span class="ci">❄️</span><span class="ct"><strong>Все электроприборы</strong><span>Каждое стекло, зеркало, кондиционер, подогрев сидений, люк, USB и каждая кнопка мультимедиа</span></span></li>
+          </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── GLOSSARY ── -->
+  <div class="learn-section" id="glossary">
+    <div class="learn-section-title" data-i18n="learn.sec.glossary">📖 Car Terminology Glossary</div>
+    <div class="glossary-grid animate-up">
+      <div class="glossary-item"><div class="term">0–100 km/h</div><div class="def" data-lang="en">Time in seconds from standstill to 100 km/h. The lower, the faster. Below 5s = very fast; 8–10s = normal; 12s+ = slow.</div><div class="def" data-lang="ru">Время разгона с места до 100 км/ч. Чем меньше, тем быстрее. До 5 с = очень быстро; 8–10 с = норма; 12 с+ = медленно.</div></div>
+      <div class="glossary-item"><div class="term">Torque / Момент (Nm)</div><div class="def" data-lang="en">Rotational force the engine produces. High torque at low RPM = effortless pull from low speed. Essential for towing.</div><div class="def" data-lang="ru">Вращательная сила двигателя. Высокий момент на низких оборотах = уверенное движение с места. Критичен для буксировки.</div></div>
+      <div class="glossary-item"><div class="term">Power / Мощность (hp·л.с. / kW)</div><div class="def" data-lang="en">Torque × speed. Determines maximum performance potential. 1 hp = 0.745 kW.</div><div class="def" data-lang="ru">Момент × обороты. Определяет максимальный динамический потенциал. 1 л.с. = 0,736 кВт.</div></div>
+      <div class="glossary-item"><div class="term">RPM / Об/мин</div><div class="def" data-lang="en">Revolutions Per Minute — how fast the engine crankshaft spins. Petrol engines typically 600–7000 RPM; diesel 600–4500 RPM.</div><div class="def" data-lang="ru">Число оборотов коленвала в минуту. Бензиновые: 600–7000 об/мин; дизельные: 600–4500 об/мин.</div></div>
+      <div class="glossary-item"><div class="term">FWD / Передний привод</div><div class="def" data-lang="en">Front-Wheel Drive. Engine drives the front wheels. Efficient, lower cost, good in everyday conditions.</div><div class="def" data-lang="ru">Двигатель приводит передние колёса. Экономичнее, дешевле, надёжен в повседневных условиях.</div></div>
+      <div class="glossary-item"><div class="term">RWD / Задний привод</div><div class="def" data-lang="en">Rear-Wheel Drive. Engine drives the rear wheels. Better weight balance, sportier dynamics, but can oversteer.</div><div class="def" data-lang="ru">Двигатель приводит задние колёса. Лучший баланс масс, спортивный характер, но может заносить.</div></div>
+      <div class="glossary-item"><div class="term">AWD / 4WD / Полный привод</div><div class="def" data-lang="en">All/Four-Wheel Drive. Power to all wheels. AWD is automatic; 4WD usually has manual modes for off-road.</div><div class="def" data-lang="ru">Тяга на все колёса. AWD — автоматический; 4WD обычно с ручными режимами для бездорожья.</div></div>
+      <div class="glossary-item"><div class="term">Ground Clearance / Клиренс</div><div class="def" data-lang="en">Distance between the lowest point of the car and the ground. Higher = better for rough roads/offroad. Lower = better aerodynamics.</div><div class="def" data-lang="ru">Расстояние от нижней точки до земли. Больше = лучше для бездорожья. Меньше = лучше аэродинамика.</div></div>
+      <div class="glossary-item"><div class="term">Wheelbase / Колёсная база</div><div class="def" data-lang="en">Distance between front and rear axles. Longer wheelbase = more interior space, more stability at speed.</div><div class="def" data-lang="ru">Расстояние между осями. Длиннее = больше пространства в салоне, лучше устойчивость на скорости.</div></div>
+      <div class="glossary-item"><div class="term">Kerb Weight / Снаряж. масса</div><div class="def" data-lang="en">Weight of the car without passengers or luggage. Lighter car = faster, more responsive, better economy.</div><div class="def" data-lang="ru">Масса авто без пассажиров и груза. Чем легче — тем динамичнее, точнее, экономичнее.</div></div>
+      <div class="glossary-item"><div class="term">OBD-II</div><div class="def" data-lang="en">On-Board Diagnostics port (under the dashboard). Connect a scanner to read fault codes. Every car since ~2000 has one.</div><div class="def" data-lang="ru">Разъём бортовой диагностики (под панелью). Позволяет считать коды ошибок. Есть на каждом авто с ~2000 года.</div></div>
+      <div class="glossary-item"><div class="term">VIN</div><div class="def" data-lang="en">Vehicle Identification Number. Unique 17-character code on every car. Use it to check accident history and recalls.</div><div class="def" data-lang="ru">Идентификационный номер авто. Уникальный 17-символьный код. Используйте для проверки истории ДТП и отзывов.</div></div>
+      <div class="glossary-item"><div class="term">ABS</div><div class="def" data-lang="en">Anti-lock Braking System. Prevents wheel lockup during emergency braking so you can steer while stopping.</div><div class="def" data-lang="ru">Антиблокировочная система. Предотвращает блокировку колёс — можно рулить и тормозить одновременно.</div></div>
+      <div class="glossary-item"><div class="term">ESP / ESC</div><div class="def" data-lang="en">Electronic Stability Program/Control. Detects and corrects skids by automatically braking individual wheels.</div><div class="def" data-lang="ru">Система курсовой устойчивости. Определяет и исправляет занос, притормаживая отдельные колёса.</div></div>
+      <div class="glossary-item"><div class="term">Compression Ratio / Степень сжатия</div><div class="def" data-lang="en">How much the air-fuel mixture is compressed before ignition. E.g., 10:1 means compressed to 1/10 volume. Higher = more efficient and powerful, but needs premium fuel.</div><div class="def" data-lang="ru">Насколько сжимается смесь перед воспламенением. Например, 10:1 = сжатие до 1/10 объёма. Выше = эффективнее и мощнее, но нужно лучшее топливо.</div></div>
+      <div class="glossary-item"><div class="term">Camber / Развал колёс</div><div class="def" data-lang="en">The angle of the tyre when viewed from the front. Zero camber = perfectly vertical. Negative camber tilts top of tyre inward — improves cornering grip.</div><div class="def" data-lang="ru">Угол наклона шины при взгляде спереди. Нулевой = вертикально. Отрицательный — верх внутрь — улучшает сцепление в поворотах.</div></div>
+      <div class="glossary-item"><div class="term">MacPherson Strut / Стойка МакФерсон</div><div class="def" data-lang="en">Common front suspension design combining the damper and spring into a single strut. Simple and space-efficient.</div><div class="def" data-lang="ru">Распространённая конструкция передней подвески, объединяющая амортизатор и пружину. Проста и компактна.</div></div>
+      <div class="glossary-item"><div class="term">DSG / DCT</div><div class="def" data-lang="en">Dual-clutch automatic gearbox. Two clutches handle alternate gears for ultra-fast shifts. VW calls theirs DSG; Porsche calls it PDK.</div><div class="def" data-lang="ru">Роботизированная КПП с двумя сцеплениями. Раздельные сцепления для чётных и нечётных передач — молниеносные переключения. У VW — DSG, у Porsche — PDK.</div></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>CarBattle — <span data-lang="en">Educational car information platform · <a href="index.html">← Go to Battle</a></span><span data-lang="ru">Образовательная платформа об автомобилях · <a href="index.html">← На батл</a></span></p>
+</footer>
+
+<script src="js/cars-data.js?v=2"></script>
+<script src="js/i18n.js?v=2"></script>
+<script>
+function toggleCard(header) {
+  const card = header.closest('.learn-card');
+  card.classList.toggle('open');
+}
+</script>
+</body>
+</html>

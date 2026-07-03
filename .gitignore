@@ -1,0 +1,9 @@
+# OS / editor
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+.vscode/
+
+# Node (only tools/ uses node, no deps committed)
+node_modules/

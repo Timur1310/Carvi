@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="no-referrer">
+  <title>Car Detail — CarBattle</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 28px;
+    }
+    .overview-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px;
+    }
+    .overview-panel h3 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .check-item {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .check-item:last-child { border: none; }
+    .check-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .check-text { font-size: 0.88rem; color: var(--text-2); line-height: 1.5; }
+    @media (max-width: 640px) {
+      .overview-grid { grid-template-columns: 1fr; }
+      .car-hero { grid-template-columns: 1fr; }
+      .car-hero-scores { grid-template-columns: repeat(2,1fr); }
+    }
+    .price-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--success);
+      margin-bottom: 16px;
+    }
+    .engine-diagram {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .engine-parts {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .engine-part {
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .engine-part .ep-val { font-size: 1rem; font-weight: 700; color: var(--text-1); }
+    .engine-part .ep-lbl { font-size: 0.7rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="logo-icon">🏎</div>
+    CarBattle
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link" data-i18n="nav.battle">⚔️ Battle</a>
+    <a href="cars.html" class="nav-link" data-i18n="nav.cars">🚗 Cars</a>
+    <a href="compare.html" class="nav-link" data-i18n="nav.compare">📊 Compare</a>
+    <a href="vs/index.html" class="nav-link">🇷🇺 Сравнения</a>
+    <a href="learn.html" class="nav-link" data-i18n="nav.learn">📚 Learn</a>
+    <a href="quiz.html" class="nav-link" data-i18n="nav.quiz">🧠 Quiz</a>
+    <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
+  </div>
+</nav>
+
+<!-- Car Hero -->
+<div class="car-hero animate-up" id="carHero">
+  <div class="car-hero-img" id="heroImg">
+    <div class="bg-text" id="heroBgText"></div>
+    <div id="heroSvg" style="position:relative;z-index:1;"></div>
+  </div>
+  <div class="car-hero-info">
+    <div id="categoryBadge"></div>
+    <h1 id="carTitle"></h1>
+    <p class="tagline" id="carDesc"></p>
+    <div class="price-tag" id="priceTag"></div>
+    <div class="car-hero-scores" id="heroScores"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a id="compareBtn" href="compare.html" class="btn btn-primary btn-sm">📊 Compare This Car</a>
+      <a href="cars.html" class="btn btn-ghost btn-sm">← All Cars</a>
+    </div>
+  </div>
+</div>
+
+<!-- Key Stats -->
+<div class="section" style="padding-top:28px;padding-bottom:0;">
+  <div class="stat-grid" id="keyStats"></div>
+</div>
+
+<!-- Detail Content -->
+<div class="car-detail-content animate-up delay-1">
+  <div class="car-tabs-wrap">
+    <div class="tabs car-tabs" id="carTabs">
+      <button class="tab-btn active" onclick="switchTab(this,'overview')" data-i18n="car.tab.overview">Overview</button>
+      <button class="tab-btn" onclick="switchTab(this,'specs')" data-i18n="car.tab.specs">Full Specs</button>
+      <button class="tab-btn" onclick="switchTab(this,'exterior')" data-i18n="car.tab.exterior">Exterior</button>
+      <button class="tab-btn" onclick="switchTab(this,'interior')" data-i18n="car.tab.interior">Interior</button>
+      <button class="tab-btn" onclick="switchTab(this,'safety')" data-i18n="car.tab.safety">Safety</button>
+      <button class="tab-btn" onclick="switchTab(this,'check')" data-i18n="car.tab.check">Buyer's Guide</button>
+    </div>
+  </div>
+
+  <!-- Tab: Overview -->
+  <div class="tab-panel active" id="tab-overview">
+    <div class="overview-grid">
+      <div class="overview-panel">
+        <h3 data-i18n="car.s.ratings">Performance Ratings</h3>
+        <div id="ratingsPanel"></div>
+      </div>
+      <div class="overview-panel">
+        <h3 data-i18n="car.s.proscons">Pros & Cons</h3>
+        <div id="prosConsPanel"></div>
+      </div>
+    </div>
+    <div style="margin-top:24px;" class="overview-panel" id="descriptionPanel">
+      <h3 data-i18n="car.s.about">About This Car</h3>
+      <p id="fullDesc" style="font-size:0.9rem;line-height:1.75;color:var(--text-2);margin-top:12px;"></p>
+    </div>
+  </div>
+
+  <!-- Tab: Full Specs -->
+  <div class="tab-panel" id="tab-specs">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" class="specs-two-col">
+      <div>
+        <div class="spec-section">
+          <h3 data-i18n="car.section.performance">Performance</h3>
+          <div id="perfSpecs"></div>
+        </div>
+        <div class="spec-section">
+          <h3 data-i18n="car.section.engine">Engine</h3>
+          <div id="engineSpecs"></div>
+        </div>
+        <div class="spec-section">
+          <h3 data-i18n="car.section.transmission">Transmission</h3>
+          <div id="transSpecs"></div>
+        </div>
+        <div class="spec-section">
+          <h3 data-i18n="car.section.fuel">Fuel Consumption</h3>
+          <div id="fuelSpecs"></div>
+        </div>
+      </div>
+      <div>
+        <div class="spec-section">
+          <h3 data-i18n="car.section.dimensions">Dimensions & Weight</h3>
+          <div id="dimSpecs"></div>
+        </div>
+        <div class="spec-section">
+          <h3 data-i18n="car.section.price">Price</h3>
+          <div id="priceSpecs"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Exterior -->
+  <div class="tab-panel" id="tab-exterior">
+    <div class="engine-diagram" style="margin-bottom:24px;">
+      <div id="extSvgLarge" style="display:flex;justify-content:center;align-items:center;padding:20px 0;"></div>
+    </div>
+    <div class="overview-panel">
+      <h3 data-i18n="car.s.extdesign">Exterior Design</h3>
+      <p id="extDesc" style="font-size:0.9rem;color:var(--text-2);line-height:1.75;margin:12px 0 16px;"></p>
+      <h3 style="margin-top:20px;" data-i18n="car.s.extfeat">Notable Features</h3>
+      <ul class="pro-con-list" id="extFeatures" style="margin-top:10px;"></ul>
+    </div>
+  </div>
+
+  <!-- Tab: Interior -->
+  <div class="tab-panel" id="tab-interior">
+    <div class="overview-grid">
+      <div class="overview-panel">
+        <h3 data-i18n="car.s.cabin">Cabin Description</h3>
+        <p id="intDesc" style="font-size:0.9rem;color:var(--text-2);line-height:1.75;margin-top:10px;"></p>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+          <div class="spec-row">
+            <span class="spec-key" data-i18n="car.sp.seating">Seating Capacity</span>
+            <span class="spec-val" id="intSeats"></span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key" data-i18n="car.sp.info">Infotainment</span>
+            <span class="spec-val" id="intInfo"></span>
+          </div>
+        </div>
+      </div>
+      <div class="overview-panel">
+        <h3 data-i18n="car.s.intfeat">Interior Features</h3>
+        <ul class="pro-con-list" id="intFeatures" style="margin-top:10px;"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Safety -->
+  <div class="tab-panel" id="tab-safety">
+    <div class="overview-grid">
+      <div class="overview-panel">
+        <h3 data-i18n="car.s.saferating">Safety Rating</h3>
+        <div style="padding:20px;text-align:center;">
+          <div id="safetyRating" style="font-size:2.5rem;font-weight:900;color:var(--success);"></div>
+          <p style="font-size:0.8rem;color:var(--text-3);margin-top:4px;" data-i18n="car.crashlabel">Official crash test rating</p>
+        </div>
+        <div style="margin-top:8px;">
+          <div class="rating-row">
+            <div class="rating-label">Safety score</div>
+            <div class="rating-bar" id="safetyBar"></div>
+            <div class="rating-val" id="safetyVal"></div>
+          </div>
+        </div>
+      </div>
+      <div class="overview-panel">
+        <h3 data-i18n="car.s.safesys">Safety Systems</h3>
+        <ul class="pro-con-list" id="safetyFeatures" style="margin-top:10px;"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Buyer's Guide -->
+  <div class="tab-panel" id="tab-check">
+    <div class="overview-panel" style="margin-bottom:20px;">
+      <h3 data-i18n="car.check.title">⚠️ What to Check When Buying Used</h3>
+      <p style="font-size:0.88rem;color:var(--text-2);margin:12px 0;line-height:1.6;" data-i18n="car.check.sub">
+        These are the known issues and critical inspection points specific to this model.
+        Always get a pre-purchase inspection from an independent mechanic.
+      </p>
+      <ul id="checkList" class="checklist" style="margin-top:12px;"></ul>
+    </div>
+    <div class="overview-panel">
+      <h3 data-i18n="car.uni.title">📋 Universal Inspection Checklist</h3>
+      <p style="font-size:0.85rem;color:var(--text-2);margin:10px 0 14px;" data-i18n="car.uni.sub">Applies to any used car purchase:</p>
+      <ul class="checklist">
+        <li><span class="ci">🔍</span><span class="ct"><strong>VIN Check</strong><span>Run the VIN through a history service to reveal accidents, mileage fraud, or outstanding finance</span></span></li>
+        <li><span class="ci">🛢️</span><span class="ct"><strong>Engine Oil</strong><span>Check level and color — milky oil = head gasket failure; dark sludge = poor maintenance</span></span></li>
+        <li><span class="ci">💧</span><span class="ct"><strong>Coolant</strong><span>Should be clear/green/pink — rust color means cooling system neglect</span></span></li>
+        <li><span class="ci">⚡</span><span class="ct"><strong>OBD Scan</strong><span>Plug in an OBD-II reader — no fault codes means a healthy ECU</span></span></li>
+        <li><span class="ci">🛞</span><span class="ct"><strong>Tyres & Brakes</strong><span>Uneven wear = alignment issues; listen for brake squeal on test drive</span></span></li>
+        <li><span class="ci">🏎️</span><span class="ct"><strong>Test Drive</strong><span>Drive at all speeds; test cold start, acceleration, braking, A/C, and all electrics</span></span></li>
+        <li><span class="ci">🏗️</span><span class="ct"><strong>Body Panel Gaps</strong><span>Uneven panel gaps or mismatched paint hint at accident repairs</span></span></li>
+        <li><span class="ci">📜</span><span class="ct"><strong>Service History</strong><span>Insist on full documented service records from authorized dealers</span></span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>CarBattle — <span data-lang="en">For educational purposes · <a href="cars.html">← Back to all cars</a></span><span data-lang="ru">В образовательных целях · <a href="cars.html">← Все машины</a></span></p>
+</footer>
+
+<script src="js/cars-data.js?v=2"></script>
+<script src="js/i18n.js?v=2"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const carId  = params.get('id');
+const car    = getCarById(carId);
+
+if (!car) {
+  document.body.innerHTML += `<div class="section" style="text-align:center;padding:80px 24px;"><h2>${t('car.notfound')}</h2><a href="cars.html" class="btn btn-primary" style="margin-top:20px;">${t('car.browse')}</a></div>`;
+} else {
+  buildPage();
+}
+window.onLangChange = function() { if (car) buildPage(); };
+
+function buildPage() {
+  document.title = `${car.brand} ${car.model} ${car.year} — CarBattle`;
+
+  /* Hero */
+  document.getElementById('heroBgText').textContent = car.brand;
+  document.getElementById('heroSvg').innerHTML = buildCarSVG(car.color, 260, car.category);
+  document.getElementById('categoryBadge').innerHTML = `<span class="badge badge-purple" style="margin-bottom:12px;">${car.category}</span>`;
+  document.getElementById('carTitle').textContent = `${car.brand} ${car.model} (${car.year})`;
+  document.getElementById('carDesc').textContent = car.description.split('.')[0] + '.';
+  document.getElementById('priceTag').innerHTML = `💰 $${car.price.min.toLocaleString()} – $${car.price.max.toLocaleString()} USD`;
+  document.getElementById('compareBtn').href = `compare.html?a=${car.id}`;
+  document.getElementById('compareBtn').textContent = t('car.compare');
+  document.querySelector('a[href="cars.html"].btn-ghost').textContent = t('car.allcars');
+
+  /* Hero scores */
+  const ratings = car.ratings;
+  const ratingLabels = { performance:t('rt.performance'), fuelEfficiency:t('rt.fuelEfficiency'), comfort:t('rt.comfort'), reliability:t('rt.reliability'), value:t('rt.value'), safety:t('rt.safety') };
+  const scoreHtml = Object.entries(ratings).map(([k, v]) => `
+    <div class="score-chip">
+      <div class="sc s${v}">${v}<span style="font-size:.9rem;opacity:.6">/5</span></div>
+      <div class="sn">${ratingLabels[k]}</div>
+    </div>`).join('');
+  document.getElementById('heroScores').innerHTML = scoreHtml;
+
+  /* Key stats */
+  document.getElementById('keyStats').innerHTML = `
+    <div class="stat-chip"><div class="val">${car.performance.power}</div><div class="unit">${t('cars.hp')}</div><div class="lbl">${t('car.st.power')}</div></div>
+    <div class="stat-chip"><div class="val">${car.performance.torque}</div><div class="unit">Nm</div><div class="lbl">${t('car.st.torque')}</div></div>
+    <div class="stat-chip"><div class="val">${car.performance.acceleration}s</div><div class="unit">0–100 km/h</div><div class="lbl">${t('car.st.accel')}</div></div>
+    <div class="stat-chip"><div class="val">${car.performance.topSpeed}</div><div class="unit">km/h</div><div class="lbl">${t('car.st.top')}</div></div>
+    <div class="stat-chip"><div class="val">${car.engine.displacement}L</div><div class="unit">${car.engine.cylinders} ${t('car.cyl')}</div><div class="lbl">${t('car.st.engine')}</div></div>
+    <div class="stat-chip"><div class="val">${car.engine.consumption.combined}</div><div class="unit">${t('cars.lkm')}</div><div class="lbl">${t('car.st.comb')}</div></div>
+    <div class="stat-chip"><div class="val">${car.dimensions.weight}</div><div class="unit">kg</div><div class="lbl">${t('car.st.weight')}</div></div>
+    <div class="stat-chip"><div class="val">${car.dimensions.trunkVolume}</div><div class="unit">L</div><div class="lbl">${t('car.st.trunk')}</div></div>
+  `;
+
+  /* Ratings panel */
+  const ratingKeys = ['performance','fuelEfficiency','comfort','reliability','value','safety'];
+  const rLabels    = ratingKeys.map(k => t('rt.' + k));
+  document.getElementById('ratingsPanel').innerHTML = ratingKeys.map((k,i) =>
+    `<div class="rating-row">
+      <div class="rating-label">${rLabels[i]}</div>
+      ${buildRatingBar(ratings[k])}
+      <div class="rating-val">${ratings[k]}/5</div>
+    </div>`
+  ).join('');
+
+  /* Pros / Cons */
+  const pros = car.pros.map(p => `<li><span class="icon">✅</span>${p}</li>`).join('');
+  const cons = car.cons.map(c => `<li><span class="icon">⚠️</span>${c}</li>`).join('');
+  document.getElementById('prosConsPanel').innerHTML = `
+    <ul class="pro-con-list" style="margin-bottom:12px;">${pros}</ul>
+    <div class="divider" style="margin:14px 0;"></div>
+    <ul class="pro-con-list">${cons}</ul>
+  `;
+
+  /* Full description */
+  document.getElementById('fullDesc').textContent = car.description;
+
+  /* Full Specs */
+  const sr = (label, val) => `<div class="spec-row"><span class="spec-key">${label}</span><span class="spec-val">${val}</span></div>`;
+  const lkm = t('cars.lkm');
+  document.getElementById('perfSpecs').innerHTML =
+    sr(t('car.sp.power'),   car.performance.power + ' ' + t('cars.hp')) +
+    sr(t('car.sp.torque'),  car.performance.torque + ' Nm') +
+    sr(t('car.sp.accel'),   car.performance.acceleration + ' ' + t('car.seconds')) +
+    sr(t('car.sp.top'),     car.performance.topSpeed + ' km/h') +
+    sr(t('car.sp.drive'),   car.performance.driveType);
+
+  document.getElementById('engineSpecs').innerHTML =
+    sr(t('car.sp.disp'),    car.engine.displacement + ' L') +
+    sr(t('car.sp.config'),  car.engine.configuration) +
+    sr(t('car.sp.cyl'),     car.engine.cylinders) +
+    sr(t('car.sp.fuel'),    car.engine.fuelType) +
+    sr(t('car.sp.asp'),     car.engine.aspiration) +
+    sr(t('car.sp.comp'),    car.engine.compression);
+
+  document.getElementById('transSpecs').innerHTML =
+    sr(t('car.sp.trans'),   car.transmission.type) +
+    sr(t('car.sp.speeds'),  car.transmission.speeds || t('car.stepless'));
+
+  document.getElementById('fuelSpecs').innerHTML =
+    sr(t('car.sp.city'),    car.engine.consumption.city    + ' ' + lkm) +
+    sr(t('car.sp.hwy'),     car.engine.consumption.highway + ' ' + lkm) +
+    sr(t('car.sp.comb'),    car.engine.consumption.combined+ ' ' + lkm);
+
+  const d = car.dimensions;
+  document.getElementById('dimSpecs').innerHTML =
+    sr(t('car.sp.weight'),  d.weight          + ' kg') +
+    sr(t('car.sp.length'),  d.length          + ' mm') +
+    sr(t('car.sp.width'),   d.width           + ' mm') +
+    sr(t('car.sp.height'),  d.height          + ' mm') +
+    sr(t('car.sp.wb'),      d.wheelbase       + ' mm') +
+    sr(t('car.sp.gc'),      d.groundClearance + ' mm') +
+    sr(t('car.sp.tank'),    d.fuelTank        + ' L')  +
+    sr(t('car.sp.trunk'),   d.trunkVolume     + ' L');
+
+  document.getElementById('priceSpecs').innerHTML =
+    sr(t('car.sp.sprice'),  '$' + car.price.min.toLocaleString()) +
+    sr(t('car.sp.tprice'),  '$' + car.price.max.toLocaleString());
+
+  /* Exterior */
+  document.getElementById('extSvgLarge').innerHTML = buildCarSVG(car.color, 300, car.category);
+  document.getElementById('extDesc').textContent = car.exterior.description;
+  document.getElementById('extFeatures').innerHTML =
+    car.exterior.highlights.map(h => `<li><span class="icon">◆</span>${h}</li>`).join('');
+
+  /* Interior */
+  document.getElementById('intDesc').textContent = car.interior.description;
+  document.getElementById('intSeats').textContent = car.interior.seats + ' ' + t('car.sp.seats');
+  document.getElementById('intInfo').textContent  = car.interior.highlights[0] || car.interior.infotainment || '—';
+  document.getElementById('intFeatures').innerHTML =
+    car.interior.highlights.map(h => `<li><span class="icon">◆</span>${h}</li>`).join('');
+
+  /* Safety */
+  document.getElementById('safetyRating').textContent = car.safety.rating;
+  document.getElementById('safetyBar').innerHTML = buildRatingBar(ratings.safety).replace('<div class="rating-bar">','').replace('</div>','');
+  document.getElementById('safetyBar').className = 'rating-bar';
+  document.getElementById('safetyBar').innerHTML = buildRatingBar(ratings.safety).match(/<div class="rating-bar">(.*?)<\/div>/s)?.[1] || '';
+  document.getElementById('safetyVal').textContent = ratings.safety + '/5';
+  document.getElementById('safetyFeatures').innerHTML =
+    car.safety.features.map(f => `<li><span class="icon">🛡️</span>${f}</li>`).join('');
+
+  /* Rebuild safety bar correctly */
+  let sbHtml = '';
+  for (let i = 1; i <= 5; i++) {
+    sbHtml += `<div class="${i <= ratings.safety ? 'seg filled r'+ratings.safety : 'seg'}"></div>`;
+  }
+  document.getElementById('safetyBar').innerHTML = sbHtml;
+
+  /* Buyer's check */
+  document.getElementById('checkList').innerHTML =
+    car.whatToCheck.map(c => `
+      <li>
+        <span class="ci">🔧</span>
+        <span class="ct"><strong>${c.split('—')[0].replace(/^(CRITICAL: )/,'')}</strong><span>${c.includes('—') ? c.split('—').slice(1).join('—') : ''}</span></span>
+      </li>`).join('');
+}
+
+function switchTab(btn, id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+/* Responsive fix for specs two-col */
+if (window.innerWidth < 640) {
+  document.querySelector('.specs-two-col').style.gridTemplateColumns = '1fr';
+}
+</script>
+</body>
+</html>

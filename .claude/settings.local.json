@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /d \"C:\\\\Users\\\\Lenovo\\\\Projects\\\\myapp\")",
+      "Bash(python -c ' *)",
+      "Bash(python *)",
+      "PowerShell(python \"C:\\\\Users\\\\Lenovo\\\\Projects\\\\myapp\\\\fix_quiz.py\")",
+      "PowerShell(python C:\\\\Users\\\\Lenovo\\\\Projects\\\\myapp\\\\fix_encoding.py)",
+      "PowerShell(python C:\\\\Users\\\\Lenovo\\\\Projects\\\\myapp\\\\fix_encoding_v2.py)",
+      "PowerShell(Get-Process *)",
+      "Bash(chromium-cli *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(python C:\\\\Users\\\\Lenovo\\\\Projects\\\\myapp\\\\fix_lang.py)",
+      "PowerShell(Invoke-WebRequest \"http://localhost:8080/js/i18n.js\" -UseBasicParsing | Select-Object StatusCode, @{N='Size';E={$_.Content.Length}})",
+      "PowerShell(Remove-Item *)",
+      "Bash(node *)"
+    ]
+  }
+}

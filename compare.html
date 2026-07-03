@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="no-referrer">
+  <title>Compare Cars — CarBattle</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .compare-hero-cards {
+      max-width: 900px;
+      margin: 0 auto 32px;
+      padding: 0 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+    }
+    .compare-hero-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      text-align: center;
+    }
+    .compare-hero-card .ch-brand { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); }
+    .compare-hero-card .ch-name  { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; margin: 4px 0; }
+    .compare-hero-card .ch-cat   { font-size: 0.78rem; color: var(--text-2); }
+
+    .winner-badge {
+      display: inline-block;
+      background: rgba(34,197,94,0.15);
+      color: var(--success);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .loser-badge {
+      display: inline-block;
+      background: rgba(239,68,68,0.1);
+      color: var(--danger);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .compare-full-table {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+      overflow-x: auto;
+    }
+
+    .compare-section-header {
+      display: grid;
+      gap: 0;
+      position: sticky;
+      top: 64px;
+      background: var(--bg-0);
+      z-index: 10;
+      padding: 16px 0 12px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 4px;
+      min-width: 500px;
+    }
+
+    .compare-row { min-width: 500px; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto 32px;
+      padding: 0 24px;
+    }
+
+    .picker-remove-btn {
+      background: none;
+      border: none;
+      color: var(--text-3);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 2px 6px;
+      line-height: 1;
+      border-radius: 4px;
+      flex-shrink: 0;
+      transition: color 0.15s, background 0.15s;
+    }
+    .picker-remove-btn:hover { color: var(--danger); background: rgba(239,68,68,0.1); }
+    .summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px;
+    }
+    .overall-score {
+      font-size: 2.4rem;
+      font-weight: 900;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Brand/Model Picker ── */
+    .car-picker {
+      position: relative;
+      flex: 1;
+    }
+    .picker-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 12px 16px;
+      cursor: pointer;
+      min-height: 58px;
+      transition: border-color 0.2s;
+      gap: 8px;
+    }
+    .picker-trigger:hover { border-color: rgba(255,255,255,0.18); }
+    .picker-trigger.open  { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,142,247,0.15); }
+    .picker-hint {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .picker-label {
+      font-size: 0.92rem;
+      color: var(--text-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
+    }
+    .picker-label.chosen { color: var(--text-1); font-weight: 700; }
+    .picker-arrow {
+      font-size: 0.7rem;
+      color: var(--text-3);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .picker-trigger.open .picker-arrow { transform: rotate(180deg); }
+
+    .picker-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      z-index: 200;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+      overflow: hidden;
+      display: none;
+    }
+    .picker-dropdown.open { display: block; }
+
+    .picker-search {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 14px;
+      background: var(--bg-0);
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-1);
+      font-size: 0.88rem;
+      outline: none;
+    }
+    .picker-search::placeholder { color: var(--text-3); }
+
+    .picker-brands {
+      max-height: 360px;
+      overflow-y: auto;
+    }
+    .picker-brands::-webkit-scrollbar { width: 4px; }
+    .picker-brands::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .brand-group { border-bottom: 1px solid var(--border); }
+    .brand-group:last-child { border-bottom: none; }
+    .brand-group.hidden { display: none; }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .brand-header:hover { background: rgba(255,255,255,0.04); }
+
+    .brand-arrow-icon {
+      font-size: 0.72rem;
+      color: var(--text-3);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .brand-group.expanded .brand-arrow-icon { transform: rotate(90deg); }
+
+    .brand-logo-letter {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .brand-name-text {
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex: 1;
+    }
+    .brand-count-badge {
+      font-size: 0.7rem;
+      color: var(--text-3);
+      background: rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 1px 8px;
+      flex-shrink: 0;
+    }
+
+    .brand-models { display: none; }
+    .brand-group.expanded .brand-models { display: block; }
+
+    .model-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px 8px 52px;
+      font-size: 0.85rem;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: background 0.1s, color 0.1s;
+    }
+    .model-item:hover { background: var(--accent); color: #fff; }
+    .model-item.active { color: var(--accent); font-weight: 700; }
+    .model-item.hidden { display: none; }
+
+    .model-year-tag {
+      font-size: 0.72rem;
+      color: var(--text-3);
+    }
+    .model-item:hover .model-year-tag { color: rgba(255,255,255,0.65); }
+
+    .picker-no-results {
+      padding: 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-3);
+      display: none;
+    }
+    @media (max-width: 640px) {
+      .picker-label { max-width: 160px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="logo-icon">🏎</div>
+    CarBattle
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link" data-i18n="nav.battle">⚔️ Battle</a>
+    <a href="cars.html" class="nav-link" data-i18n="nav.cars">🚗 Cars</a>
+    <a href="compare.html" class="nav-link active" data-i18n="nav.compare">📊 Compare</a>
+    <a href="learn.html" class="nav-link" data-i18n="nav.learn">📚 Learn</a>
+    <a href="quiz.html" class="nav-link" data-i18n="nav.quiz">🧠 Quiz</a>
+    <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
+  </div>
+</nav>
+
+<div class="page-hero animate-up">
+  <h1 data-i18n="compare.hero.title">Compare Two Cars</h1>
+  <p data-i18n="compare.hero.sub">Select two cars to see a detailed head-to-head comparison of every spec.</p>
+</div>
+
+<!-- Brand/Model Pickers -->
+<div class="compare-selectors animate-up delay-1" id="pickersWrap">
+  <div class="pickers-row" id="pickersRow"></div>
+  <div class="pickers-actions">
+    <button class="btn btn-ghost btn-sm" id="addCarBtn" onclick="addPicker()">＋ Add Car</button>
+    <button class="btn btn-primary" onclick="runCompare()" data-i18n="compare.btn">⚡ Compare Now</button>
+  </div>
+</div>
+
+<!-- Hero cards -->
+<div class="compare-hero-cards" id="heroCards" style="display:none;"></div>
+
+<!-- Overall scores -->
+<div class="summary-grid" id="summaryGrid" style="display:none;"></div>
+
+<!-- Full comparison table -->
+<div class="compare-full-table" id="compareTable" style="display:none;"></div>
+
+<footer>
+  <p>CarBattle — <span data-lang="en">For educational purposes · <a href="cars.html">← All Cars</a></span><span data-lang="ru">В образовательных целях · <a href="cars.html">← Все машины</a></span></p>
+</footer>
+
+<script src="js/cars-data.js?v=2"></script>
+<script src="js/i18n.js?v=2"></script>
+<script>
+const cars = getAllCars();
+const MAX_CARS = 4;
+let selectedCars = [null, null];
+
+/* ── Brand grouping ── */
+function groupByBrand() {
+  const map = {};
+  cars.forEach(c => {
+    if (!map[c.brand]) map[c.brand] = [];
+    map[c.brand].push(c);
+  });
+  return map;
+}
+
+/* ── Build picker dropdown content ── */
+function buildPickerContent(idx) {
+  const brands = groupByBrand();
+  const sortedBrands = Object.keys(brands).sort();
+  const container = document.getElementById('brands' + idx);
+  if (!container) return;
+
+  container.innerHTML = sortedBrands.map(brand => {
+    const brandCars = brands[brand];
+    const letter = brand[0].toUpperCase();
+    const hue = (brand.charCodeAt(0) * 37 + brand.charCodeAt(brand.length - 1) * 13) % 360;
+    const bgColor = `hsl(${hue},55%,38%)`;
+    const safeKey = brand.replace(/[^a-zA-Z0-9]/g, '_');
+    const modelsHtml = brandCars.map(c => `
+      <div class="model-item" data-id="${c.id}" onclick="selectCar(${idx},'${c.id}')">
+        <span>${c.model}</span>
+        <span class="model-year-tag">${c.year}</span>
+      </div>
+    `).join('');
+    return `
+      <div class="brand-group" id="bg_${idx}_${safeKey}" data-brand="${brand}">
+        <div class="brand-header" onclick="toggleBrand(${idx},'${safeKey}')">
+          <span class="brand-arrow-icon">›</span>
+          <span class="brand-logo-letter" style="background:${bgColor}">${letter}</span>
+          <span class="brand-name-text">${brand}</span>
+          <span class="brand-count-badge">${brandCars.length}</span>
+        </div>
+        <div class="brand-models">${modelsHtml}</div>
+      </div>
+    `;
+  }).join('') + `<div class="picker-no-results" id="noResults${idx}">No results found</div>`;
+}
+
+/* ── Toggle brand accordion ── */
+function toggleBrand(idx, safeKey) {
+  const group = document.getElementById('bg_' + idx + '_' + safeKey);
+  if (!group) return;
+  const isExpanded = group.classList.contains('expanded');
+  document.querySelectorAll('#brands' + idx + ' .brand-group.expanded').forEach(g => g.classList.remove('expanded'));
+  if (!isExpanded) group.classList.add('expanded');
+}
+
+/* ── Open / close picker ── */
+function togglePicker(idx) {
+  const dd = document.getElementById('dropdown' + idx);
+  if (!dd) return;
+  const isOpen = dd.classList.contains('open');
+  closeAllPickers();
+  if (!isOpen) openPicker(idx);
+}
+
+function openPicker(idx) {
+  document.getElementById('dropdown' + idx).classList.add('open');
+  document.getElementById('trigger' + idx).classList.add('open');
+  const search = document.getElementById('search' + idx);
+  search.value = '';
+  filterPicker(idx, '');
+  search.focus();
+  const sel = selectedCars[idx];
+  if (sel) {
+    const car = cars.find(c => c.id === sel);
+    if (car) {
+      const safeKey = car.brand.replace(/[^a-zA-Z0-9]/g, '_');
+      const group = document.getElementById('bg_' + idx + '_' + safeKey);
+      if (group) group.classList.add('expanded');
+    }
+  }
+}
+
+function closeAllPickers() {
+  selectedCars.forEach((_, i) => {
+    const dd = document.getElementById('dropdown' + i);
+    const tr = document.getElementById('trigger' + i);
+    if (dd) dd.classList.remove('open');
+    if (tr) tr.classList.remove('open');
+  });
+}
+
+/* ── Select a car ── */
+function selectCar(idx, carId) {
+  selectedCars[idx] = carId;
+  const car = cars.find(c => c.id === carId);
+  const label = document.getElementById('label' + idx);
+  if (label && car) {
+    label.textContent = car.brand + ' ' + car.model + ' (' + car.year + ')';
+    label.classList.add('chosen');
+  }
+  document.querySelectorAll('#brands' + idx + ' .model-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === carId);
+  });
+  closeAllPickers();
+  if (selectedCars.filter(Boolean).length >= 2) runCompare();
+}
+
+/* ── Search / filter ── */
+function filterPicker(idx, query) {
+  const q = query.trim().toLowerCase();
+  const container = document.getElementById('brands' + idx);
+  if (!container) return;
+  let anyVisible = false;
+  container.querySelectorAll('.brand-group').forEach(group => {
+    const brand = group.dataset.brand.toLowerCase();
+    const models = group.querySelectorAll('.model-item');
+    const brandMatch = brand.includes(q);
+    let modelVisible = false;
+    models.forEach(m => {
+      const show = !q || brandMatch || m.textContent.toLowerCase().includes(q);
+      m.classList.toggle('hidden', !show);
+      if (show) modelVisible = true;
+    });
+    const show = !q || brandMatch || modelVisible;
+    group.classList.toggle('hidden', !show);
+    if (show) anyVisible = true;
+    if (q && (brandMatch || modelVisible)) group.classList.add('expanded');
+  });
+  const noRes = document.getElementById('noResults' + idx);
+  if (noRes) noRes.style.display = anyVisible ? 'none' : 'block';
+}
+
+/* ── Close on outside click ── */
+document.addEventListener('click', e => {
+  if (!e.target.closest('.car-picker')) closeAllPickers();
+});
+
+/* ── Add / Remove pickers ── */
+function addPicker() {
+  if (selectedCars.length >= MAX_CARS) return;
+  selectedCars.push(null);
+  renderPickersRow();
+}
+
+function removePicker(idx) {
+  if (selectedCars.length <= 2) return;
+  selectedCars.splice(idx, 1);
+  renderPickersRow();
+  if (selectedCars.filter(Boolean).length >= 2) runCompare();
+}
+
+/* ── Render pickers row ── */
+function renderPickersRow() {
+  const row = document.getElementById('pickersRow');
+  const showRemove = selectedCars.length > 2;
+  row.innerHTML = selectedCars.map((_, idx) => {
+    const vs = idx > 0 ? '<div class="vs-text">VS</div>' : '';
+    return `${vs}
+      <div class="car-picker" id="picker${idx}">
+        <div class="picker-trigger" id="trigger${idx}" onclick="togglePicker(${idx})">
+          <div style="flex:1;min-width:0;">
+            <div class="picker-hint">Car ${idx + 1}</div>
+            <div class="picker-label" id="label${idx}">Select brand &amp; model…</div>
+          </div>
+          ${showRemove ? `<button class="picker-remove-btn" onclick="removePicker(${idx});event.stopPropagation();" title="Remove">✕</button>` : ''}
+          <span class="picker-arrow">▼</span>
+        </div>
+        <div class="picker-dropdown" id="dropdown${idx}">
+          <input class="picker-search" id="search${idx}" type="text" placeholder="Search brand or model…"
+                 oninput="filterPicker(${idx},this.value)" autocomplete="off">
+          <div class="picker-brands" id="brands${idx}"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  selectedCars.forEach((carId, idx) => {
+    buildPickerContent(idx);
+    if (carId) selectCarSilent(idx, carId);
+  });
+
+  const addBtn = document.getElementById('addCarBtn');
+  if (addBtn) addBtn.style.display = selectedCars.length >= MAX_CARS ? 'none' : '';
+}
+
+/* ── Silent select (init / rebuild) ── */
+function selectCarSilent(idx, carId) {
+  selectedCars[idx] = carId;
+  const car = cars.find(c => c.id === carId);
+  if (!car) return;
+  const label = document.getElementById('label' + idx);
+  if (label) {
+    label.textContent = car.brand + ' ' + car.model + ' (' + car.year + ')';
+    label.classList.add('chosen');
+  }
+  document.querySelectorAll('#brands' + idx + ' .model-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === carId);
+  });
+}
+
+/* ── Compare ── */
+function runCompare() {
+  const chosen = selectedCars.filter(Boolean);
+  if (chosen.length < 2) {
+    alert('Please select at least 2 cars.');
+    return;
+  }
+  if (new Set(chosen).size !== chosen.length) {
+    alert(t('compare.alert'));
+    return;
+  }
+  const carObjs = chosen.map(id => getCarById(id)).filter(Boolean);
+  if (carObjs.length < 2) return;
+
+  buildHeroCards(carObjs);
+  buildSummary(carObjs);
+  buildTable(carObjs);
+
+  document.getElementById('heroCards').style.display = '';
+  document.getElementById('summaryGrid').style.display = '';
+  document.getElementById('compareTable').style.display = '';
+  document.getElementById('heroCards').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function buildHeroCards(carObjs) {
+  const avgs = carObjs.map(c => parseFloat(avg(c)));
+  const maxAvg = Math.max(...avgs);
+  document.getElementById('heroCards').innerHTML = carObjs.map((c, i) => `
+    <div class="compare-hero-card animate-up" style="flex:1;min-width:180px;animation-delay:${i*0.05}s">
+      <div style="display:flex;justify-content:center;margin-bottom:12px;">${buildCarSVG(c.color, 160, c.category)}</div>
+      <div class="ch-brand">${c.brand}</div>
+      <div class="ch-name">${c.model}</div>
+      <div class="ch-cat">${c.year} · ${c.category}</div>
+      <div style="margin-top:10px;">${avgs[i] >= maxAvg ? `<span class="winner-badge">${t('compare.winner')}</span>` : `<span class="loser-badge">${t('compare.loser')}</span>`}</div>
+    </div>
+  `).join('');
+}
+
+function buildSummary(carObjs) {
+  const N = carObjs.length;
+  const ratingKeys = ['performance','fuelEfficiency','comfort','reliability','value','safety'];
+  const rLabels = ratingKeys.map(k => t('rt.' + k));
+  const avgs = carObjs.map(c => avg(c));
+
+  const grid = document.getElementById('summaryGrid');
+  grid.style.gridTemplateColumns = `repeat(${Math.min(N, 2)}, 1fr)`;
+
+  grid.innerHTML = carObjs.map((c, i) => {
+    const rowsHtml = ratingKeys.map((k, ki) => {
+      const v = c.ratings[k];
+      const all = carObjs.map(x => x.ratings[k]);
+      const best = Math.max(...all), worst = Math.min(...all);
+      const color = v === best && best !== worst ? 'var(--success)' : v === worst && best !== worst ? 'var(--danger)' : 'var(--text-1)';
+      return `<div class="rating-row">
+        <div class="rating-label" style="font-size:.82rem;">${rLabels[ki]}</div>
+        ${buildRatingBar(v)}
+        <div class="rating-val" style="color:${color}">${v}/5</div>
+      </div>`;
+    }).join('');
+    return `
+      <div class="summary-card animate-up" style="animation-delay:${i*0.05}s">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+          <div>
+            <div style="font-size:0.72rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;">${c.brand}</div>
+            <div style="font-size:1.1rem;font-weight:700;">${c.model}</div>
+          </div>
+          <div style="margin-left:auto;text-align:right;">
+            <div class="overall-score">${avgs[i]}</div>
+            <div style="font-size:.72rem;color:var(--text-3);">${t('compare.overall')}</div>
+          </div>
+        </div>
+        ${rowsHtml}
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+          <a href="car.html?id=${c.id}" class="btn btn-ghost btn-sm">${t('compare.view')}</a>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function buildTable(carObjs) {
+  const lkm = t('cars.lkm');
+  const labelW = carObjs.length > 2 ? 130 : 200;
+  const cols = `${labelW}px ${carObjs.map(() => '1fr').join(' ')}`;
+
+  const sections = [
+    { title: t('compare.s.perf'), rows: [
+      [t('compare.r.power'),  carObjs.map(c=>c.performance.power+' hp'),            carObjs.map(c=>c.performance.power),           true],
+      [t('compare.r.torque'), carObjs.map(c=>c.performance.torque+' Nm'),           carObjs.map(c=>c.performance.torque),          true],
+      [t('compare.r.accel'),  carObjs.map(c=>c.performance.acceleration+' s'),      carObjs.map(c=>c.performance.acceleration),    false],
+      [t('compare.r.top'),    carObjs.map(c=>c.performance.topSpeed+' km/h'),       carObjs.map(c=>c.performance.topSpeed),        true],
+      [t('compare.r.drive'),  carObjs.map(c=>c.performance.driveType),              null, null],
+    ]},
+    { title: t('compare.s.engine'), rows: [
+      [t('compare.r.disp'),   carObjs.map(c=>c.engine.displacement+' L'),           carObjs.map(c=>c.engine.displacement),         true],
+      [t('compare.r.config'), carObjs.map(c=>c.engine.configuration),               null, null],
+      [t('compare.r.cyl'),    carObjs.map(c=>c.engine.cylinders.toString()),        carObjs.map(c=>c.engine.cylinders),            true],
+      [t('compare.r.fuel'),   carObjs.map(c=>c.engine.fuelType),                   null, null],
+      [t('compare.r.asp'),    carObjs.map(c=>c.engine.aspiration),                  null, null],
+      [t('compare.r.comp'),   carObjs.map(c=>c.engine.compression),                 null, null],
+    ]},
+    { title: t('compare.s.fuel'), rows: [
+      [t('compare.r.city'),   carObjs.map(c=>c.engine.consumption.city+' '+lkm),    carObjs.map(c=>c.engine.consumption.city),    false],
+      [t('compare.r.hwy'),    carObjs.map(c=>c.engine.consumption.highway+' '+lkm), carObjs.map(c=>c.engine.consumption.highway), false],
+      [t('compare.r.comb'),   carObjs.map(c=>c.engine.consumption.combined+' '+lkm),carObjs.map(c=>c.engine.consumption.combined),false],
+    ]},
+    { title: t('compare.s.dim'), rows: [
+      [t('compare.r.weight'), carObjs.map(c=>c.dimensions.weight+' kg'),            carObjs.map(c=>c.dimensions.weight),          false],
+      [t('compare.r.length'), carObjs.map(c=>c.dimensions.length+' mm'),            null, null],
+      [t('compare.r.width'),  carObjs.map(c=>c.dimensions.width+' mm'),             carObjs.map(c=>c.dimensions.width),           true],
+      [t('compare.r.height'), carObjs.map(c=>c.dimensions.height+' mm'),            null, null],
+      [t('compare.r.wb'),     carObjs.map(c=>c.dimensions.wheelbase+' mm'),         carObjs.map(c=>c.dimensions.wheelbase),       true],
+      [t('compare.r.gc'),     carObjs.map(c=>c.dimensions.groundClearance+' mm'),   carObjs.map(c=>c.dimensions.groundClearance), true],
+      [t('compare.r.tank'),   carObjs.map(c=>c.dimensions.fuelTank+' L'),           carObjs.map(c=>c.dimensions.fuelTank),        true],
+      [t('compare.r.trunk'),  carObjs.map(c=>c.dimensions.trunkVolume+' L'),        carObjs.map(c=>c.dimensions.trunkVolume),     true],
+    ]},
+    { title: t('compare.s.price'), rows: [
+      [t('compare.r.start'),  carObjs.map(c=>'$'+c.price.min.toLocaleString()),     carObjs.map(c=>c.price.min),                  false],
+      [t('compare.r.top2'),   carObjs.map(c=>'$'+c.price.max.toLocaleString()),     carObjs.map(c=>c.price.max),                  false],
+    ]},
+  ];
+
+  const carHeaders = carObjs.map(c => `
+    <div style="text-align:center;">
+      <div style="font-size:.72rem;color:var(--text-3);">${c.brand}</div>
+      <div style="font-weight:700;">${c.model}</div>
+    </div>`).join('');
+
+  const headerRow = `
+    <div class="compare-section-header" style="grid-template-columns:${cols}">
+      <div style="font-size:.75rem;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;">${t('compare.spec')}</div>
+      ${carHeaders}
+    </div>`;
+
+  const tableRows = sections.map(sec => {
+    const rowsHtml = sec.rows.map(([label, vals, nums, higherBetter]) => {
+      const cells = vals.map((v, i) => {
+        let cls = 'cr-val';
+        if (nums && higherBetter !== null) {
+          const n = nums[i];
+          const maxN = Math.max(...nums), minN = Math.min(...nums);
+          if (maxN !== minN) {
+            if (higherBetter  && n === maxN) cls += ' better';
+            else if (higherBetter  && n === minN) cls += ' worse';
+            else if (!higherBetter && n === minN) cls += ' better';
+            else if (!higherBetter && n === maxN) cls += ' worse';
+          }
+        }
+        return `<div class="${cls}">${v}</div>`;
+      }).join('');
+      return `<div class="compare-row" style="grid-template-columns:${cols}">
+        <div class="cr-label">${label}</div>${cells}
+      </div>`;
+    }).join('');
+    return `<div class="compare-section-title">${sec.title}</div>${rowsHtml}`;
+  }).join('');
+
+  document.getElementById('compareTable').innerHTML = headerRow + tableRows +
+    `<div style="margin-top:32px;padding:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);">
+      <div style="font-size:.8rem;color:var(--text-3);margin-bottom:8px;">${t('compare.legend')}</div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:.85rem;">
+        <div><span style="color:var(--success);font-weight:600;">${t('compare.green')}</span></div>
+        <div><span style="color:var(--danger);">${t('compare.red')}</span></div>
+      </div>
+    </div>`;
+}
+
+function avg(car) {
+  const vals = Object.values(car.ratings);
+  return (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
+}
+
+/* ── Init ── */
+function init() {
+  renderPickersRow();
+  const params = new URLSearchParams(location.search);
+  const aId = params.get('a');
+  const bId = params.get('b');
+  if (aId && cars.find(c => c.id === aId)) selectCarSilent(0, aId);
+  if (bId && cars.find(c => c.id === bId)) selectCarSilent(1, bId);
+  if (aId && bId) runCompare();
+}
+
+init();
+window.onLangChange = function() {
+  if (selectedCars.filter(Boolean).length >= 2 &&
+      document.getElementById('heroCards').style.display !== 'none') {
+    runCompare();
+  }
+};
+</script>
+</body>
+</html>

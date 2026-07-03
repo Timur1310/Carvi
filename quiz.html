@@ -1,0 +1,920 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="no-referrer">
+  <title>Автовикторина — CarBattle</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── Quiz-specific styles ── */
+    .quiz-hero {
+      text-align: center;
+      padding: 48px 24px 32px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .quiz-hero h1 { margin-bottom: 12px; }
+    .quiz-hero p  { font-size: 1rem; max-width: 560px; margin: 0 auto 28px; }
+
+    /* Start screen */
+    .quiz-start {
+      max-width: 520px;
+      margin: 0 auto 60px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 36px 40px;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+    }
+    .quiz-start .qs-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .quiz-start h2 { margin-bottom: 10px; }
+    .quiz-start p  { font-size: 0.9rem; margin-bottom: 28px; }
+    .rules-list {
+      list-style: none;
+      text-align: left;
+      margin: 0 0 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .rules-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: var(--text-2);
+    }
+    .rules-list li .ri { font-size: 1.1rem; }
+
+    /* Progress */
+    .quiz-progress {
+      max-width: 760px;
+      margin: 0 auto 28px;
+      padding: 0 24px;
+      display: none;
+    }
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .progress-label { font-size: 0.82rem; color: var(--text-2); font-weight: 600; }
+    .progress-score { font-size: 0.82rem; color: var(--accent); font-weight: 700; }
+    .progress-bar-wrap {
+      height: 6px;
+      background: var(--bg-3);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+
+    /* Timer */
+    .timer-row {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .timer-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-2);
+      transition: var(--t);
+    }
+    .timer-badge.warning { border-color: var(--warning); color: var(--warning); }
+    .timer-badge.danger  { border-color: var(--danger);  color: var(--danger);  animation: pulse-timer 0.5s infinite; }
+    @keyframes pulse-timer { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+
+    /* Question card */
+    .question-wrap {
+      max-width: 760px;
+      margin: 0 auto 32px;
+      padding: 0 24px;
+      display: none;
+    }
+    .question-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 36px 40px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .question-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+    .q-number {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+    .q-difficulty {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-left: 8px;
+      letter-spacing: 0.05em;
+    }
+    .diff-easy   { background: rgba(34,197,94,0.12);  color: var(--success); }
+    .diff-medium { background: rgba(245,158,11,0.12); color: var(--warning); }
+    .diff-hard   { background: rgba(239,68,68,0.12);  color: var(--danger);  }
+
+    .question-text {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--text-1);
+      margin-bottom: 28px;
+      font-style: italic;
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+    }
+    .q-hint-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 20px;
+      color: var(--warning);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: var(--t);
+      margin-bottom: 20px;
+    }
+    .q-hint-btn:hover { background: rgba(245,158,11,0.15); }
+    .q-hint-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .q-hint-text {
+      font-size: 0.85rem;
+      color: var(--warning);
+      background: rgba(245,158,11,0.07);
+      border: 1px solid rgba(245,158,11,0.18);
+      border-radius: var(--r-sm);
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      display: none;
+      line-height: 1.5;
+    }
+
+    /* Options */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media(max-width:520px) { .options-grid { grid-template-columns: 1fr; } }
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--bg-2);
+      border: 2px solid var(--border);
+      border-radius: var(--r-md);
+      color: var(--text-1);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: var(--t);
+      line-height: 1.4;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: rgba(79,142,247,0.08);
+      color: var(--accent);
+    }
+    .option-btn .opt-letter {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      transition: var(--t);
+    }
+    .option-btn.correct {
+      border-color: var(--success);
+      background: rgba(34,197,94,0.1);
+      color: var(--success);
+    }
+    .option-btn.correct .opt-letter { background: var(--success); color: #fff; }
+    .option-btn.wrong {
+      border-color: var(--danger);
+      background: rgba(239,68,68,0.08);
+      color: var(--danger);
+      opacity: 0.7;
+    }
+    .option-btn.wrong .opt-letter { background: var(--danger); color: #fff; }
+    .option-btn:disabled { cursor: not-allowed; }
+
+    /* Answer feedback */
+    .answer-feedback {
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-radius: var(--r-md);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      display: none;
+    }
+    .answer-feedback.correct-fb {
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.25);
+      color: var(--success);
+      display: block;
+    }
+    .answer-feedback.wrong-fb {
+      background: rgba(239,68,68,0.07);
+      border: 1px solid rgba(239,68,68,0.2);
+      color: var(--text-2);
+      display: block;
+    }
+    .answer-feedback strong { color: var(--text-1); }
+
+    .next-btn-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    /* Results screen */
+    .quiz-results {
+      max-width: 600px;
+      margin: 0 auto 60px;
+      padding: 0 24px;
+      display: none;
+      text-align: center;
+    }
+    .result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 40px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+    .result-trophy { font-size: 4rem; margin-bottom: 16px; }
+    .result-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; }
+    .result-subtitle { color: var(--text-2); font-size: 0.95rem; margin-bottom: 28px; }
+    .result-score-big {
+      font-size: 4rem;
+      font-weight: 900;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .result-score-label { color: var(--text-3); font-size: 0.85rem; margin-bottom: 32px; }
+    .result-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+    .rb-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--bg-2);
+      border-radius: var(--r-sm);
+      font-size: 0.85rem;
+    }
+    .rb-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .rb-text { flex: 1; color: var(--text-2); line-height: 1.4; }
+    .rb-pts { font-weight: 700; color: var(--text-1); white-space: nowrap; }
+    .rb-row.correct-row .rb-pts { color: var(--success); }
+    .rb-row.wrong-row   .rb-pts { color: var(--danger); }
+
+    .leaderboard-section {
+      margin-top: 28px;
+      text-align: left;
+    }
+    .lb-title { font-size: 0.88rem; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .lb-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--r-sm);
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+    .lb-row.current { background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.2); }
+    .lb-rank { font-weight: 800; color: var(--text-3); min-width: 20px; }
+    .lb-rank.gold   { color: #f59e0b; }
+    .lb-rank.silver { color: #94a3b8; }
+    .lb-rank.bronze { color: #b45309; }
+    .lb-name { flex: 1; color: var(--text-1); font-weight: 500; }
+    .lb-score { font-weight: 700; color: var(--accent); }
+
+    .result-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 24px; }
+
+    /* Quiz layout animation */
+    .fade-in  { animation: fadeIn  0.3s ease both; }
+    .slide-up { animation: slideUp 0.35s ease both; }
+    @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+    @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="logo-icon">🏎</div>
+    CarBattle
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link" data-i18n="nav.battle">⚔️ Battle</a>
+    <a href="cars.html" class="nav-link" data-i18n="nav.cars">🚗 Cars</a>
+    <a href="compare.html" class="nav-link" data-i18n="nav.compare">📊 Compare</a>
+    <a href="vs/index.html" class="nav-link">🇷🇺 Сравнения</a>
+    <a href="learn.html" class="nav-link" data-i18n="nav.learn">📚 Learn</a>
+    <a href="quiz.html" class="nav-link active" data-i18n="nav.quiz">🧠 Quiz</a>
+    <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="quiz-hero animate-up">
+  <h1 data-i18n="quiz.hero.title">🧠 Car Quiz</h1>
+  <p data-i18n="quiz.hero.sub">Guess legendary cars by their description. Are you a true car enthusiast?</p>
+</div>
+
+<!-- ── START SCREEN ── -->
+<div class="quiz-start animate-up delay-1" id="startScreen">
+  <div class="qs-icon">🏆</div>
+  <h2 data-i18n="quiz.start.title">Ready for the Challenge?</h2>
+  <p data-i18n="quiz.start.body">6 questions about iconic cars. Guess the make and model from the description.</p>
+  <ul class="rules-list">
+    <li><span class="ri">🎯</span> <span data-i18n="quiz.rule.1">6 questions of varying difficulty</span></li>
+    <li><span class="ri">💡</span> <span data-i18n="quiz.rule.2">1 hint per question (−10 points)</span></li>
+    <li><span class="ri">⚡</span> <span data-i18n="quiz.rule.3">30-second timer — answer in time!</span></li>
+    <li><span class="ri">🏅</span> <span data-i18n="quiz.rule.4">Your best score is saved</span></li>
+  </ul>
+  <button class="btn btn-primary" onclick="startQuiz()" style="width:100%;font-size:1rem;padding:14px;" data-i18n="quiz.start.btn">
+    Start Quiz →
+  </button>
+</div>
+
+<!-- ── PROGRESS BAR ── -->
+<div class="quiz-progress" id="quizProgress">
+  <div class="progress-top">
+    <span class="progress-label" id="progressLabel">Вопрос 1 из 5</span>
+    <span class="progress-score" id="progressScore">0 очков</span>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- ── QUESTION WRAP ── -->
+<div class="question-wrap" id="questionWrap">
+
+  <!-- Timer -->
+  <div class="timer-row">
+    <div class="timer-badge" id="timerBadge">⏱ <span id="timerVal">30</span> сек</div>
+  </div>
+
+  <!-- Question card -->
+  <div class="question-card slide-up" id="questionCard">
+    <div class="q-number" id="qNumber">Вопрос 1</div>
+
+    <div class="question-text" id="questionText"></div>
+
+    <button class="q-hint-btn" id="hintBtn" onclick="showHint()">
+      💡 Подсказка (−10 очков)
+    </button>
+    <div class="q-hint-text" id="hintText"></div>
+
+    <div class="options-grid" id="optionsGrid"></div>
+
+    <div class="answer-feedback" id="answerFeedback"></div>
+
+    <div class="next-btn-wrap" id="nextBtnWrap" style="display:none;">
+      <button class="btn btn-primary btn-sm" onclick="nextQuestion()">
+        Следующий вопрос →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESULTS SCREEN ── -->
+<div class="quiz-results" id="resultsScreen">
+  <div class="result-card slide-up">
+    <div class="result-trophy" id="resultTrophy">🏆</div>
+    <div class="result-title" id="resultTitle">Отлично!</div>
+    <div class="result-subtitle" id="resultSubtitle">Вы настоящий автоэксперт!</div>
+    <div class="result-score-big" id="resultBig">0</div>
+    <div class="result-score-label" id="resultMaxLabel">points out of 600</div>
+
+    <div class="result-breakdown" id="resultBreakdown"></div>
+
+    <div class="leaderboard-section" id="leaderboardSection">
+      <div class="lb-title" data-i18n="quiz.lb.title">🏆 Leaderboard</div>
+      <div id="leaderboardRows"></div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-primary" onclick="startQuiz()" data-i18n="quiz.restart">Play Again</button>
+      <a href="index.html" class="btn btn-outline" data-i18n="quiz.tobattle">⚔️ Battle</a>
+      <a href="learn.html" class="btn btn-ghost" data-i18n="quiz.tolearn">📚 Learn</a>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="js/cars-data.js?v=2"></script>
+<script src="js/i18n.js?v=2"></script>
+<script>
+/* ================================================================
+   QUIZ DATA
+   ================================================================ */
+
+const QUESTIONS_EN = [
+  { id:1, difficulty:'medium', diffLabel:'Medium',
+    question:`This German company began developing this automobile in 1981 with the ambitious goal of creating the best car for the decade ahead. It debuted in 1991 and instantly became a symbol of luxury, power and prestige. Due to its imposing dimensions it earned the folk nickname "The Boar". It was the vehicle of choice for heads of state, oligarchs and movie stars.`,
+    hint:`German flagship sedan, internal code W140. Produced 1991–1998.`,
+    options:['Mercedes-Benz W140 (S-Class)','BMW 7 Series E38','Rolls-Royce Silver Spirit','Audi A8 D2'],
+    correct:0,
+    explanation:`Correct! The Mercedes-Benz W140 — the legendary S-Class developed from 1981 to 1991. Known as "The Boar" for its massive body. It set the gold standard for automotive luxury in the 90s and still has a devoted following.`,
+    points:100 },
+  { id:2, difficulty:'hard', diffLabel:'Hard',
+    question:`This Italian supercar from 1987 was the last car personally approved by the company's legendary founder before his death. Created to celebrate the brand's 40th anniversary, it could exceed 320 km/h and was deliberately stripped of comfort: no ABS, no power steering, no interior door handles. Nothing but speed, adrenaline, and a thin fiberglass shell.`,
+    hint:`Italian supercar with a 2.9-litre twin-turbo V8 producing 478 hp. Built 1987–1992.`,
+    options:['Lamborghini Countach LP5000','Ferrari F40','Ferrari Testarossa','De Tomaso Pantera GTS'],
+    correct:1,
+    explanation:`Correct! The Ferrari F40 is one of the greatest supercars ever made. Enzo Ferrari personally approved it shortly before his death in 1988. No ABS, no air conditioning, no carpets — just a passion for speed.`,
+    points:100 },
+  { id:3, difficulty:'easy', diffLabel:'Easy',
+    question:`This third-generation Japanese sports car launched in 1993 and became a true icon of car culture. Its inline-6 twin-turbo 3.0-litre engine producing 330 hp became famous for its near-unlimited tuning potential. It starred in "The Fast and the Furious" and became the dream of millions of JDM enthusiasts. Production ended in 2002.`,
+    hint:`"The Japanese supercar." Generation code A80. Also known simply as "the Supra."`,
+    options:['Nissan 300ZX Z32','Mazda RX-7 FD','Toyota Supra MK4 (A80)','Honda NSX NA1'],
+    correct:2,
+    explanation:`Correct! The Toyota Supra MK4 (A80) with the 2JZ-GTE engine is one of the most beloved Japanese sports cars ever. A stock 330 hp can be tuned to 1,000+ hp with virtually no block changes.`,
+    points:100 },
+  { id:4, difficulty:'medium', diffLabel:'Medium',
+    question:`This British sports car appeared in 1976 and caused a revolution in the supercar world. It featured a mid-engine layout and a wedge-shaped body designed by Giugiaro. It became the template for all modern supercars: minimum weight, maximum driving thrill. And it became a film star when it transformed into a submarine in a James Bond movie.`,
+    hint:`British brand from Norfolk. Model name contains the letter "E." Produced 1976–1995.`,
+    options:['McLaren M6GT','TVR Griffith 400','Lotus Esprit S1','Noble M400'],
+    correct:2,
+    explanation:`Correct! The Lotus Esprit S1, debuted at the 1976 Geneva Show with a body by Giugiaro. It starred in the 1977 Bond film "The Spy Who Loved Me," transforming into a submarine. Lotus proved a supercar could be lightweight, precise and attainable.`,
+    points:100 },
+  { id:5, difficulty:'hard', diffLabel:'Hard',
+    question:`This German sedan from 1991 created an entirely new class of "super saloons." Under the bonnet sat a 3.6-litre naturally aspirated inline-6 producing 315 hp, capable of reaching 100 km/h in just 5.9 seconds. In its time it was faster than many supercars, yet remained a practical family car. Its direct descendants still set the benchmark in their class today.`,
+    hint:`German brand with the twin-kidney grille. The "M" stands for Motorsport. Body code E34.`,
+    options:['Audi RS2 Avant','Mercedes-Benz 500E (W124)','BMW M5 E34','Alpina B10 BiTurbo'],
+    correct:2,
+    explanation:`Correct! The BMW M5 E34 (1991–1995) is a legend among sports saloons. Its S38B36 engine was developed from motorsport technology. Rivals couldn't keep up on track, while passengers didn't even know they were in a weapon.`,
+    points:100 },
+  { id:6, difficulty:'medium', diffLabel:'Medium',
+    question:`This Italian supercar debuted at the 1971 Geneva Motor Show as a concept and immediately shocked the audience with its wedge-shaped silhouette, upward-opening scissor doors, and a longitudinally-mounted V12 engine. The car's name is an exclamation uttered by a local villager upon first seeing the prototype. This supercar became the defining icon of the 1970s and 80s, adorning teenage bedroom walls worldwide as a poster.`,
+    hint:`Italian brand with a bull on its badge. Produced 1974–1990. V12 engine 4.0–5.2 L.`,
+    options:['Ferrari 512 Berlinetta Boxer','Lamborghini Countach LP400','Maserati Bora','De Tomaso Mangusta'],
+    correct:1,
+    explanation:`Correct! The Lamborghini Countach is one of the most recognisable supercars in history. "Countach" is an exclamation in the Piedmontese dialect expressing astonishment. Marcello Gandini's wedge design set the template for supercars for 20 years.`,
+    points:100 },
+];
+
+const QUESTIONS_RU = [
+  {
+    id: 1,
+    difficulty: 'medium',
+    diffLabel: 'Средний',
+    question: `Эта немецкая компания начала разрабатывать данный автомобиль в 1981 году с амбициозной целью — создать лучший автомобиль на целое десятилетие вперёд. Он дебютировал в 1991 году и сразу стал символом роскоши, власти и статуса. Из-за своих внушительных габаритов в народе его ласково прозвали «Кабан». Этот автомобиль был выбором президентов, олигархов и звёзд кино.`,
+    hint: `Немецкий флагманский седан, кодовое обозначение W140. Производился с 1991 по 1998 год.`,
+    options: ['Mercedes-Benz W140 (S-Class)', 'BMW 7 Series E38', 'Rolls-Royce Silver Spirit', 'Audi A8 D2'],
+    correct: 0,
+    explanation: `Правильно! Mercedes-Benz W140 — легендарный S-Class, разработанный с 1981 по 1991 год. В народе его назвали «Кабан» за массивный кузов. Он стал эталоном автомобильной роскоши 90-х и до сих пор имеет армию преданных поклонников.`,
+    points: 100,
+  },
+  {
+    id: 2,
+    difficulty: 'hard',
+    diffLabel: 'Сложный',
+    question: `Этот итальянский суперкар 1987 года стал последним автомобилем, лично одобренным легендарным основателем компании перед его смертью. Он был создан в честь 40-летия марки, развивал более 320 км/ч и намеренно лишён комфорта: никакого ABS, никакого усилителя руля, даже дверных ручек изнутри не было. Только скорость, адреналин и тонкий кузов из стекловолокна.`,
+    hint: `Итальянский суперкар с 2.9-литровым биturbo V8 мощностью 478 л.с. Производился с 1987 по 1992 год.`,
+    options: ['Lamborghini Countach LP5000', 'Ferrari F40', 'Ferrari Testarossa', 'De Tomaso Pantera GTS'],
+    correct: 1,
+    explanation: `Правильно! Ferrari F40 — один из величайших суперкаров всех времён. Энцо Феррари лично одобрил его незадолго до своей смерти в 1988 году. Без ABS, без кондиционера, без ковров — только страсть к скорости. Последние экземпляры уходят с аукционов за миллионы долларов.`,
+    points: 100,
+  },
+  {
+    id: 3,
+    difficulty: 'easy',
+    diffLabel: 'Лёгкий',
+    question: `Этот японский спортивный автомобиль третьего поколения вышел в 1993 году и стал настоящей иконой автомобильной культуры. Его рядный 6-цилиндровый битурбо двигатель объёмом 3.0 литра мощностью 330 л.с. прославился почти неограниченным потенциалом форсировки. Он стал звездой фильма «Форсаж» и мечтой миллионов поклонников японского тюнинга. В 2002 году производство остановили — и мир загрустил.`,
+    hint: `«Суперкар из Японии». Буква A80 в названии поколения. В России также известен как «Супра».`,
+    options: ['Nissan 300ZX Z32', 'Mazda RX-7 FD', 'Toyota Supra MK4 (A80)', 'Honda NSX NA1'],
+    correct: 2,
+    explanation: `Правильно! Toyota Supra MK4 (A80) с двигателем 2JZ-GTE — одна из самых любимых японских спорткаров в истории. Стандартные 330 л.с. тюнингуются до 1000+ л.с. практически без замены блока. Именно эта Супра стала культовой благодаря «Форсажу».`,
+    points: 100,
+  },
+  {
+    id: 4,
+    difficulty: 'medium',
+    diffLabel: 'Средний',
+    question: `Этот британский автомобиль появился в 1976 году и произвёл настоящую революцию в мире суперкаров. Он первым применил карбоновый монокок в серийном автомобиле, оснащался среднемоторной компоновкой и роторным двигателем... нет, подождите — его V8 ревел на отметке 8 000 об/мин. Автомобиль стал прообразом всех современных суперкаров по концепции: минимум лишнего, максимум драйва. Его создала небольшая британская компания, которая существует и по сей день.`,
+    hint: `Британская марка из Норфолка. Модель с буквой «E» в названии. Производилась с 1976 по 1995 год.`,
+    options: ['McLaren M6GT', 'TVR Griffith 400', 'Lotus Esprit S1', 'Noble M400'],
+    correct: 2,
+    explanation: `Правильно! Lotus Esprit S1, дебютировавший в 1976 году на базе дизайна Giugiaro, стал иконой эпохи. Он снялся в фильме «Шпион, который меня любил» (1977), превращаясь в подводную лодку. Lotus впервые продемонстрировал, что суперкар может быть лёгким, точным и доступным одновременно.`,
+    points: 100,
+  },
+  {
+    id: 5,
+    difficulty: 'hard',
+    diffLabel: 'Сложный',
+    question: `Этот немецкий седан 1991 года породил целый класс «суперседанов». Под капотом скрывался 3.6-литровый рядный 6-цилиндровый двигатель — атмосферник мощностью 315 л.с., разгонявший четырёхдверный автомобиль до «сотни» всего за 5.9 секунды. В своё время он был быстрее многих суперкаров, оставаясь при этом практичным семейным автомобилем. Его прямые потомки по сей день задают стандарты в своём классе.`,
+    hint: `Немецкий бренд с почкообразной решёткой. Буква «M» в названии означает Motorsport. Кузов типа E34.`,
+    options: ['Audi RS2 Avant', 'Mercedes-Benz 500E (W124)', 'BMW M5 E34', 'Alpina B10 BiTurbo'],
+    correct: 2,
+    explanation: `Правильно! BMW M5 E34 (1991–1995) — легенда среди спортивных седанов. Его двигатель S38B36 разрабатывался на основе гоночных технологий. Конкуренты не могли угнаться за ним на треке, а пассажиры даже не догадывались, что едут в боевой машине. M5 E34 до сих пор считается одним из лучших M-автомобилей в истории BMW.`,
+    points: 100,
+  },
+  {
+    id: 6,
+    difficulty: 'medium',
+    diffLabel: 'Средний',
+    question: `Этот итальянский суперкар дебютировал на Женевском автосалоне 1971 года как концепт и сразу вызвал шок у публики — его клиновидный силуэт, открывающиеся вверх «крылья чайки» и двигатель V12, развёрнутый продольно, казались пришельцами из будущего. Имя автомобиля — восклицание, которое произнёс местный деревенский житель, впервые увидев прототип. Этот суперкар стал символом 70–80-х и висел на стенах миллионов подростков по всему миру в виде постера.`,
+    hint: `Итальянская марка с быком на эмблеме. Выпускался с 1974 по 1990 год. Двигатель V12 4.0–5.2 л.`,
+    options: ['Ferrari 512 Berlinetta Boxer', 'Lamborghini Countach LP400', 'Maserati Bora', 'De Tomaso Mangusta'],
+    correct: 1,
+    explanation: `Правильно! Lamborghini Countach — один из самых узнаваемых суперкаров в истории. Название «Countach» — это возглас на пьемонтском диалекте, выражающий восхищение. Дизайн Марчелло Гандини и клиновидный кузов задали стандарт для суперкаров на 20 лет вперёд. Именно его постер украшал стену молодого Феррари Энцо.`,
+    points: 100,
+  },
+];
+
+function getQuestions() {
+  return getLang() === 'ru' ? QUESTIONS_RU : QUESTIONS_EN;
+}
+
+/* ================================================================
+   STATE
+   ================================================================ */
+let currentQ     = 0;
+let score        = 0;
+let hintUsed     = false;
+let answered     = false;
+let timerInterval= null;
+let timeLeft     = 30;
+let userAnswers  = [];
+
+/* ================================================================
+   QUIZ FLOW
+   ================================================================ */
+function startQuiz() {
+  currentQ   = 0;
+  score      = 0;
+  hintUsed   = false;
+  answered   = false;
+  userAnswers= [];
+
+  hide('startScreen');
+  hide('resultsScreen');
+  show('quizProgress');
+  show('questionWrap');
+
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  hintUsed = false;
+
+  const q = getQuestions()[currentQ];
+
+  // Progress
+  const qs = getQuestions();
+  const pct = (currentQ / qs.length) * 100;
+  document.getElementById('progressFill').style.width  = pct + '%';
+  document.getElementById('progressLabel').textContent = getLang() === 'ru'
+    ? `Вопрос ${currentQ + 1} из ${qs.length}`
+    : `Question ${currentQ + 1} of ${qs.length}`;
+  document.getElementById('progressScore').textContent = getLang() === 'ru'
+    ? `${score} очков`
+    : `${score} pts`;
+
+  // Question number + difficulty
+  const diffClass = q.difficulty === 'easy' ? 'diff-easy' : q.difficulty === 'medium' ? 'diff-medium' : 'diff-hard';
+  const qLabel = getLang() === 'ru' ? `Вопрос ${currentQ + 1}` : `Question ${currentQ + 1}`;
+  document.getElementById('qNumber').innerHTML =
+    `${qLabel} <span class="q-difficulty ${diffClass}">${q.diffLabel}</span>`;
+
+  document.getElementById('questionText').textContent = q.question;
+
+  // Reset hint
+  document.getElementById('hintBtn').disabled = false;
+  document.getElementById('hintBtn').innerHTML = t('quiz.hint.btn');
+  document.getElementById('hintText').style.display = 'none';
+  document.getElementById('hintText').textContent   = '';
+
+  // Options
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${escHtml(opt)}`;
+    btn.onclick = () => selectAnswer(i);
+    grid.appendChild(btn);
+  });
+
+  // Reset feedback
+  const fb = document.getElementById('answerFeedback');
+  fb.className   = 'answer-feedback';
+  fb.innerHTML   = '';
+  document.getElementById('nextBtnWrap').style.display = 'none';
+
+  // Animate card
+  const card = document.getElementById('questionCard');
+  card.classList.remove('slide-up');
+  void card.offsetWidth;
+  card.classList.add('slide-up');
+
+  // Timer
+  startTimer();
+}
+
+function selectAnswer(chosen) {
+  if (answered) return;
+  answered = true;
+  stopTimer();
+
+  const q       = getQuestions()[currentQ];
+  const correct = chosen === q.correct;
+  const pts     = correct ? (q.points - (hintUsed ? 10 : 0)) : 0;
+  score += pts;
+
+  userAnswers.push({ q: q.id, chosen, correct, pts });
+
+  // Color buttons
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === chosen && !correct) btn.classList.add('wrong');
+  });
+
+  // Feedback
+  const lang = getLang();
+  const fb = document.getElementById('answerFeedback');
+  if (correct) {
+    fb.className = 'answer-feedback correct-fb';
+    fb.innerHTML = `✅ <strong>${lang==='ru'?'Правильно!':'Correct!'}</strong> +${pts} ${lang==='ru'?'очков':'pts'}<br><span style="color:var(--text-2);font-size:0.83rem;">${escHtml(q.explanation)}</span>`;
+    showToast(`+${pts} ${lang==='ru'?'очков! 🎉':'pts! 🎉'}`);
+  } else {
+    fb.className = 'answer-feedback wrong-fb';
+    const correctOpt = q.options[q.correct];
+    fb.innerHTML = `❌ <strong>${lang==='ru'?'Неверно.':'Wrong.'}</strong> ${lang==='ru'?'Правильный ответ:':'Correct answer:'} <strong style="color:var(--text-1);">${escHtml(correctOpt)}</strong><br><span style="font-size:0.83rem;">${escHtml(q.explanation)}</span>`;
+    showToast(lang==='ru'?'Не угадали 😔':'Wrong answer 😔');
+  }
+
+  // Update score display
+  document.getElementById('progressScore').textContent = lang==='ru'?`${score} очков`:`${score} pts`;
+
+  // Next button
+  const nw = document.getElementById('nextBtnWrap');
+  nw.style.display = 'flex';
+  const nextBtn = nw.querySelector('button');
+  const isLast = currentQ === getQuestions().length - 1;
+  nextBtn.textContent = isLast
+    ? (lang==='ru'?'Результаты 🏆':'Results 🏆')
+    : (lang==='ru'?'Следующий вопрос →':'Next Question →');
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= getQuestions().length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showHint() {
+  if (answered) return;
+  hintUsed = true;
+  const q = getQuestions()[currentQ];
+  document.getElementById('hintText').textContent   = q.hint;
+  document.getElementById('hintText').style.display = 'block';
+  document.getElementById('hintBtn').disabled = true;
+  document.getElementById('hintBtn').innerHTML = '💡 Подсказка использована';
+}
+
+/* ================================================================
+   TIMER
+   ================================================================ */
+function startTimer() {
+  timeLeft = 30;
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      stopTimer();
+      timeOut();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function updateTimerDisplay() {
+  const el = document.getElementById('timerVal');
+  const badge = document.getElementById('timerBadge');
+  el.textContent = timeLeft;
+  badge.className = 'timer-badge';
+  if (timeLeft <= 10) badge.classList.add('danger');
+  else if (timeLeft <= 20) badge.classList.add('warning');
+}
+
+function timeOut() {
+  if (answered) return;
+  answered = true;
+  userAnswers.push({ q: getQuestions()[currentQ].id, chosen: -1, correct: false, pts: 0 });
+
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === getQuestions()[currentQ].correct) btn.classList.add('correct');
+  });
+
+  const q  = getQuestions()[currentQ];
+  const fb = document.getElementById('answerFeedback');
+  fb.className = 'answer-feedback wrong-fb';
+  fb.innerHTML = `⏱ <strong>Время вышло!</strong> Правильный ответ: <strong style="color:var(--text-1);">${escHtml(q.options[q.correct])}</strong>`;
+
+  document.getElementById('nextBtnWrap').style.display = 'flex';
+  const nextBtn = document.getElementById('nextBtnWrap').querySelector('button');
+  nextBtn.textContent = currentQ === getQuestions().length - 1 ? (getLang()==='ru'?'Результаты 🏆':'Results 🏆') : (getLang()==='ru'?'Следующий вопрос →':'Next Question →');
+
+  showToast('Время вышло! ⏱');
+}
+
+/* ================================================================
+   RESULTS
+   ================================================================ */
+function showResults() {
+  stopTimer();
+  hide('quizProgress');
+  hide('questionWrap');
+  show('resultsScreen');
+
+  const total = getQuestions().length * 100;
+  const pct   = score / total;
+
+  const rl = getLang();
+  const GRADES = [
+    { min:0.9, trophy:'🏆', ru:['Легенда!','Вы настоящий автоэксперт. Мало кто добирается до таких результатов!'], en:['Legend!','You are a true car expert. Very few people reach this score!'] },
+    { min:0.7, trophy:'🥇', ru:['Отличный результат!','Вы отлично разбираетесь в автомобилях. Немного практики — и достигнете вершины!'], en:['Excellent!','Great car knowledge. A little more practice and you will reach the top!'] },
+    { min:0.5, trophy:'🥈', ru:['Хороший результат!','Базовые знания есть. Загляните в раздел Обучение, чтобы узнать больше!'], en:['Good result!','You have the basics. Check out the Learn section to discover more!'] },
+    { min:0.3, trophy:'🥉', ru:['Есть потенциал!','Автомобили — это целый мир. Загляните в раздел Обучение!'], en:['Not bad!','Cars are a whole world to explore. Visit the Learn section!'] },
+    { min:0,   trophy:'🚗', ru:['Начало пути!','Не расстраивайтесь — сыграйте ещё раз!'], en:['Keep trying!',"Don't be discouraged — play again! Each time you'll learn something new."] },
+  ];
+  const grade = GRADES.find(g => pct >= g.min) || GRADES[GRADES.length-1];
+  const trophy = grade.trophy;
+  const [title, subtitle] = grade[rl] || grade.en;
+  document.getElementById('resultTrophy').textContent   = trophy;
+  document.getElementById('resultTitle').textContent    = title;
+  document.getElementById('resultSubtitle').textContent = subtitle;
+  document.getElementById('resultBig').textContent      = score;
+  document.getElementById('resultMaxLabel').textContent = t('quiz.maxpts');
+
+  // Breakdown
+  const bd = document.getElementById('resultBreakdown');
+  bd.innerHTML = '';
+  userAnswers.forEach((ua, idx) => {
+    const q   = getQuestions()[idx];
+    const row = document.createElement('div');
+    row.className = `rb-row ${ua.correct ? 'correct-row' : 'wrong-row'}`;
+    const icon = ua.correct ? '✅' : (ua.chosen === -1 ? '⏱' : '❌');
+    const pts  = ua.correct ? `+${ua.pts}` : '0';
+    row.innerHTML = `
+      <span class="rb-icon">${icon}</span>
+      <span class="rb-text"><strong>Вопрос ${idx + 1}:</strong> ${escHtml(q.options[q.correct])}</span>
+      <span class="rb-pts">${pts} очков</span>
+    `;
+    bd.appendChild(row);
+  });
+
+  // Leaderboard
+  renderLeaderboard();
+}
+
+function renderLeaderboard() {
+  const history = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+  const entry   = { score, date: new Date().toISOString(), label: 'Вы' };
+  history.push(entry);
+  history.sort((a, b) => b.score - a.score);
+  if (history.length > 10) history.splice(10);
+  localStorage.setItem('quizHistory', JSON.stringify(history));
+
+  const container = document.getElementById('leaderboardRows');
+  container.innerHTML = '';
+
+  const top5      = history.slice(0, 5);
+  const rankIcons = ['🥇', '🥈', '🥉', '4', '5'];
+
+  top5.forEach((entry, i) => {
+    const row = document.createElement('div');
+    const isCurrent = entry.score === score && entry.date === history.find(h => h.score === score && h.date).date;
+    row.className = `lb-row${i === 0 && entry.score === score ? ' current' : ''}`;
+
+    const dateStr = new Date(entry.date).toLocaleDateString(getLang()==='ru'?'ru-RU':'en-US', { day: 'numeric', month: 'short' });
+    row.innerHTML = `
+      <span class="lb-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">${rankIcons[i]}</span>
+      <span class="lb-name">${escHtml(entry.label || 'Игрок')} <span style="color:var(--text-3);font-size:0.78rem;">${dateStr}</span></span>
+      <span class="lb-score">${entry.score}</span>
+    `;
+    container.appendChild(row);
+  });
+}
+
+/* ================================================================
+   HELPERS
+   ================================================================ */
+function show(id) { document.getElementById(id).style.display = 'block'; }
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ── initial state ── */
+hide('quizProgress');
+hide('questionWrap');
+hide('resultsScreen');
+
+window.onLangChange = function() {
+  if (currentQ > 0 || answered) {
+    currentQ = 0; score = 0; answered = false;
+    stopTimer();
+    hide('quizProgress'); hide('questionWrap'); hide('resultsScreen'); show('startScreen');
+  }
+  applyI18n();
+};
+</script>
+</body>
+</html>
