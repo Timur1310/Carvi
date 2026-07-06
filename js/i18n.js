@@ -220,7 +220,7 @@ const TRANSLATIONS = {
     'nav.battle':  '⚔️ Батл',
     'nav.cars':    '🚗 Машины',
     'nav.tops':    '🏆 Топы',
-    'nav.compare': '📊 Сравнение',
+    'nav.compare': '📊 Сравнить',
     'nav.learn':   '📚 Обучение',
     'nav.quiz':    '🧠 Викторина',
 
@@ -430,8 +430,8 @@ const TRANSLATIONS = {
 /* ================================================================
    ENGINE
    ================================================================ */
-/* CIS-first product: default to Russian for everyone. A saved choice wins. */
-let _lang = localStorage.getItem('carbattle_lang') || 'ru';
+/* Russian-only product: the language is fixed, no toggle. */
+let _lang = 'ru';
 
 function getLang() { return _lang; }
 
