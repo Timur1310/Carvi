@@ -150,6 +150,7 @@ function navHTML() {
   <div class="nav-links">
     <a href="../index.html" class="nav-link">⚔️ Battle</a>
     <a href="../cars.html" class="nav-link">🚗 Cars</a>
+    <a href="../tops.html" class="nav-link">🏆 Топы</a>
     <a href="index.html" class="nav-link active">📊 Сравнения</a>
     <a href="../learn.html" class="nav-link">📚 Learn</a>
     <a href="../quiz.html" class="nav-link">🧠 Quiz</a>

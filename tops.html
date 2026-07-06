@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="no-referrer">
+  <title>Топы по странам — Carvi</title>
+  <meta name="description" content="Лучшие автомобили по сегментам: Китай, СНГ, Германия, Япония, Корея, США, Италия, Европа. Рейтинги по надёжности, комфорту и цене.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Carvi">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Топы автомобилей по странам — Carvi">
+  <meta property="og:description" content="Лучшие машины каждого сегмента: Китай, СНГ, Германия, Япония, Корея, США, Италия.">
+  <meta property="og:image" content="https://carvi.vercel.app/og.png">
+  <meta property="og:url" content="https://carvi.vercel.app/tops.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://carvi.vercel.app/og.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <script src="js/theme.js"></script>
+  <style>
+    .tops-wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px 64px; }
+    .tops-region { margin-bottom: 8px; }
+    .tops-region h2 { margin: 32px 0 4px; display: flex; align-items: center; gap: 10px; }
+    .tops-region .region-sub { color: var(--text-3); font-size: 0.85rem; margin-bottom: 14px; }
+    .top-list { display: grid; gap: 8px; }
+    .top-row {
+      display: grid;
+      grid-template-columns: 44px 96px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 10px 16px;
+      text-decoration: none;
+      color: var(--text-1);
+      transition: var(--t);
+    }
+    .top-row:hover { border-color: var(--accent); text-decoration: none; transform: translateY(-1px); }
+    .top-rank { font-size: 1.3rem; font-weight: 900; text-align: center; }
+    .top-svg svg { width: 90px; height: auto; }
+    .top-name { min-width: 0; }
+    .top-name .tb { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); }
+    .top-name .tm { font-weight: 800; font-size: 1.02rem; line-height: 1.2; }
+    .top-name .tc { font-size: 0.75rem; color: var(--text-2); }
+    .top-score { text-align: right; }
+    .top-score .sv { font-size: 1.15rem; font-weight: 800; color: var(--accent); }
+    .top-score .sl { font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+    @media (max-width: 560px) {
+      .top-row { grid-template-columns: 30px 70px 1fr auto; gap: 8px; padding: 8px 10px; }
+      .top-svg svg { width: 66px; }
+      .top-rank { font-size: 1rem; }
+      .top-name .tm { font-size: 0.88rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="logo-icon">🏎</div>
+    Carvi
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link" data-i18n="nav.battle">⚔️ Battle</a>
+    <a href="cars.html" class="nav-link" data-i18n="nav.cars">🚗 Cars</a>
+    <a href="tops.html" class="nav-link active" data-i18n="nav.tops">🏆 Топы</a>
+    <a href="compare.html" class="nav-link" data-i18n="nav.compare">📊 Compare</a>
+    <a href="vs/index.html" class="nav-link">🇷🇺 Сравнения</a>
+    <a href="learn.html" class="nav-link" data-i18n="nav.learn">📚 Learn</a>
+    <a href="quiz.html" class="nav-link" data-i18n="nav.quiz">🧠 Quiz</a>
+    <button class="theme-toggle" id="themeBtn" onclick="cbCycleTheme()" title="Сменить тему" aria-label="Сменить тему">☀️</button>
+    <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
+  </div>
+</nav>
+
+<div class="page-hero animate-up">
+  <h1 data-i18n="tops.hero.title">🏆 Топы по странам</h1>
+  <p data-i18n="tops.hero.sub">Лучшие машины каждого сегмента по среднему рейтингу (производительность, надёжность, комфорт, цена, безопасность).</p>
+</div>
+
+<div class="tops-wrap" id="topsWrap"></div>
+
+<footer>
+  <p>Carvi — <span data-lang="en">For educational purposes. Ratings are editorial averages, not sales data.</span><span data-lang="ru">В образовательных целях. Рейтинги — редакционные средние, не данные продаж.</span></p>
+</footer>
+
+<script src="js/cars-data.js?v=2"></script>
+<script src="js/i18n.js?v=2"></script>
+<script>
+const REGION_META = {
+  china:   { flag: '🇨🇳', ru: 'Китай',    en: 'China' },
+  cis:     { flag: '🇷🇺', ru: 'СНГ',      en: 'CIS' },
+  germany: { flag: '🇩🇪', ru: 'Германия', en: 'Germany' },
+  japan:   { flag: '🇯🇵', ru: 'Япония',   en: 'Japan' },
+  korea:   { flag: '🇰🇷', ru: 'Корея',    en: 'Korea' },
+  usa:     { flag: '🇺🇸', ru: 'США',      en: 'USA' },
+  italy:   { flag: '🇮🇹', ru: 'Италия',   en: 'Italy' },
+  europe:  { flag: '🇪🇺', ru: 'Европа',   en: 'Europe' },
+};
+const MEDALS = ['🥇','🥈','🥉','4','5'];
+
+function avgRating(c) {
+  const v = Object.values(c.ratings);
+  return v.reduce((a,b) => a+b, 0) / v.length;
+}
+
+function renderTops() {
+  const lang = getLang();
+  const wrap = document.getElementById('topsWrap');
+  wrap.innerHTML = '';
+  for (const key of Object.keys(REGION_META)) {
+    const meta = REGION_META[key];
+    const top = getCarsByRegion(key)
+      .map(c => ({ c, s: avgRating(c) }))
+      .sort((a,b) => b.s - a.s)
+      .slice(0, 5);
+    if (!top.length) continue;
+
+    const rows = top.map((x, i) => `
+      <a class="top-row" href="car.html?id=${x.c.id}">
+        <div class="top-rank">${MEDALS[i]}</div>
+        <div class="top-svg">${buildCarSVG(x.c.color, 90, x.c.category)}</div>
+        <div class="top-name">
+          <div class="tb">${x.c.brand}</div>
+          <div class="tm">${x.c.model}</div>
+          <div class="tc">${x.c.category} · ${x.c.year}</div>
+        </div>
+        <div class="top-score">
+          <div class="sv">${x.s.toFixed(1)}</div>
+          <div class="sl">${lang === 'ru' ? 'рейтинг' : 'score'}</div>
+        </div>
+      </a>`).join('');
+
+    wrap.insertAdjacentHTML('beforeend', `
+      <section class="tops-region animate-up">
+        <h2>${meta.flag} ${lang === 'ru' ? meta.ru : meta.en}</h2>
+        <div class="region-sub">${lang === 'ru' ? 'Топ-5 по среднему рейтингу' : 'Top 5 by average rating'} · ${getCarsByRegion(key).length} ${lang === 'ru' ? 'машин в базе' : 'cars in base'}</div>
+        <div class="top-list">${rows}</div>
+      </section>`);
+  }
+}
+renderTops();
+window.onLangChange = renderTops;
+</script>
+</body>
+</html>

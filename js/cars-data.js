@@ -6119,6 +6119,44 @@ const CARS = {
 
 };
 
+/* ─── Brand origin → region (for sector filters & tops) ─── */
+const BRAND_REGION = {
+  // China
+  'BYD':'china','Chery':'china','Geely':'china','Haval':'china','Li Auto':'china',
+  'NIO':'china','Changan':'china','Omoda':'china','Jetour':'china','Tank':'china','Exeed':'china',
+  // CIS
+  'Lada':'cis','UAZ':'cis','Moskvich':'cis',
+  // Germany
+  'Audi':'germany','BMW':'germany','Mercedes-Benz':'germany','Mercedes-AMG':'germany',
+  'Volkswagen':'germany','Porsche':'germany','Opel':'germany',
+  // Japan
+  'Toyota':'japan','Honda':'japan','Nissan':'japan','Mazda':'japan','Subaru':'japan',
+  'Mitsubishi':'japan','Suzuki':'japan','Lexus':'japan','Infiniti':'japan','Acura':'japan',
+  // Korea
+  'Hyundai':'korea','Kia':'korea','Genesis':'korea',
+  // USA
+  'Ford':'usa','Chevrolet':'usa','Dodge':'usa','Jeep':'usa','Tesla':'usa','Cadillac':'usa',
+  'GMC':'usa','RAM':'usa','Lincoln':'usa','Buick':'usa','Chrysler':'usa','Rivian':'usa','Lucid':'usa',
+  // Italy
+  'Ferrari':'italy','Lamborghini':'italy','Maserati':'italy','Alfa Romeo':'italy','Fiat':'italy',
+  // Rest of Europe
+  'Land Rover':'europe','Jaguar':'europe','Bentley':'europe','Rolls-Royce':'europe','McLaren':'europe',
+  'Renault':'europe','Peugeot':'europe','Citroen':'europe','Volvo':'europe','Polestar':'europe',
+  'Skoda':'europe','SEAT':'europe','Dacia':'europe',
+};
+
+const REGIONS = ['all','china','cis','germany','japan','korea','usa','italy','europe'];
+
+function carRegion(car) {
+  return BRAND_REGION[car.brand] || 'europe';
+}
+
+function getCarsByRegion(region) {
+  const all = getAllCars();
+  if (!region || region === 'all') return all;
+  return all.filter(c => carRegion(c) === region);
+}
+
 /* ─── Helpers ─── */
 function getAllCars() {
   return Object.values(CARS);
@@ -6128,8 +6166,9 @@ function getCarById(id) {
   return CARS[id] || null;
 }
 
-function getTwoRandomCars(excludeIds = []) {
-  const pool = getAllCars().filter(c => !excludeIds.includes(c.id));
+function getTwoRandomCars(excludeIds = [], region = 'all') {
+  let pool = getCarsByRegion(region).filter(c => !excludeIds.includes(c.id));
+  if (pool.length < 2) pool = getAllCars().filter(c => !excludeIds.includes(c.id));
   if (pool.length < 2) return getAllCars().slice(0, 2);
   const shuffled = pool.sort(() => Math.random() - 0.5);
   return [shuffled[0], shuffled[1]];

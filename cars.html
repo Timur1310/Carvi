@@ -32,6 +32,7 @@
   <div class="nav-links">
     <a href="index.html" class="nav-link" data-i18n="nav.battle">⚔️ Battle</a>
     <a href="cars.html" class="nav-link active" data-i18n="nav.cars">🚗 Cars</a>
+    <a href="tops.html" class="nav-link" data-i18n="nav.tops">🏆 Топы</a>
     <a href="compare.html" class="nav-link" data-i18n="nav.compare">📊 Compare</a>
     <a href="vs/index.html" class="nav-link">🇷🇺 Сравнения</a>
     <a href="learn.html" class="nav-link" data-i18n="nav.learn">📚 Learn</a>
@@ -52,6 +53,17 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="text" class="search-input" id="searchInput" data-i18n-ph="cars.search" placeholder="Search brand or model…">
     </div>
+    <select class="select-custom" id="regionFilter" style="width: auto; min-width: 150px;">
+      <option value="" data-i18n="region.allCountries">Все страны</option>
+      <option value="china">🇨🇳 Китай</option>
+      <option value="cis">🇷🇺 СНГ</option>
+      <option value="germany">🇩🇪 Германия</option>
+      <option value="japan">🇯🇵 Япония</option>
+      <option value="korea">🇰🇷 Корея</option>
+      <option value="usa">🇺🇸 США</option>
+      <option value="italy">🇮🇹 Италия</option>
+      <option value="europe">🇪🇺 Европа</option>
+    </select>
     <select class="select-custom" id="categoryFilter" style="width: auto; min-width: 180px;">
       <option value="" data-i18n="cars.cat.all">All Categories</option>
       <option value="Subcompact">Subcompact</option>
@@ -85,16 +97,19 @@ const grid = document.getElementById('carsGrid');
 const searchInput = document.getElementById('searchInput');
 const catFilter   = document.getElementById('categoryFilter');
 const sortFilter  = document.getElementById('sortFilter');
+const regFilter   = document.getElementById('regionFilter');
 
 function renderGrid() {
   const query = searchInput.value.toLowerCase();
   const cat   = catFilter.value.toLowerCase();
   const sort  = sortFilter.value;
+  const reg   = regFilter.value;
 
   let cars = getAllCars().filter(c => {
     const nameMatch = (c.brand + ' ' + c.model).toLowerCase().includes(query);
     const catMatch  = !cat || c.category.toLowerCase().includes(cat);
-    return nameMatch && catMatch;
+    const regMatch  = !reg || carRegion(c) === reg;
+    return nameMatch && catMatch && regMatch;
   });
 
   if (sort === 'power')        cars.sort((a,b) => b.performance.power - a.performance.power);
@@ -150,6 +165,7 @@ function renderGrid() {
 searchInput.addEventListener('input', renderGrid);
 catFilter.addEventListener('change', renderGrid);
 sortFilter.addEventListener('change', renderGrid);
+regFilter.addEventListener('change', renderGrid);
 renderGrid();
 window.onLangChange = renderGrid;
 </script>

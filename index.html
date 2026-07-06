@@ -97,6 +97,7 @@
   <div class="nav-links">
     <a href="index.html" class="nav-link active" data-i18n="nav.battle">⚔️ Battle</a>
     <a href="cars.html" class="nav-link" data-i18n="nav.cars">🚗 Cars</a>
+    <a href="tops.html" class="nav-link" data-i18n="nav.tops">🏆 Топы</a>
     <a href="compare.html" class="nav-link" data-i18n="nav.compare">📊 Compare</a>
     <a href="vs/index.html" class="nav-link">🇷🇺 Сравнения</a>
     <a href="learn.html" class="nav-link" data-i18n="nav.learn">📚 Learn</a>
@@ -131,6 +132,19 @@
     <span data-i18n="battle.hint.right">Right car wins</span>
     <span class="hint-key">→</span>
   </div>
+</div>
+
+<!-- Region filter -->
+<div class="category-filter" id="regionFilter">
+  <button class="cat-btn" data-region="all">🌍 <span data-i18n="region.all">Все</span></button>
+  <button class="cat-btn" data-region="china">🇨🇳 <span data-i18n="region.china">Китай</span></button>
+  <button class="cat-btn" data-region="cis">🇷🇺 <span data-i18n="region.cis">СНГ</span></button>
+  <button class="cat-btn" data-region="germany">🇩🇪 <span data-i18n="region.germany">Германия</span></button>
+  <button class="cat-btn" data-region="japan">🇯🇵 <span data-i18n="region.japan">Япония</span></button>
+  <button class="cat-btn" data-region="korea">🇰🇷 <span data-i18n="region.korea">Корея</span></button>
+  <button class="cat-btn" data-region="usa">🇺🇸 <span data-i18n="region.usa">США</span></button>
+  <button class="cat-btn" data-region="italy">🇮🇹 <span data-i18n="region.italy">Италия</span></button>
+  <button class="cat-btn" data-region="europe">🇪🇺 <span data-i18n="region.europe">Европа</span></button>
 </div>
 
 <!-- Battle Arena -->
@@ -201,6 +215,23 @@ let leftCar, rightCar;
 let voted = false;
 let touchStartX = 0, touchStartY = 0;
 let battleCount = parseInt(localStorage.getItem('battleCount') || 0);
+let battleRegion = localStorage.getItem('battleRegion') || 'all';
+
+/* ── Region filter ── */
+function paintRegionChips() {
+  document.querySelectorAll('#regionFilter .cat-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.region === battleRegion);
+  });
+}
+document.querySelectorAll('#regionFilter .cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    battleRegion = btn.dataset.region;
+    localStorage.setItem('battleRegion', battleRegion);
+    paintRegionChips();
+    loadBattle();
+  });
+});
+paintRegionChips();
 
 /* ── Init ── */
 loadBattle();
@@ -208,7 +239,7 @@ loadBattle();
 /* ── Load two random cars ── */
 function loadBattle() {
   voted = false;
-  const [a, b] = getTwoRandomCars();
+  const [a, b] = getTwoRandomCars([], battleRegion);
   leftCar  = a;
   rightCar = b;
   renderCar('left',  leftCar);

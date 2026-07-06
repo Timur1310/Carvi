@@ -8,9 +8,24 @@ const TRANSLATIONS = {
     /* ── Navbar ── */
     'nav.battle':  '⚔️ Battle',
     'nav.cars':    '🚗 Cars',
+    'nav.tops':    '🏆 Tops',
     'nav.compare': '📊 Compare',
     'nav.learn':   '📚 Learn',
     'nav.quiz':    '🧠 Quiz',
+
+    'region.all':          'All',
+    'region.china':        'China',
+    'region.cis':          'CIS',
+    'region.germany':      'Germany',
+    'region.japan':        'Japan',
+    'region.korea':        'Korea',
+    'region.usa':          'USA',
+    'region.italy':        'Italy',
+    'region.europe':       'Europe',
+    'region.allCountries': 'All countries',
+
+    'tops.hero.title': '🏆 Tops by country',
+    'tops.hero.sub':   'Best cars of each segment by average rating (performance, reliability, comfort, value, safety).',
 
     /* ── Battle (index.html) ── */
     'battle.hero.title':    'Which car would <span>you choose?</span>',
@@ -204,9 +219,24 @@ const TRANSLATIONS = {
     /* ── Navbar ── */
     'nav.battle':  '⚔️ Батл',
     'nav.cars':    '🚗 Машины',
+    'nav.tops':    '🏆 Топы',
     'nav.compare': '📊 Сравнение',
     'nav.learn':   '📚 Обучение',
     'nav.quiz':    '🧠 Викторина',
+
+    'region.all':          'Все',
+    'region.china':        'Китай',
+    'region.cis':          'СНГ',
+    'region.germany':      'Германия',
+    'region.japan':        'Япония',
+    'region.korea':        'Корея',
+    'region.usa':          'США',
+    'region.italy':        'Италия',
+    'region.europe':       'Европа',
+    'region.allCountries': 'Все страны',
+
+    'tops.hero.title': '🏆 Топы по странам',
+    'tops.hero.sub':   'Лучшие машины каждого сегмента по среднему рейтингу (производительность, надёжность, комфорт, цена, безопасность).',
 
     /* ── Battle ── */
     'battle.hero.title':    'Какую машину <span>ты выберешь?</span>',
