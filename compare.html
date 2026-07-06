@@ -653,8 +653,8 @@ function buildTable(carObjs) {
       [t('compare.r.trunk'),  carObjs.map(c=>c.dimensions.trunkVolume+' L'),        carObjs.map(c=>c.dimensions.trunkVolume),     true],
     ]},
     { title: t('compare.s.price'), rows: [
-      [t('compare.r.start'),  carObjs.map(c=>'$'+c.price.min.toLocaleString()),     carObjs.map(c=>c.price.min),                  false],
-      [t('compare.r.top2'),   carObjs.map(c=>'$'+c.price.max.toLocaleString()),     carObjs.map(c=>c.price.max),                  false],
+      [t('compare.r.start'),  carObjs.map(c=>fmtRub(c.price.min)),                  carObjs.map(c=>c.price.min),                  false],
+      [t('compare.r.top2'),   carObjs.map(c=>fmtRub(c.price.max)),                  carObjs.map(c=>c.price.max),                  false],
     ]},
   ];
 

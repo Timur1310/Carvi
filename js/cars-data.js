@@ -6157,6 +6157,45 @@ function getCarsByRegion(region) {
   return all.filter(c => carRegion(c) === region);
 }
 
+/* ─── Prices: base data is USD, the site shows RUBLES ONLY ───
+   Single editorial rate — change here to reprice the whole site
+   (then re-run tools/gen-compare.js). Rounded to 10 000 ₽. */
+const USD_TO_RUB = 90;
+
+function priceRub(usd) {
+  return Math.round((usd * USD_TO_RUB) / 10000) * 10000;
+}
+
+function fmtRub(usd) {
+  return priceRub(usd).toLocaleString('ru-RU').replace(/,/g, ' ') + ' ₽';
+}
+
+/* ─── Value score: quality with a price correction (for tops) ───
+   affordability: log-scaled 5 (cheapest in base) … 1 (priciest),
+   final = 65% quality + 35% affordability. */
+function carAvgRating(c) {
+  const v = Object.values(c.ratings);
+  return v.reduce((a, b) => a + b, 0) / v.length;
+}
+
+let _priceLogBounds = null;
+function _logBounds() {
+  if (_priceLogBounds) return _priceLogBounds;
+  const prices = getAllCars().map(c => c.price.min);
+  _priceLogBounds = { lo: Math.log(Math.min(...prices)), hi: Math.log(Math.max(...prices)) };
+  return _priceLogBounds;
+}
+
+function carAffordability(c) {
+  const { lo, hi } = _logBounds();
+  const x = (Math.log(c.price.min) - lo) / (hi - lo); // 0 cheap … 1 expensive
+  return 5 - 4 * x;
+}
+
+function carValueScore(c) {
+  return 0.65 * carAvgRating(c) + 0.35 * carAffordability(c);
+}
+
 /* ─── Helpers ─── */
 function getAllCars() {
   return Object.values(CARS);

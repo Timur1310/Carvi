@@ -102,19 +102,13 @@ const REGION_META = {
 };
 const MEDALS = ['🥇','🥈','🥉','4','5'];
 
-function avgRating(c) {
-  const v = Object.values(c.ratings);
-  return v.reduce((a,b) => a+b, 0) / v.length;
-}
-
 function renderTops() {
-  const lang = getLang();
   const wrap = document.getElementById('topsWrap');
   wrap.innerHTML = '';
   for (const key of Object.keys(REGION_META)) {
     const meta = REGION_META[key];
     const top = getCarsByRegion(key)
-      .map(c => ({ c, s: avgRating(c) }))
+      .map(c => ({ c, s: carValueScore(c) }))
       .sort((a,b) => b.s - a.s)
       .slice(0, 5);
     if (!top.length) continue;
@@ -126,24 +120,23 @@ function renderTops() {
         <div class="top-name">
           <div class="tb">${x.c.brand}</div>
           <div class="tm">${x.c.model}</div>
-          <div class="tc">${x.c.category} · ${x.c.year}</div>
+          <div class="tc">${x.c.category} · ${x.c.year} · от ${fmtRub(x.c.price.min)}</div>
         </div>
         <div class="top-score">
           <div class="sv">${x.s.toFixed(1)}</div>
-          <div class="sl">${lang === 'ru' ? 'рейтинг' : 'score'}</div>
+          <div class="sl">цена/качество</div>
         </div>
       </a>`).join('');
 
     wrap.insertAdjacentHTML('beforeend', `
       <section class="tops-region animate-up">
-        <h2>${meta.flag} ${lang === 'ru' ? meta.ru : meta.en}</h2>
-        <div class="region-sub">${lang === 'ru' ? 'Топ-5 по среднему рейтингу' : 'Top 5 by average rating'} · ${getCarsByRegion(key).length} ${lang === 'ru' ? 'машин в базе' : 'cars in base'}</div>
+        <h2>${meta.flag} ${meta.ru}</h2>
+        <div class="region-sub">Топ-5 по соотношению цена/качество · ${getCarsByRegion(key).length} машин в базе</div>
         <div class="top-list">${rows}</div>
       </section>`);
   }
 }
 renderTops();
-window.onLangChange = renderTops;
 </script>
 </body>
 </html>

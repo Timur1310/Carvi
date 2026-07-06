@@ -34,7 +34,8 @@ const SEGMENT_ONE_RU = {
 const DRIVE_RU = { FWD: 'передний', RWD: 'задний', AWD: 'полный', '4WD': 'полный' };
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const money = (n) => '$' + Number(n).toLocaleString('en-US');
+/* Rubles only — same formatter and editorial rate as the site (cars-data.js). */
+const money = (n) => sandbox.fmtRub(n);
 const drive = (d) => DRIVE_RU[d] || d;
 const name = (c) => `${c.brand} ${c.model}`;
 

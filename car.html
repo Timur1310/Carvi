@@ -319,7 +319,7 @@ function buildPage() {
   document.getElementById('categoryBadge').innerHTML = `<span class="badge badge-purple" style="margin-bottom:12px;">${car.category}</span>`;
   document.getElementById('carTitle').textContent = `${car.brand} ${car.model} (${car.year})`;
   document.getElementById('carDesc').textContent = car.description.split('.')[0] + '.';
-  document.getElementById('priceTag').innerHTML = `💰 $${car.price.min.toLocaleString()} – $${car.price.max.toLocaleString()} USD`;
+  document.getElementById('priceTag').innerHTML = `💰 ${fmtRub(car.price.min)} – ${fmtRub(car.price.max)}`;
   document.getElementById('compareBtn').href = `compare.html?a=${car.id}`;
   document.getElementById('compareBtn').textContent = t('car.compare');
   document.querySelector('a[href="cars.html"].btn-ghost').textContent = t('car.allcars');
@@ -408,8 +408,8 @@ function buildPage() {
     sr(t('car.sp.trunk'),   d.trunkVolume     + ' L');
 
   document.getElementById('priceSpecs').innerHTML =
-    sr(t('car.sp.sprice'),  '$' + car.price.min.toLocaleString()) +
-    sr(t('car.sp.tprice'),  '$' + car.price.max.toLocaleString());
+    sr(t('car.sp.sprice'),  fmtRub(car.price.min)) +
+    sr(t('car.sp.tprice'),  fmtRub(car.price.max));
 
   /* Exterior */
   document.getElementById('extSvgLarge').innerHTML = buildCarSVG(car.color, 300, car.category);
