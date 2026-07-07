@@ -6,84 +6,93 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="no-referrer">
-  <title>Carvi — Какую машину ты выберешь?</title>
+  <title>Carvi — подбор автомобиля по бюджету и приоритетам</title>
+  <meta name="description" content="Введи бюджет и приоритеты — получи 3 подходящие машины с объяснением почему. 242 модели, сравнение по цифрам, без воды.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Carvi">
   <meta property="og:locale" content="ru_RU">
-  <meta property="og:title" content="Carvi — сравни машины и выбери свою">
-  <meta property="og:description" content="Свайп-баттлы, сравнение по характеристикам и база из 242 автомобилей. Выбери, что купить — по цифрам.">
+  <meta property="og:title" content="Carvi — подбор автомобиля по бюджету и приоритетам">
+  <meta property="og:description" content="Введи бюджет и приоритеты — получи 3 подходящие машины с объяснением почему.">
   <meta property="og:image" content="https://carvi.vercel.app/og.png">
   <meta property="og:url" content="https://carvi.vercel.app/">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Carvi — сравни машины и выбери свою">
-  <meta name="twitter:description" content="Свайп-баттлы, сравнение по характеристикам и база из 242 автомобилей. Выбери, что купить — по цифрам.">
   <meta name="twitter:image" content="https://carvi.vercel.app/og.png">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/themes.css">
   <script src="js/theme.js"></script>
   <style>
-    .battle-card .swipe-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      font-weight: 900;
-      opacity: 0;
-      transition: opacity 0.2s;
-      pointer-events: none;
-      border-radius: inherit;
-    }
-    .battle-card.winner .swipe-overlay { opacity: 1; background: rgba(34,197,94,0.12); }
+    .pick-wrap { max-width: 880px; margin: 0 auto; padding: 0 20px 64px; }
+    .pick-hero { text-align: center; padding: 44px 20px 28px; }
+    .pick-hero h1 { margin-bottom: 10px; }
+    .pick-hero p { font-size: 1.05rem; max-width: 560px; margin: 0 auto; }
 
-    .score-tracker {
-      display: flex;
-      gap: 24px;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 24px;
-      max-width: 900px;
-      margin: 0 auto 8px;
-    }
-    .score-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.85rem;
-      color: var(--text-2);
-    }
-    .score-num {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--text-1);
-      min-width: 28px;
-      text-align: center;
-    }
-
-    .category-filter {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 0 24px 20px;
-    }
-    .cat-btn {
-      padding: 6px 14px;
-      border: 1px solid var(--border);
+    .pick-card {
       background: var(--bg-card);
-      color: var(--text-2);
-      border-radius: 20px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--t);
-      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
     }
-    .cat-btn:hover, .cat-btn.active {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(79,142,247,0.1);
+    .pick-label {
+      font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-2); margin: 22px 0 10px;
+    }
+    .pick-label:first-child { margin-top: 0; }
+    .pick-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .pick-btn {
+      padding: 9px 16px; border: 1.5px solid var(--border); background: transparent;
+      color: var(--text-2); border-radius: 10px; font-size: 0.9rem; font-weight: 500;
+      cursor: pointer; transition: var(--t); font-family: inherit;
+    }
+    .pick-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .pick-btn.on { border-color: var(--accent); color: var(--accent); background: rgba(14,166,114,0.08); font-weight: 600; }
+    .pick-go {
+      margin-top: 26px; width: 100%; padding: 14px; border: none; border-radius: 12px;
+      background: var(--accent-gradient); color: #fff; font-size: 1.02rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: var(--t);
+    }
+    .pick-go:hover { opacity: 0.92; transform: translateY(-1px); }
+    .pick-hint { font-size: 0.8rem; color: var(--text-3); margin-top: 10px; text-align: center; }
+
+    /* results */
+    .res-title { margin: 40px 0 6px; }
+    .res-sub { color: var(--text-3); font-size: 0.85rem; margin-bottom: 18px; }
+    .res-grid { display: grid; gap: 14px; }
+    .res-card {
+      display: grid; grid-template-columns: 200px 1fr auto; gap: 18px; align-items: center;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 18px 20px; text-decoration: none; color: var(--text-1); transition: var(--t);
+    }
+    .res-card:hover { border-color: var(--accent); text-decoration: none; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .res-place { font-size: 0.72rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; }
+    .res-name { font-size: 1.25rem; font-weight: 800; margin: 2px 0 2px; }
+    .res-price { color: var(--text-2); font-size: 0.9rem; margin-bottom: 8px; }
+    .res-why { display: flex; flex-wrap: wrap; gap: 6px; }
+    .res-why span {
+      font-size: 0.76rem; color: var(--text-2); background: var(--bg-2);
+      border: 1px solid var(--border-light); border-radius: 14px; padding: 3px 10px;
+    }
+    .res-score { text-align: center; }
+    .res-score .v { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
+    .res-score .l { font-size: 0.62rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+    .res-empty { text-align: center; color: var(--text-2); padding: 32px; }
+
+    /* secondary links */
+    .quick-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 44px; }
+    .ql {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-md);
+      padding: 18px 20px; text-decoration: none; color: var(--text-1); transition: var(--t);
+    }
+    .ql:hover { border-color: var(--accent); text-decoration: none; transform: translateY(-2px); }
+    .ql b { display: block; margin-bottom: 4px; }
+    .ql span { font-size: 0.82rem; color: var(--text-2); }
+
+    @media (max-width: 680px) {
+      .res-card { grid-template-columns: 1fr; text-align: left; }
+      .res-card .car-visual { max-width: 280px; }
+      .res-score { text-align: left; display: flex; align-items: baseline; gap: 8px; }
+      .quick-links { grid-template-columns: 1fr; }
+      .pick-card { padding: 20px; }
     }
   </style>
 </head>
@@ -95,273 +104,150 @@
     Carvi
   </a>
   <div class="nav-links">
-    <a href="index.html" class="nav-link active" data-i18n="nav.battle">⚔️ Battle</a>
-    <a href="cars.html" class="nav-link" data-i18n="nav.cars">🚗 Cars</a>
-    <a href="tops.html" class="nav-link" data-i18n="nav.tops">🏆 Топы</a>
-    <a href="compare.html" class="nav-link" data-i18n="nav.compare">📊 Compare</a>
-    <a href="vs/index.html" class="nav-link">🆚 Сравнения</a>
-    <a href="learn.html" class="nav-link" data-i18n="nav.learn">📚 Learn</a>
-    <a href="quiz.html" class="nav-link" data-i18n="nav.quiz">🧠 Quiz</a>
+    <a href="index.html" class="nav-link active">Подбор</a>
+    <a href="cars.html" class="nav-link">Машины</a>
+    <a href="tops.html" class="nav-link">Топы</a>
+    <a href="compare.html" class="nav-link">Сравнение</a>
     <button class="theme-toggle" id="themeBtn" onclick="cbCycleTheme()" title="Сменить тему" aria-label="Сменить тему">☀️</button>
   </div>
 </nav>
 
-<!-- Hero -->
-<div class="battle-hero animate-up">
-  <h1 data-i18n-html="battle.hero.title">Which car would <span>you choose?</span></h1>
-  <p data-i18n="battle.hero.sub">Tap a car to vote · Swipe left/right · Use ← → keys</p>
+<div class="pick-hero animate-up">
+  <h1>Какая машина тебе подходит?</h1>
+  <p>Укажи бюджет и что для тебя важно — покажем три лучших варианта и объясним почему. По цифрам, без воды.</p>
 </div>
 
-<!-- Swipe hint -->
-<div class="swipe-hint animate-up delay-1">
-  <div class="hint-item">
-    <span class="hint-key">←</span>
-    <span data-i18n="battle.hint.left">Left car wins</span>
-  </div>
-  <div class="hint-item">
-    <span>·</span>
-  </div>
-  <div class="hint-item">
-    <span data-i18n="battle.hint.tap">Tap card to choose</span>
-  </div>
-  <div class="hint-item">
-    <span>·</span>
-  </div>
-  <div class="hint-item">
-    <span data-i18n="battle.hint.right">Right car wins</span>
-    <span class="hint-key">→</span>
-  </div>
-</div>
-
-<!-- Region filter -->
-<div class="category-filter" id="regionFilter">
-  <button class="cat-btn" data-region="all">🌍 <span data-i18n="region.all">Все</span></button>
-  <button class="cat-btn" data-region="china">🇨🇳 <span data-i18n="region.china">Китай</span></button>
-  <button class="cat-btn" data-region="cis">🇷🇺 <span data-i18n="region.cis">СНГ</span></button>
-  <button class="cat-btn" data-region="germany">🇩🇪 <span data-i18n="region.germany">Германия</span></button>
-  <button class="cat-btn" data-region="japan">🇯🇵 <span data-i18n="region.japan">Япония</span></button>
-  <button class="cat-btn" data-region="korea">🇰🇷 <span data-i18n="region.korea">Корея</span></button>
-  <button class="cat-btn" data-region="usa">🇺🇸 <span data-i18n="region.usa">США</span></button>
-  <button class="cat-btn" data-region="italy">🇮🇹 <span data-i18n="region.italy">Италия</span></button>
-  <button class="cat-btn" data-region="europe">🇪🇺 <span data-i18n="region.europe">Европа</span></button>
-</div>
-
-<!-- Battle Arena -->
-<div class="battle-arena animate-up delay-2" id="battleArena">
-
-  <!-- Left car -->
-  <div class="battle-card" id="leftCard" onclick="chooseCar('left')">
-    <div class="swipe-overlay">🏆</div>
-    <div class="car-placeholder" id="leftImg">
-      <div class="bg-text" id="leftBgText"></div>
-      <div class="car-svg-wrap" id="leftSvg"></div>
+<div class="pick-wrap">
+  <div class="pick-card animate-up delay-1">
+    <div class="pick-label">Бюджет</div>
+    <div class="pick-row" id="budgetRow">
+      <button class="pick-btn" data-max="1200000">до 1,2 млн ₽</button>
+      <button class="pick-btn on" data-max="2500000">до 2,5 млн ₽</button>
+      <button class="pick-btn" data-max="4000000">до 4 млн ₽</button>
+      <button class="pick-btn" data-max="7000000">до 7 млн ₽</button>
+      <button class="pick-btn" data-max="999000000">не важен</button>
     </div>
-    <div class="car-info">
-      <div class="brand" id="leftBrand"></div>
-      <div class="model-name" id="leftModel"></div>
-      <div class="year-badge" id="leftYear"></div>
-      <div class="battle-stats" id="leftStats"></div>
+
+    <div class="pick-label">Тип кузова</div>
+    <div class="pick-row" id="bodyRow">
+      <button class="pick-btn on" data-body="any">Любой</button>
+      <button class="pick-btn" data-body="suv">Кроссовер / внедорожник</button>
+      <button class="pick-btn" data-body="sedan">Седан</button>
+      <button class="pick-btn" data-body="hatch">Хэтчбек</button>
+      <button class="pick-btn" data-body="pickup">Пикап</button>
+      <button class="pick-btn" data-body="minivan">Минивэн</button>
     </div>
+
+    <div class="pick-label">Что важнее всего? (до двух)</div>
+    <div class="pick-row" id="prioRow">
+      <button class="pick-btn" data-p="reliability">Надёжность</button>
+      <button class="pick-btn" data-p="economy">Экономичность</button>
+      <button class="pick-btn" data-p="comfort">Комфорт</button>
+      <button class="pick-btn" data-p="dynamics">Динамика</button>
+      <button class="pick-btn" data-p="safety">Безопасность</button>
+      <button class="pick-btn" data-p="family">Для семьи</button>
+      <button class="pick-btn" data-p="roads">Плохие дороги</button>
+    </div>
+
+    <button class="pick-go" onclick="runPick()">Подобрать машину →</button>
+    <div class="pick-hint">242 модели в базе · рейтинги редакционные · цены ориентировочные</div>
   </div>
 
-  <!-- VS -->
-  <div class="vs-divider">
-    <div class="vs-line"></div>
-    <div class="vs-badge">VS</div>
-    <div class="vs-line"></div>
-  </div>
+  <div id="results"></div>
 
-  <!-- Right car -->
-  <div class="battle-card" id="rightCard" onclick="chooseCar('right')">
-    <div class="swipe-overlay">🏆</div>
-    <div class="car-placeholder" id="rightImg">
-      <div class="bg-text" id="rightBgText"></div>
-      <div class="car-svg-wrap" id="rightSvg"></div>
-    </div>
-    <div class="car-info">
-      <div class="brand" id="rightBrand"></div>
-      <div class="model-name" id="rightModel"></div>
-      <div class="year-badge" id="rightYear"></div>
-      <div class="battle-stats" id="rightStats"></div>
-    </div>
+  <div class="quick-links animate-up delay-2">
+    <a class="ql" href="cars.html"><b>🚗 Каталог</b><span>242 машины с полными характеристиками</span></a>
+    <a class="ql" href="tops.html"><b>🏆 Топы</b><span>Лучшие по цене/качеству в каждой стране</span></a>
+    <a class="ql" href="vs/index.html"><b>🆚 Сравнения</b><span>840+ разборов «кто лучше» по парам</span></a>
   </div>
 </div>
 
-<!-- Result bar -->
-<div class="battle-result-bar" id="resultBar">
-  <div class="result-inner">
-    <div class="result-text" id="resultText"></div>
-    <a id="compareLink" class="btn btn-secondary btn-sm" data-i18n="battle.result.compare">📊 Full Comparison</a>
-    <button class="btn btn-primary btn-sm" onclick="nextBattle()" data-i18n="battle.result.next">Next Battle →</button>
-  </div>
-</div>
+<footer>
+  <p>Carvi — <span data-lang="ru">В образовательных целях. Помогаем покупателям принимать взвешенные решения.</span>
+  · <a href="battle.html">Игровая версия</a> · <a href="quiz.html">Викторина</a></p>
+</footer>
 
-<!-- Footer buttons -->
-<div class="battle-footer">
-  <button class="btn btn-ghost btn-sm" onclick="nextBattle()" data-i18n="battle.footer.new">↻ New Matchup</button>
-  <a href="cars.html" class="btn btn-ghost btn-sm" data-i18n="battle.footer.browse">Browse All Cars</a>
-  <a href="compare.html" class="btn btn-outline btn-sm" data-i18n="battle.footer.compare">📊 Detailed Compare</a>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<script src="js/cars-data.js?v=2"></script>
-<script src="js/i18n.js?v=2"></script>
+<script src="js/cars-data.js?v=3"></script>
+<script src="js/i18n.js?v=3"></script>
 <script>
-/* ── State ── */
-let leftCar, rightCar;
-let voted = false;
-let touchStartX = 0, touchStartY = 0;
-let battleCount = parseInt(localStorage.getItem('battleCount') || 0);
-let battleRegion = localStorage.getItem('battleRegion') || 'all';
-
-/* ── Region filter ── */
-function paintRegionChips() {
-  document.querySelectorAll('#regionFilter .cat-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.region === battleRegion);
+/* ── selection state ── */
+function wireRow(rowId, multi, limit) {
+  const row = document.getElementById(rowId);
+  row.addEventListener('click', (e) => {
+    const btn = e.target.closest('.pick-btn');
+    if (!btn) return;
+    if (!multi) {
+      row.querySelectorAll('.pick-btn').forEach((b) => b.classList.remove('on'));
+      btn.classList.add('on');
+    } else {
+      if (btn.classList.contains('on')) btn.classList.remove('on');
+      else {
+        const on = row.querySelectorAll('.pick-btn.on');
+        if (on.length >= limit) on[0].classList.remove('on');
+        btn.classList.add('on');
+      }
+    }
   });
 }
-document.querySelectorAll('#regionFilter .cat-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    battleRegion = btn.dataset.region;
-    localStorage.setItem('battleRegion', battleRegion);
-    paintRegionChips();
-    loadBattle();
-  });
-});
-paintRegionChips();
+wireRow('budgetRow', false);
+wireRow('bodyRow', false);
+wireRow('prioRow', true, 2);
 
-/* ── Init ── */
-loadBattle();
+/* ── scoring ── */
+function runPick() {
+  const budget = Number(document.querySelector('#budgetRow .on').dataset.max);
+  const body = document.querySelector('#bodyRow .on').dataset.body;
+  const prios = [...document.querySelectorAll('#prioRow .on')].map((b) => b.dataset.p);
 
-/* ── Load two random cars ── */
-function loadBattle() {
-  voted = false;
-  const [a, b] = getTwoRandomCars([], battleRegion);
-  leftCar  = a;
-  rightCar = b;
-  renderCar('left',  leftCar);
-  renderCar('right', rightCar);
-  resetUI();
-}
+  let pool = getAllCars().filter((c) => priceRub(c.price.min) <= budget);
+  if (body !== 'any') pool = pool.filter((c) => carBodyType(c.category) === body);
 
-function renderCar(side, car) {
-  const brand = document.getElementById(side + 'Brand');
-  const model = document.getElementById(side + 'Model');
-  const year  = document.getElementById(side + 'Year');
-  const stats = document.getElementById(side + 'Stats');
-  const bgTxt = document.getElementById(side + 'BgText');
-  const svg   = document.getElementById(side + 'Svg');
+  const scored = pool.map((c) => {
+    let s = carValueScore(c);
+    const why = [];
+    for (const p of prios) {
+      if (p === 'reliability') { s += (c.ratings.reliability - 3) * 0.9; if (c.ratings.reliability >= 4) why.push('надёжность ' + c.ratings.reliability + '/5'); }
+      if (p === 'economy')    { s += (c.ratings.fuelEfficiency - 3) * 0.9; if (c.engine.consumption.combined) why.push(c.engine.consumption.combined + ' л/100км'); }
+      if (p === 'comfort')    { s += (c.ratings.comfort - 3) * 0.9; if (c.ratings.comfort >= 4) why.push('комфорт ' + c.ratings.comfort + '/5'); }
+      if (p === 'dynamics')   { s += (c.ratings.performance - 3) * 0.9; why.push(c.performance.acceleration + ' с до 100'); }
+      if (p === 'safety')     { s += (c.ratings.safety - 3) * 0.9; if (c.ratings.safety >= 4) why.push('безопасность ' + c.ratings.safety + '/5'); }
+      if (p === 'family')     { s += (c.dimensions.trunkVolume >= 450 ? 0.7 : 0) + (c.interior.seats >= 7 ? 0.6 : 0); why.push('багажник ' + c.dimensions.trunkVolume + ' л'); }
+      if (p === 'roads')      { s += c.dimensions.groundClearance >= 190 ? 0.9 : c.dimensions.groundClearance >= 170 ? 0.3 : -0.4; why.push('клиренс ' + c.dimensions.groundClearance + ' мм'); }
+    }
+    if (!why.length) {
+      why.push('рейтинг ' + carAvgRating(c).toFixed(1) + '/5');
+      if (c.engine.consumption.combined) why.push(c.engine.consumption.combined + ' л/100км');
+    }
+    why.push('от ' + fmtRub(c.price.min));
+    return { c, s, why: [...new Set(why)].slice(0, 4) };
+  }).sort((a, b) => b.s - a.s).slice(0, 3);
 
-  brand.textContent = car.brand;
-  model.textContent = car.model;
-  year.textContent  = car.year + ' · ' + car.category;
-  bgTxt.textContent = car.brand;
-  svg.innerHTML     = carImageHTML(car, 160);
-
-  const avg = Math.round(Object.values(car.ratings).reduce((a,b) => a+b, 0) / Object.keys(car.ratings).length * 10) / 10;
-  stats.innerHTML = `
-    <div class="battle-stat">
-      <div class="bv">${car.performance.power} <span style="font-size:0.65rem;opacity:.7">${t('cars.hp')}</span></div>
-      <div class="bl">${t('battle.stat.power')}</div>
-    </div>
-    <div class="battle-stat">
-      <div class="bv">${car.performance.acceleration}s</div>
-      <div class="bl">${t('battle.stat.speed')}</div>
-    </div>
-    <div class="battle-stat">
-      <div class="bv">${avg}<span style="font-size:0.65rem;opacity:.7">/5</span></div>
-      <div class="bl">${t('battle.stat.score')}</div>
-    </div>
-  `;
-}
-
-function resetUI() {
-  const lc = document.getElementById('leftCard');
-  const rc = document.getElementById('rightCard');
-  const rb = document.getElementById('resultBar');
-  lc.className = 'battle-card';
-  rc.className = 'battle-card';
-  rb.className = 'battle-result-bar';
-  lc.style.pointerEvents = '';
-  rc.style.pointerEvents = '';
-  lc.setAttribute('onclick', "chooseCar('left')");
-  rc.setAttribute('onclick', "chooseCar('right')");
-}
-
-/* ── Choose winner ── */
-function chooseCar(side) {
-  if (voted) return;
-  voted = true;
-  battleCount++;
-  localStorage.setItem('battleCount', battleCount);
-
-  const winner = side === 'left' ? leftCar : rightCar;
-  const loser  = side === 'left' ? rightCar : leftCar;
-
-  const winCard  = document.getElementById(side + 'Card');
-  const loseCard = document.getElementById(side === 'left' ? 'rightCard' : 'leftCard');
-  winCard.classList.add('winner');
-  loseCard.classList.add('loser');
-
-  // save to history
-  const history = JSON.parse(localStorage.getItem('battleHistory') || '[]');
-  history.unshift({ winner: winner.id, loser: loser.id, date: new Date().toISOString() });
-  if (history.length > 50) history.pop();
-  localStorage.setItem('battleHistory', JSON.stringify(history));
-
-  // result bar
-  const rb = document.getElementById('resultBar');
-  const rt = document.getElementById('resultText');
-  const cl = document.getElementById('compareLink');
-  rt.innerHTML = `${t('battle.result.chose')} <span>${winner.brand} ${winner.model}</span> ${t('battle.result.over')} ${loser.brand} ${loser.model}`;
-  cl.href = `compare.html?a=${winner.id}&b=${loser.id}`;
-  rb.className = 'battle-result-bar show';
-
-  showToast(`${winner.brand} ${winner.model} ${t('battle.wins')}`);
-}
-
-/* ── Next battle ── */
-function nextBattle() {
-  document.getElementById('resultBar').className = 'battle-result-bar';
-  setTimeout(loadBattle, 150);
-}
-
-/* ── Keyboard support ── */
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft')  chooseCar('left');
-  if (e.key === 'ArrowRight') chooseCar('right');
-  if (e.key === 'Enter' && voted) nextBattle();
-});
-
-/* ── Touch / swipe support ── */
-document.getElementById('battleArena').addEventListener('touchstart', e => {
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
-}, { passive: true });
-
-document.getElementById('battleArena').addEventListener('touchend', e => {
-  if (voted) return;
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  const dy = e.changedTouches[0].clientY - touchStartY;
-  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
-    chooseCar(dx < 0 ? 'right' : 'left');
+  const box = document.getElementById('results');
+  if (!scored.length) {
+    box.innerHTML = '<div class="res-empty">Под эти условия ничего не нашлось — попробуй увеличить бюджет или убрать фильтр кузова.</div>';
+    return;
   }
-}, { passive: true });
-
-/* ── Re-render on language change ── */
-window.onLangChange = function() {
-  if (leftCar) renderCar('left',  leftCar);
-  if (rightCar) renderCar('right', rightCar);
-};
-
-/* ── Toast ── */
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  const PLACES = ['Лучший выбор', 'Тоже отличный', 'Достойный вариант'];
+  box.innerHTML = `
+    <h2 class="res-title">Твоя тройка</h2>
+    <div class="res-sub">Считаем по рейтингам и характеристикам с поправкой на цену</div>
+    <div class="res-grid">` +
+    scored.map((x, i) => `
+      <a class="res-card animate-up" href="car.html?id=${x.c.id}" style="animation-delay:${i * 0.06}s">
+        <div>${carImageHTML(x.c, 200)}</div>
+        <div>
+          <div class="res-place">${PLACES[i]}</div>
+          <div class="res-name">${x.c.brand} ${x.c.model}</div>
+          <div class="res-price">${x.c.category} · ${x.c.year}</div>
+          <div class="res-why">${x.why.map((w) => `<span>${w}</span>`).join('')}</div>
+        </div>
+        <div class="res-score"><div class="v">${x.s.toFixed(1)}</div><div class="l">балл</div></div>
+      </a>`).join('') +
+    `</div>` +
+    (scored.length >= 2
+      ? `<div style="margin-top:16px;text-align:center;"><a class="btn btn-outline btn-sm" href="compare.html?a=${scored[0].c.id}&b=${scored[1].c.id}">Сравнить первую пару подробно →</a></div>`
+      : '');
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
 </body>

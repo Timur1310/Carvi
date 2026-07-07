@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="no-referrer">
+  <title>Carvi — Какую машину ты выберешь?</title>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Carvi">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Carvi — сравни машины и выбери свою">
+  <meta property="og:description" content="Свайп-баттлы, сравнение по характеристикам и база из 242 автомобилей. Выбери, что купить — по цифрам.">
+  <meta property="og:image" content="https://carvi.vercel.app/og.png">
+  <meta property="og:url" content="https://carvi.vercel.app/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Carvi — сравни машины и выбери свою">
+  <meta name="twitter:description" content="Свайп-баттлы, сравнение по характеристикам и база из 242 автомобилей. Выбери, что купить — по цифрам.">
+  <meta name="twitter:image" content="https://carvi.vercel.app/og.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <script src="js/theme.js"></script>
+  <style>
+    .battle-card .swipe-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 900;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+    .battle-card.winner .swipe-overlay { opacity: 1; background: rgba(34,197,94,0.12); }
+
+    .score-tracker {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      max-width: 900px;
+      margin: 0 auto 8px;
+    }
+    .score-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-2);
+    }
+    .score-num {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-1);
+      min-width: 28px;
+      text-align: center;
+    }
+
+    .category-filter {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 0 24px 20px;
+    }
+    .cat-btn {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-2);
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--t);
+      font-family: inherit;
+    }
+    .cat-btn:hover, .cat-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(79,142,247,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="logo-icon">🏎</div>
+    Carvi
+  </a>
+  <div class="nav-links">
+    <a href="battle.html" class="nav-link active">Батл</a>
+    <a href="quiz.html" class="nav-link">Викторина</a>
+    <a href="learn.html" class="nav-link">Обучение</a>
+    <a href="index.html" class="nav-link">Подбор машины</a>
+    <button class="theme-toggle" id="themeBtn" onclick="cbCycleTheme()" title="Сменить тему" aria-label="Сменить тему">☀️</button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="battle-hero animate-up">
+  <h1 data-i18n-html="battle.hero.title">Which car would <span>you choose?</span></h1>
+</div>
+
+<!-- Region filter -->
+<div class="category-filter" id="regionFilter">
+  <button class="cat-btn" data-region="all">🌍 <span data-i18n="region.all">Все</span></button>
+  <button class="cat-btn" data-region="china">🇨🇳 <span data-i18n="region.china">Китай</span></button>
+  <button class="cat-btn" data-region="cis">🇷🇺 <span data-i18n="region.cis">СНГ</span></button>
+  <button class="cat-btn" data-region="germany">🇩🇪 <span data-i18n="region.germany">Германия</span></button>
+  <button class="cat-btn" data-region="japan">🇯🇵 <span data-i18n="region.japan">Япония</span></button>
+  <button class="cat-btn" data-region="korea">🇰🇷 <span data-i18n="region.korea">Корея</span></button>
+  <button class="cat-btn" data-region="usa">🇺🇸 <span data-i18n="region.usa">США</span></button>
+  <button class="cat-btn" data-region="italy">🇮🇹 <span data-i18n="region.italy">Италия</span></button>
+  <button class="cat-btn" data-region="europe">🇪🇺 <span data-i18n="region.europe">Европа</span></button>
+</div>
+
+<!-- Battle Arena -->
+<div class="battle-arena animate-up delay-2" id="battleArena">
+
+  <!-- Left car -->
+  <div class="battle-card" id="leftCard" onclick="chooseCar('left')">
+    <div class="swipe-overlay">🏆</div>
+    <div class="car-placeholder" id="leftImg">
+      <div class="bg-text" id="leftBgText"></div>
+      <div class="car-svg-wrap" id="leftSvg"></div>
+    </div>
+    <div class="car-info">
+      <div class="brand" id="leftBrand"></div>
+      <div class="model-name" id="leftModel"></div>
+      <div class="year-badge" id="leftYear"></div>
+      <div class="battle-stats" id="leftStats"></div>
+    </div>
+  </div>
+
+  <!-- VS -->
+  <div class="vs-divider">
+    <div class="vs-line"></div>
+    <div class="vs-badge">VS</div>
+    <div class="vs-line"></div>
+  </div>
+
+  <!-- Right car -->
+  <div class="battle-card" id="rightCard" onclick="chooseCar('right')">
+    <div class="swipe-overlay">🏆</div>
+    <div class="car-placeholder" id="rightImg">
+      <div class="bg-text" id="rightBgText"></div>
+      <div class="car-svg-wrap" id="rightSvg"></div>
+    </div>
+    <div class="car-info">
+      <div class="brand" id="rightBrand"></div>
+      <div class="model-name" id="rightModel"></div>
+      <div class="year-badge" id="rightYear"></div>
+      <div class="battle-stats" id="rightStats"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Result bar -->
+<div class="battle-result-bar" id="resultBar">
+  <div class="result-inner">
+    <div class="result-text" id="resultText"></div>
+    <a id="compareLink" class="btn btn-secondary btn-sm" data-i18n="battle.result.compare">📊 Full Comparison</a>
+    <button class="btn btn-primary btn-sm" onclick="nextBattle()" data-i18n="battle.result.next">Next Battle →</button>
+  </div>
+</div>
+
+<!-- Footer buttons -->
+<div class="battle-footer">
+  <button class="btn btn-ghost btn-sm" onclick="nextBattle()" data-i18n="battle.footer.new">↻ New Matchup</button>
+  <a href="cars.html" class="btn btn-ghost btn-sm" data-i18n="battle.footer.browse">Browse All Cars</a>
+  <a href="compare.html" class="btn btn-outline btn-sm" data-i18n="battle.footer.compare">📊 Detailed Compare</a>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="js/cars-data.js?v=2"></script>
+<script src="js/i18n.js?v=2"></script>
+<script>
+/* ── State ── */
+let leftCar, rightCar;
+let voted = false;
+let touchStartX = 0, touchStartY = 0;
+let battleCount = parseInt(localStorage.getItem('battleCount') || 0);
+let battleRegion = localStorage.getItem('battleRegion') || 'all';
+
+/* ── Region filter ── */
+function paintRegionChips() {
+  document.querySelectorAll('#regionFilter .cat-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.region === battleRegion);
+  });
+}
+document.querySelectorAll('#regionFilter .cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    battleRegion = btn.dataset.region;
+    localStorage.setItem('battleRegion', battleRegion);
+    paintRegionChips();
+    loadBattle();
+  });
+});
+paintRegionChips();
+
+/* ── Init ── */
+loadBattle();
+
+/* ── Load two random cars ── */
+function loadBattle() {
+  voted = false;
+  const [a, b] = getTwoRandomCars([], battleRegion);
+  leftCar  = a;
+  rightCar = b;
+  renderCar('left',  leftCar);
+  renderCar('right', rightCar);
+  resetUI();
+}
+
+function renderCar(side, car) {
+  const brand = document.getElementById(side + 'Brand');
+  const model = document.getElementById(side + 'Model');
+  const year  = document.getElementById(side + 'Year');
+  const stats = document.getElementById(side + 'Stats');
+  const bgTxt = document.getElementById(side + 'BgText');
+  const svg   = document.getElementById(side + 'Svg');
+
+  brand.textContent = car.brand;
+  model.textContent = car.model;
+  year.textContent  = car.year + ' · ' + car.category;
+  bgTxt.textContent = car.brand;
+  svg.innerHTML     = carImageHTML(car, 160);
+
+  const avg = Math.round(Object.values(car.ratings).reduce((a,b) => a+b, 0) / Object.keys(car.ratings).length * 10) / 10;
+  stats.innerHTML = `
+    <div class="battle-stat">
+      <div class="bv">${car.performance.power} <span style="font-size:0.65rem;opacity:.7">${t('cars.hp')}</span></div>
+      <div class="bl">${t('battle.stat.power')}</div>
+    </div>
+    <div class="battle-stat">
+      <div class="bv">${car.performance.acceleration}s</div>
+      <div class="bl">${t('battle.stat.speed')}</div>
+    </div>
+    <div class="battle-stat">
+      <div class="bv">${avg}<span style="font-size:0.65rem;opacity:.7">/5</span></div>
+      <div class="bl">${t('battle.stat.score')}</div>
+    </div>
+  `;
+}
+
+function resetUI() {
+  const lc = document.getElementById('leftCard');
+  const rc = document.getElementById('rightCard');
+  const rb = document.getElementById('resultBar');
+  lc.className = 'battle-card';
+  rc.className = 'battle-card';
+  rb.className = 'battle-result-bar';
+  lc.style.pointerEvents = '';
+  rc.style.pointerEvents = '';
+  lc.setAttribute('onclick', "chooseCar('left')");
+  rc.setAttribute('onclick', "chooseCar('right')");
+}
+
+/* ── Choose winner ── */
+function chooseCar(side) {
+  if (voted) return;
+  voted = true;
+  battleCount++;
+  localStorage.setItem('battleCount', battleCount);
+
+  const winner = side === 'left' ? leftCar : rightCar;
+  const loser  = side === 'left' ? rightCar : leftCar;
+
+  const winCard  = document.getElementById(side + 'Card');
+  const loseCard = document.getElementById(side === 'left' ? 'rightCard' : 'leftCard');
+  winCard.classList.add('winner');
+  loseCard.classList.add('loser');
+
+  // save to history
+  const history = JSON.parse(localStorage.getItem('battleHistory') || '[]');
+  history.unshift({ winner: winner.id, loser: loser.id, date: new Date().toISOString() });
+  if (history.length > 50) history.pop();
+  localStorage.setItem('battleHistory', JSON.stringify(history));
+
+  // result bar
+  const rb = document.getElementById('resultBar');
+  const rt = document.getElementById('resultText');
+  const cl = document.getElementById('compareLink');
+  rt.innerHTML = `${t('battle.result.chose')} <span>${winner.brand} ${winner.model}</span> ${t('battle.result.over')} ${loser.brand} ${loser.model}`;
+  cl.href = `compare.html?a=${winner.id}&b=${loser.id}`;
+  rb.className = 'battle-result-bar show';
+
+  showToast(`${winner.brand} ${winner.model} ${t('battle.wins')}`);
+}
+
+/* ── Next battle ── */
+function nextBattle() {
+  document.getElementById('resultBar').className = 'battle-result-bar';
+  setTimeout(loadBattle, 150);
+}
+
+/* ── Keyboard support ── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft')  chooseCar('left');
+  if (e.key === 'ArrowRight') chooseCar('right');
+  if (e.key === 'Enter' && voted) nextBattle();
+});
+
+/* ── Touch / swipe support ── */
+document.getElementById('battleArena').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.getElementById('battleArena').addEventListener('touchend', e => {
+  if (voted) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+    chooseCar(dx < 0 ? 'right' : 'left');
+  }
+}, { passive: true });
+
+/* ── Re-render on language change ── */
+window.onLangChange = function() {
+  if (leftCar) renderCar('left',  leftCar);
+  if (rightCar) renderCar('right', rightCar);
+};
+
+/* ── Toast ── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>

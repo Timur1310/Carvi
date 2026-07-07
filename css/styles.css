@@ -200,6 +200,7 @@ a:hover { text-decoration: underline; }
 .badge-green { background: rgba(34,197,94,0.15);   color: var(--success); }
 .badge-amber { background: rgba(245,158,11,0.15);  color: var(--warning); }
 .badge-red   { background: rgba(239,68,68,0.15);   color: var(--danger); }
+.badge-neutral { background: var(--bg-2); color: var(--text-2); border: 1px solid var(--border-light); }
 
 /* ─── Rating Segments ─── */
 .rating-bar {
@@ -790,7 +791,7 @@ a:hover { text-decoration: underline; }
 /* ─── CARS LIST PAGE ─── */
 .filters-bar {
   display: flex;
-  gap: 12px;
+  gap: 18px;
   align-items: center;
   flex-wrap: wrap;
   margin-bottom: 24px;
