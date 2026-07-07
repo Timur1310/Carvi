@@ -6157,6 +6157,18 @@ function getCarsByRegion(region) {
   return all.filter(c => carRegion(c) === region);
 }
 
+/* ─── Car visual: real photo if img/cars/{id}.webp exists, SVG fallback ───
+   Photos are generated in batches (tools/gen-car-images.mjs); until a photo
+   lands, the <img> errors out silently and the SVG shows instead. */
+function carImageHTML(car, size = 160, pathPrefix = '') {
+  const svg = buildCarSVG(car.color, size, car.category);
+  return `<span class="car-visual" style="display:block;width:100%;">` +
+    `<img class="car-photo" src="${pathPrefix}img/cars/${car.id}.webp" ` +
+    `alt="${car.brand} ${car.model}" loading="lazy" style="display:none;" ` +
+    `onload="this.style.display='';this.nextElementSibling.style.display='none'">` +
+    `<span class="car-visual-svg">${svg}</span></span>`;
+}
+
 /* ─── Prices: base data is USD, the site shows RUBLES ONLY ───
    Single editorial rate — change here to reprice the whole site
    (then re-run tools/gen-compare.js). Rounded to 10 000 ₽. */

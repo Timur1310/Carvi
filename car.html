@@ -315,7 +315,7 @@ function buildPage() {
 
   /* Hero */
   document.getElementById('heroBgText').textContent = car.brand;
-  document.getElementById('heroSvg').innerHTML = buildCarSVG(car.color, 260, car.category);
+  document.getElementById('heroSvg').innerHTML = carImageHTML(car, 260);
   document.getElementById('categoryBadge').innerHTML = `<span class="badge badge-purple" style="margin-bottom:12px;">${car.category}</span>`;
   document.getElementById('carTitle').textContent = `${car.brand} ${car.model} (${car.year})`;
   document.getElementById('carDesc').textContent = car.description.split('.')[0] + '.';
@@ -412,7 +412,7 @@ function buildPage() {
     sr(t('car.sp.tprice'),  fmtRub(car.price.max));
 
   /* Exterior */
-  document.getElementById('extSvgLarge').innerHTML = buildCarSVG(car.color, 300, car.category);
+  document.getElementById('extSvgLarge').innerHTML = carImageHTML(car, 300);
   document.getElementById('extDesc').textContent = car.exterior.description;
   document.getElementById('extFeatures').innerHTML =
     car.exterior.highlights.map(h => `<li><span class="icon">◆</span>${h}</li>`).join('');

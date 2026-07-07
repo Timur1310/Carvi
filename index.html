@@ -258,7 +258,7 @@ function renderCar(side, car) {
   model.textContent = car.model;
   year.textContent  = car.year + ' · ' + car.category;
   bgTxt.textContent = car.brand;
-  svg.innerHTML     = buildCarSVG(car.color, 160, car.category);
+  svg.innerHTML     = carImageHTML(car, 160);
 
   const avg = Math.round(Object.values(car.ratings).reduce((a,b) => a+b, 0) / Object.keys(car.ratings).length * 10) / 10;
   stats.innerHTML = `

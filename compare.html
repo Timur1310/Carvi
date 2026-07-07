@@ -566,7 +566,7 @@ function buildHeroCards(carObjs) {
   const maxAvg = Math.max(...avgs);
   document.getElementById('heroCards').innerHTML = carObjs.map((c, i) => `
     <div class="compare-hero-card animate-up" style="flex:1;min-width:180px;animation-delay:${i*0.05}s">
-      <div style="display:flex;justify-content:center;margin-bottom:12px;">${buildCarSVG(c.color, 160, c.category)}</div>
+      <div style="margin-bottom:12px;">${carImageHTML(c, 160)}</div>
       <div class="ch-brand">${c.brand}</div>
       <div class="ch-name">${c.model}</div>
       <div class="ch-cat">${c.year} · ${c.category}</div>

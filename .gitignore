@@ -13,3 +13,6 @@ node_modules/
 
 # Claude Code worktrees
 .claude/worktrees/
+
+# raw generated images (webp is committed instead)
+img/cars/raw/

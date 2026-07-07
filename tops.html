@@ -116,7 +116,7 @@ function renderTops() {
     const rows = top.map((x, i) => `
       <a class="top-row" href="car.html?id=${x.c.id}">
         <div class="top-rank">${MEDALS[i]}</div>
-        <div class="top-svg">${buildCarSVG(x.c.color, 90, x.c.category)}</div>
+        <div class="top-svg">${carImageHTML(x.c, 90)}</div>
         <div class="top-name">
           <div class="tb">${x.c.brand}</div>
           <div class="tm">${x.c.model}</div>

@@ -550,6 +550,17 @@ a:hover { text-decoration: underline; }
   .nav-link span { display: none; }
 }
 
+/* ─── Car photos (generated renders, SVG fallback) ─── */
+.car-photo {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+.car-visual { position: relative; z-index: 1; }
+.car-visual-svg { display: flex; justify-content: center; }
+
 /* ─── BATTLE PAGE ─── */
 .battle-hero {
   text-align: center;

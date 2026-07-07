@@ -22,6 +22,15 @@ const cars = sandbox.getAllCars();
 const buildCarSVG = sandbox.buildCarSVG;
 const carBodyType = sandbox.carBodyType;
 
+/* Static pages embed a real photo when the file exists at build time. */
+function carVisual(car, size) {
+  const photo = path.join(ROOT, 'img', 'cars', `${car.id}.webp`);
+  if (fs.existsSync(photo)) {
+    return `<img class="car-photo" src="../img/cars/${car.id}.webp" alt="${car.brand} ${car.model}" loading="lazy" style="max-width:${Math.round(size * 1.8)}px;margin:0 auto;">`;
+  }
+  return buildCarSVG(car.color, size, car.category);
+}
+
 /* ── Russian helpers ── */
 const SEGMENT_RU = {
   sedan: 'седаны', suv: 'кроссоверы и внедорожники', hatch: 'хэтчбеки',
@@ -270,13 +279,13 @@ ${navHTML()}
 
   <div class="vs-cards">
     <div class="vs-card">
-      <div class="vs-svg">${buildCarSVG(a.color, 200, a.category)}</div>
+      <div class="vs-svg">${carVisual(a, 200)}</div>
       <div class="brand">${esc(a.brand)}</div>
       <div class="model">${esc(a.model)}</div>
       <div class="price">от ${money(a.price.min)}</div>
     </div>
     <div class="vs-card">
-      <div class="vs-svg">${buildCarSVG(b.color, 200, b.category)}</div>
+      <div class="vs-svg">${carVisual(b, 200)}</div>
       <div class="brand">${esc(b.brand)}</div>
       <div class="model">${esc(b.model)}</div>
       <div class="price">от ${money(b.price.min)}</div>
