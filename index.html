@@ -54,14 +54,35 @@
     .pick-go:hover { opacity: 0.92; transform: translateY(-1px); }
     .pick-hint { font-size: 0.8rem; color: var(--text-3); margin-top: 10px; text-align: center; }
 
-    .brand-strip {
-      display: flex; gap: 34px; justify-content: center; flex-wrap: wrap;
-      padding: 4px 8px 26px; color: var(--text-3);
-      font-size: 0.95rem; font-weight: 600; letter-spacing: 0.02em;
-      border-bottom: 1px solid var(--border-light); margin-bottom: 30px;
+    .hero-art { margin: 4px 0 26px; }
+    .hero-art img {
+      width: 100%; aspect-ratio: 21/9; object-fit: cover; object-position: 50% 76%;
+      border-radius: var(--r-lg); display: block; border: 1px solid var(--border-light);
     }
-    .brand-strip span { opacity: 0.75; white-space: nowrap; }
-    @media (max-width: 680px) { .brand-strip { gap: 18px; font-size: 0.82rem; } }
+    @media (max-width: 680px) { .hero-art img { aspect-ratio: 16/9; } }
+
+    /* cyclic brand marquee */
+    .brand-strip {
+      overflow: hidden; position: relative;
+      padding: 14px 0; color: var(--text-3);
+      font-size: 0.95rem; font-weight: 600; letter-spacing: 0.02em;
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 30px;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+    .brand-track {
+      display: flex; gap: 46px; width: max-content;
+      animation: brandmarquee 36s linear infinite;
+    }
+    .brand-track span { opacity: 0.75; white-space: nowrap; }
+    @keyframes brandmarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (max-width: 680px) { .brand-strip { font-size: 0.82rem; } .brand-track { gap: 26px; } }
+
+    /* priorities row — larger tap targets */
+    #prioRow { gap: 12px; }
+    #prioRow .pick-btn { padding: 14px 24px; font-size: 1.02rem; border-radius: 12px; }
 
     /* results */
     .res-title { margin: 40px 0 6px; }
@@ -117,7 +138,6 @@
     <a href="cars.html" class="nav-link">Машины</a>
     <a href="tops.html" class="nav-link">Топы</a>
     <a href="compare.html" class="nav-link">Сравнение</a>
-    <button class="theme-toggle" id="themeBtn" onclick="cbCycleTheme()" title="Сменить тему" aria-label="Сменить тему">☀️</button>
   </div>
 </nav>
 
@@ -127,7 +147,11 @@
 </div>
 
 <div class="pick-wrap">
-  <div class="brand-strip animate-up" id="brandStrip"></div>
+  <div class="hero-art animate-up delay-1">
+    <img src="img/design/hero-mustang.jpg" alt="Классический автомобиль — иллюстрация Carvi" loading="eager">
+  </div>
+
+  <div class="brand-strip animate-up" id="brandStrip"><div class="brand-track" id="brandTrack"></div></div>
 
   <div class="pick-card animate-up delay-1">
     <div class="pick-label">Бюджет</div>
@@ -175,7 +199,7 @@
 
 <footer>
   <p>Carvi — <span data-lang="ru">В образовательных целях. Помогаем покупателям принимать взвешенные решения.</span>
-  · <a href="battle.html">Игровая версия</a> · <a href="quiz.html">Викторина</a></p>
+  · <a href="battle.html">Игровая версия</a> · <a href="quiz.html">Викторина</a> · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
 </footer>
 
 <script src="js/cars-data.js?v=3"></script>
@@ -204,10 +228,12 @@ wireRow('budgetRow', false);
 wireRow('bodyRow', false);
 wireRow('prioRow', true, 2);
 
-/* brand strip */
-document.getElementById('brandStrip').innerHTML =
-  ['Mercedes-Benz','BMW','Audi','Lexus','Toyota','Volkswagen','Hyundai','Kia','Haval','Geely','Chery','Lada']
-    .map((b) => `<span>${b}</span>`).join('');
+/* cyclic brand marquee: list duplicated for a seamless loop */
+const BRANDS = ['Mercedes-Benz','BMW','Audi','Porsche','Lexus','Toyota','Honda','Mazda','Nissan',
+  'Volkswagen','Skoda','Renault','Hyundai','Kia','Genesis','Haval','Geely','Chery','Changan',
+  'Exeed','Tank','Omoda','Jetour','Lada','УАЗ'];
+document.getElementById('brandTrack').innerHTML =
+  BRANDS.concat(BRANDS).map((b) => `<span>${b}</span>`).join('');
 
 /* ── scoring ── */
 function runPick() {

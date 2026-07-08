@@ -163,9 +163,14 @@ function navHTML() {
     <a href="../tops.html" class="nav-link">Топы</a>
     <a href="../compare.html" class="nav-link">Сравнение</a>
     <a href="index.html" class="nav-link active">Сравнения</a>
-    <button class="theme-toggle" id="themeBtn" onclick="cbCycleTheme()" title="Сменить тему" aria-label="Сменить тему">☀️</button>
   </div>
 </nav>`;
+}
+
+function footerHTML() {
+  return `<footer>
+  <p>Carvi — в образовательных целях · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
+</footer>`;
 }
 
 const PAGE_CSS = `
@@ -316,6 +321,7 @@ ${navHTML()}
       ${relHTML}
   </div>
 </div>
+${footerHTML()}
 </body>
 </html>`;
 }
@@ -372,6 +378,7 @@ ${navHTML()}
   <p class="vs-lede">${keys.length} подробных сравнений по цене, мощности, разгону, расходу и клиренсу. Выбирайте пару и разбирайтесь по цифрам.</p>
   ${sections}
 </div>
+${footerHTML()}
 </body>
 </html>`;
 }
