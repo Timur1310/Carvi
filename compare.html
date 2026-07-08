@@ -24,6 +24,18 @@
   <link rel="stylesheet" href="css/themes.css">
   <script src="js/theme.js"></script>
   <style>
+    .compare-art {
+      max-width: 940px; margin: 24px auto 8px; padding: 0 24px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; align-items: end;
+    }
+    .compare-art img {
+      width: 100%; height: auto; display: block;
+      filter: drop-shadow(0 14px 18px rgba(23,21,15,0.18));
+      transition: transform 0.25s;
+    }
+    .compare-art img:hover { transform: translateY(-6px); }
+    @media (max-width: 680px) { .compare-art { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+
     .compare-hero-cards {
       max-width: 900px;
       margin: 0 auto 32px;
@@ -320,6 +332,14 @@
   </div>
 </div>
 
+<!-- Angled cars showcase (design art, shown until a comparison runs) -->
+<div class="compare-art animate-up delay-2" id="compareArt">
+  <img src="img/design/priora.webp" alt="Lada Priora">
+  <img src="img/design/polo.webp" alt="Volkswagen Polo">
+  <img src="img/design/corolla.webp" alt="Toyota Corolla">
+  <img src="img/design/lexus-is.webp" alt="Lexus IS">
+</div>
+
 <!-- Hero cards -->
 <div class="compare-hero-cards" id="heroCards" style="display:none;"></div>
 
@@ -554,6 +574,7 @@ function runCompare() {
   buildSummary(carObjs);
   buildTable(carObjs);
 
+  document.getElementById('compareArt').style.display = 'none';
   document.getElementById('heroCards').style.display = '';
   document.getElementById('summaryGrid').style.display = '';
   document.getElementById('compareTable').style.display = '';

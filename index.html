@@ -84,6 +84,14 @@
     #prioRow { gap: 12px; }
     #prioRow .pick-btn { padding: 14px 24px; font-size: 1.02rem; border-radius: 12px; }
 
+    /* bottom art — blue coupe from the design */
+    .bottom-art { margin-top: 44px; }
+    .bottom-art img {
+      width: 100%; aspect-ratio: 21/9; object-fit: cover; object-position: 50% 56%;
+      border-radius: var(--r-lg); display: block; border: 1px solid var(--border-light);
+    }
+    @media (max-width: 680px) { .bottom-art img { aspect-ratio: 16/9; } }
+
     /* results */
     .res-title { margin: 40px 0 6px; }
     .res-sub { color: var(--text-3); font-size: 0.85rem; margin-bottom: 18px; }
@@ -173,7 +181,7 @@
       <button class="pick-btn" data-body="minivan">Минивэн</button>
     </div>
 
-    <div class="pick-label">Что важнее всего? (до двух)</div>
+    <div class="pick-label">Что для тебя важно?</div>
     <div class="pick-row" id="prioRow">
       <button class="pick-btn" data-p="reliability">Надёжность</button>
       <button class="pick-btn" data-p="economy">Экономичность</button>
@@ -195,6 +203,10 @@
     <a class="ql" href="tops.html"><b>🏆 Топы</b><span>Лучшие по цене/качеству в каждой стране</span></a>
     <a class="ql" href="vs/index.html"><b>🆚 Сравнения</b><span>840+ разборов «кто лучше» по парам</span></a>
   </div>
+
+  <div class="bottom-art animate-up">
+    <img src="img/design/porsche-blue.webp" alt="Классическое купе — иллюстрация Carvi" loading="lazy">
+  </div>
 </div>
 
 <footer>
@@ -206,7 +218,7 @@
 <script src="js/i18n.js?v=3"></script>
 <script>
 /* ── selection state ── */
-function wireRow(rowId, multi, limit) {
+function wireRow(rowId, multi) {
   const row = document.getElementById(rowId);
   row.addEventListener('click', (e) => {
     const btn = e.target.closest('.pick-btn');
@@ -215,18 +227,13 @@ function wireRow(rowId, multi, limit) {
       row.querySelectorAll('.pick-btn').forEach((b) => b.classList.remove('on'));
       btn.classList.add('on');
     } else {
-      if (btn.classList.contains('on')) btn.classList.remove('on');
-      else {
-        const on = row.querySelectorAll('.pick-btn.on');
-        if (on.length >= limit) on[0].classList.remove('on');
-        btn.classList.add('on');
-      }
+      btn.classList.toggle('on');
     }
   });
 }
 wireRow('budgetRow', false);
 wireRow('bodyRow', false);
-wireRow('prioRow', true, 2);
+wireRow('prioRow', true);
 
 /* cyclic brand marquee: list duplicated for a seamless loop */
 const BRANDS = ['Mercedes-Benz','BMW','Audi','Porsche','Lexus','Toyota','Honda','Mazda','Nissan',
