@@ -45,7 +45,7 @@
       cursor: pointer; transition: var(--t); font-family: inherit;
     }
     .pick-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .pick-btn.on { border-color: var(--accent); color: var(--accent); background: rgba(14,166,114,0.08); font-weight: 600; }
+    .pick-btn.on { border-color: var(--accent); color: var(--bg-card); background: var(--accent); font-weight: 600; }
     .pick-go {
       margin-top: 26px; width: 100%; padding: 14px; border: none; border-radius: 12px;
       background: var(--accent-gradient); color: #fff; font-size: 1.02rem; font-weight: 700;
@@ -53,6 +53,15 @@
     }
     .pick-go:hover { opacity: 0.92; transform: translateY(-1px); }
     .pick-hint { font-size: 0.8rem; color: var(--text-3); margin-top: 10px; text-align: center; }
+
+    .brand-strip {
+      display: flex; gap: 34px; justify-content: center; flex-wrap: wrap;
+      padding: 4px 8px 26px; color: var(--text-3);
+      font-size: 0.95rem; font-weight: 600; letter-spacing: 0.02em;
+      border-bottom: 1px solid var(--border-light); margin-bottom: 30px;
+    }
+    .brand-strip span { opacity: 0.75; white-space: nowrap; }
+    @media (max-width: 680px) { .brand-strip { gap: 18px; font-size: 0.82rem; } }
 
     /* results */
     .res-title { margin: 40px 0 6px; }
@@ -113,11 +122,13 @@
 </nav>
 
 <div class="pick-hero animate-up">
-  <h1>Какая машина тебе подходит?</h1>
-  <p>Укажи бюджет и что для тебя важно — покажем три лучших варианта и объясним почему. По цифрам, без воды.</p>
+  <h1>Машина, <em>которая тебе идёт</em></h1>
+  <p>Назови бюджет и что для тебя важно — подберём три варианта и честно объясним выбор.</p>
 </div>
 
 <div class="pick-wrap">
+  <div class="brand-strip animate-up" id="brandStrip"></div>
+
   <div class="pick-card animate-up delay-1">
     <div class="pick-label">Бюджет</div>
     <div class="pick-row" id="budgetRow">
@@ -192,6 +203,11 @@ function wireRow(rowId, multi, limit) {
 wireRow('budgetRow', false);
 wireRow('bodyRow', false);
 wireRow('prioRow', true, 2);
+
+/* brand strip */
+document.getElementById('brandStrip').innerHTML =
+  ['Mercedes-Benz','BMW','Audi','Lexus','Toyota','Volkswagen','Hyundai','Kia','Haval','Geely','Chery','Lada']
+    .map((b) => `<span>${b}</span>`).join('');
 
 /* ── scoring ── */
 function runPick() {
