@@ -6169,6 +6169,16 @@ function carImageHTML(car, size = 160, pathPrefix = '') {
     `<span class="car-visual-svg">${svg}</span></span>`;
 }
 
+/* ─── Fuel kind: petrol | diesel | hybrid | electric (for the picker) ─── */
+function carFuelKind(c) {
+  const ft = (c.engine.fuelType || '').toLowerCase();
+  const cfg = (c.engine.configuration || '').toLowerCase();
+  if (ft === 'electric') return 'electric';
+  if (ft.includes('diesel')) return 'diesel';
+  if (ft.includes('electric') || ft.includes('hybrid') || cfg.includes('hybrid')) return 'hybrid';
+  return 'petrol';
+}
+
 /* ─── Prices: base data is USD, the site shows RUBLES ONLY ───
    Single editorial rate — change here to reprice the whole site
    (then re-run tools/gen-compare.js). Rounded to 10 000 ₽. */

@@ -181,6 +181,15 @@
       <button class="pick-btn" data-body="minivan">Минивэн</button>
     </div>
 
+    <div class="pick-label">Двигатель</div>
+    <div class="pick-row" id="fuelRow">
+      <button class="pick-btn on" data-fuel="any">Любой</button>
+      <button class="pick-btn" data-fuel="petrol">Бензин</button>
+      <button class="pick-btn" data-fuel="hybrid">Гибрид</button>
+      <button class="pick-btn" data-fuel="electric">Электро</button>
+      <button class="pick-btn" data-fuel="diesel">Дизель</button>
+    </div>
+
     <div class="pick-label">Что для тебя важно?</div>
     <div class="pick-row" id="prioRow">
       <button class="pick-btn" data-p="reliability">Надёжность</button>
@@ -233,6 +242,7 @@ function wireRow(rowId, multi) {
 }
 wireRow('budgetRow', false);
 wireRow('bodyRow', false);
+wireRow('fuelRow', false);
 wireRow('prioRow', true);
 
 /* cyclic brand marquee: list duplicated for a seamless loop */
@@ -246,10 +256,12 @@ document.getElementById('brandTrack').innerHTML =
 function runPick() {
   const budget = Number(document.querySelector('#budgetRow .on').dataset.max);
   const body = document.querySelector('#bodyRow .on').dataset.body;
+  const fuel = document.querySelector('#fuelRow .on').dataset.fuel;
   const prios = [...document.querySelectorAll('#prioRow .on')].map((b) => b.dataset.p);
 
   let pool = getAllCars().filter((c) => priceRub(c.price.min) <= budget);
   if (body !== 'any') pool = pool.filter((c) => carBodyType(c.category) === body);
+  if (fuel !== 'any') pool = pool.filter((c) => carFuelKind(c) === fuel);
 
   const scored = pool.map((c) => {
     let s = carValueScore(c);
