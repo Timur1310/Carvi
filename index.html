@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="no-referrer">
   <title>Carvi — подбор автомобиля по бюджету и приоритетам</title>
@@ -207,12 +207,6 @@
 
   <div id="results"></div>
 
-  <div class="quick-links animate-up delay-2">
-    <a class="ql" href="cars.html"><b>🚗 Каталог</b><span>242 машины с полными характеристиками</span></a>
-    <a class="ql" href="tops.html"><b>🏆 Топы</b><span>Лучшие по цене/качеству в каждой стране</span></a>
-    <a class="ql" href="vs/index.html"><b>🆚 Сравнения</b><span>840+ разборов «кто лучше» по парам</span></a>
-  </div>
-
   <div class="bottom-art animate-up">
     <img src="img/design/porsche-blue.webp" alt="Классическое купе — иллюстрация Carvi" loading="lazy">
   </div>
@@ -311,5 +305,6 @@ function runPick() {
   box.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

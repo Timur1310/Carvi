@@ -152,7 +152,7 @@ function relatedFor(carId, allKeys, limit = 6) {
 }
 
 /* ── Shared nav + head ── */
-const CSP = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';`;
+const CSP = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';`;
 
 function navHTML() {
   return `<nav class="navbar">
@@ -322,6 +322,7 @@ ${navHTML()}
   </div>
 </div>
 ${footerHTML()}
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>`;
 }
@@ -379,6 +380,7 @@ ${navHTML()}
   ${sections}
 </div>
 ${footerHTML()}
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>`;
 }
