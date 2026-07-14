@@ -160,9 +160,10 @@ function navHTML() {
   <div class="nav-links">
     <a href="../index.html" class="nav-link">Подбор</a>
     <a href="../cars.html" class="nav-link">Машины</a>
+    <a href="../compare.html" class="nav-link active">Сравнение</a>
     <a href="../tops.html" class="nav-link">Топы</a>
-    <a href="../compare.html" class="nav-link">Сравнение</a>
-    <a href="index.html" class="nav-link active">Сравнения</a>
+    <a href="../learn.html" class="nav-link">Обучение</a>
+    <a href="../battle.html" class="nav-link">Игры</a>
   </div>
 </nav>`;
 }
@@ -287,12 +288,14 @@ ${navHTML()}
       <div class="brand">${esc(a.brand)}</div>
       <div class="model">${esc(a.model)}</div>
       <div class="price">от ${money(a.price.min)}</div>
+      <div style="margin-top:14px;text-align:left;">${sandbox.marketplaceHTML(a, { compact: true, prefix: '../' })}</div>
     </div>
     <div class="vs-card">
       <div class="vs-svg">${carVisual(b, 200)}</div>
       <div class="brand">${esc(b.brand)}</div>
       <div class="model">${esc(b.model)}</div>
       <div class="price">от ${money(b.price.min)}</div>
+      <div style="margin-top:14px;text-align:left;">${sandbox.marketplaceHTML(b, { compact: true, prefix: '../' })}</div>
     </div>
   </div>
 

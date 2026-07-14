@@ -96,7 +96,9 @@
     /* results */
     .res-title { margin: 40px 0 6px; }
     .res-sub { color: var(--text-3); font-size: 0.85rem; margin-bottom: 18px; }
-    .res-grid { display: grid; gap: 14px; }
+    .res-grid { display: grid; gap: 22px; }
+    .res-item { display: grid; gap: 8px; }
+    .res-item .res-card { margin: 0; }
     .res-card {
       display: grid; grid-template-columns: 200px 1fr auto; gap: 18px; align-items: center;
       background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-lg);
@@ -291,7 +293,8 @@ function runPick() {
     <div class="res-sub">Считаем по рейтингам и характеристикам с поправкой на цену</div>
     <div class="res-grid">` +
     scored.map((x, i) => `
-      <a class="res-card animate-up" href="car.html?id=${x.c.id}" style="animation-delay:${i * 0.06}s">
+      <div class="res-item animate-up" style="animation-delay:${i * 0.06}s">
+      <a class="res-card" href="car.html?id=${x.c.id}">
         <div>${carImageHTML(x.c, 200)}</div>
         <div>
           <div class="res-place">${PLACES[i]}</div>
@@ -300,7 +303,9 @@ function runPick() {
           <div class="res-why">${x.why.map((w) => `<span>${w}</span>`).join('')}</div>
         </div>
         <div class="res-score"><div class="v">${x.s.toFixed(1)}</div><div class="l">балл</div></div>
-      </a>`).join('') +
+      </a>
+      ${marketplaceHTML(x.c, { compact: true })}
+      </div>`).join('') +
     `</div>` +
     (scored.length >= 2
       ? `<div style="margin-top:16px;text-align:center;"><a class="btn btn-outline btn-sm" href="compare.html?a=${scored[0].c.id}&b=${scored[1].c.id}">Сравнить первую пару подробно →</a></div>`

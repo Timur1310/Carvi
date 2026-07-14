@@ -6222,6 +6222,47 @@ function carFuelKind(c) {
   return 'petrol';
 }
 
+/* ─── "Где купить": search links to RU marketplaces ───
+   URL formats verified live (2026-07): Avito & Auto.ru use text search
+   (avoids slug quirks like BMW→3er, Lada→vaz); Drom uses a clean
+   /{brand}/{model}/ slug (lada, haval/jolion, bmw/3-series all confirmed),
+   with a text-search fallback for brands whose slug is ambiguous. */
+function _mpSlug(s) {
+  return String(s).trim().toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-').replace(/^-|-$/g, '');
+}
+/* Brands whose Drom slug isn't a simple lowercase token → use Drom text search */
+const _DROM_SEARCH_BRANDS = new Set([
+  'mercedes-benz', 'mercedes-amg', 'land rover', 'alfa romeo', 'rolls-royce', 'li auto',
+]);
+function buildMarketplaceLinks(brand, model) {
+  const q = encodeURIComponent(`${brand} ${model}`);
+  const bKey = String(brand).trim().toLowerCase();
+  const mSlug = _mpSlug(model);
+  const latinModel = /[a-z0-9]/i.test(model) && !/[а-яё]/i.test(model);
+  const drom = (!_DROM_SEARCH_BRANDS.has(bKey) && mSlug && latinModel)
+    ? `https://auto.drom.ru/${_mpSlug(brand)}/${mSlug}/`
+    : `https://auto.drom.ru/all/?query=${q}`;
+  return [
+    { name: 'Авито',   url: `https://www.avito.ru/all/avtomobili?q=${q}` },
+    { name: 'Дром',    url: drom },
+    { name: 'Авто.ру', url: `https://auto.ru/cars/all/?query=${q}` },
+  ];
+}
+/* Full "Где купить" block. opts.compact = smaller; opts.prefix for /vs/ pages ("../"). */
+function marketplaceHTML(car, opts = {}) {
+  const prefix = opts.prefix || '';
+  const links = buildMarketplaceLinks(car.brand, car.model)
+    .map(l => `<a class="buy-btn" href="${l.url}" target="_blank" rel="noopener nofollow">${l.name}</a>`).join('');
+  return `<div class="buy-block${opts.compact ? ' buy-compact' : ''}">` +
+    `<div class="buy-title">🛒 Где купить</div>` +
+    `<div class="buy-btns">${links}</div>` +
+    `<div class="buy-note">Ссылки ведут на внешние площадки объявлений. Перед покупкой загляни в <a href="${prefix}learn.html#buying">гайд покупателя</a>.</div>` +
+    `</div>`;
+}
+
 /* ─── Prices: base data is USD, the site shows RUBLES ONLY ───
    Single editorial rate — change here to reprice the whole site
    (then re-run tools/gen-compare.js). Rounded to 10 000 ₽. */

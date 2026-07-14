@@ -593,6 +593,7 @@ function buildHeroCards(carObjs) {
       <div class="ch-name">${c.model}</div>
       <div class="ch-cat">${c.year} · ${categoryRu(c.category)}</div>
       <div style="margin-top:10px;">${avgs[i] >= maxAvg ? `<span class="winner-badge">${t('compare.winner')}</span>` : `<span class="loser-badge">${t('compare.loser')}</span>`}</div>
+      <div style="margin-top:14px;text-align:left;">${marketplaceHTML(c, { compact: true })}</div>
     </div>
   `).join('');
 }

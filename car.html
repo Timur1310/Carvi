@@ -139,6 +139,11 @@
   <div class="stat-grid" id="keyStats"></div>
 </div>
 
+<!-- Where to buy -->
+<div class="section" style="padding-top:20px;padding-bottom:0;">
+  <div id="buyWhere"></div>
+</div>
+
 <!-- Detail Content -->
 <div class="car-detail-content animate-up delay-1">
   <div class="car-tabs-wrap">
@@ -332,6 +337,8 @@ function buildPage() {
   document.getElementById('heroScores').innerHTML = scoreHtml;
 
   /* Key stats */
+  document.getElementById('buyWhere').innerHTML = marketplaceHTML(car);
+
   document.getElementById('keyStats').innerHTML = `
     <div class="stat-chip"><div class="val">${car.performance.power}</div><div class="unit">${t('cars.hp')}</div><div class="lbl">${t('car.st.power')}</div></div>
     <div class="stat-chip"><div class="val">${car.performance.torque}</div><div class="unit">Nm</div><div class="lbl">${t('car.st.torque')}</div></div>
