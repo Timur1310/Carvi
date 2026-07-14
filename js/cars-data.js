@@ -6292,14 +6292,14 @@ function compareVerdict(cars) {
     if (a.engine.consumption.combined > 0 && b.engine.consumption.combined > 0)
       eco = _cvWin(a.engine.consumption.combined, b.engine.consumption.combined, false);
     const dims = [
-      { label: 'динамике',      prio: 'мотор и динамика',   w: dyn },
-      { label: 'цене',          prio: 'бюджет',             w: _cvWin(a.price.min, b.price.min, false) },
-      { label: 'экономичности', prio: 'расход топлива',     w: eco },
-      { label: 'клиренсу',      prio: 'плохие дороги',      w: _cvWin(a.dimensions.groundClearance, b.dimensions.groundClearance, true) },
-      { label: 'багажнику',     prio: 'практичность',       w: _cvWin(a.dimensions.trunkVolume, b.dimensions.trunkVolume, true) },
-      { label: 'надёжности',    prio: 'надёжность',         w: _cvWin(a.ratings.reliability, b.ratings.reliability, true) },
-      { label: 'безопасности',  prio: 'безопасность',       w: _cvWin(a.ratings.safety, b.ratings.safety, true) },
-      { label: 'комфорту',      prio: 'комфорт и оснащение', w: _cvWin(a.ratings.comfort, b.ratings.comfort, true) },
+      { label: 'динамике',      prio: 'динамика',      w: dyn },
+      { label: 'цене',          prio: 'цена',          w: _cvWin(a.price.min, b.price.min, false) },
+      { label: 'экономичности', prio: 'экономичность', w: eco },
+      { label: 'клиренсу',      prio: 'клиренс',       w: _cvWin(a.dimensions.groundClearance, b.dimensions.groundClearance, true) },
+      { label: 'багажнику',     prio: 'багажник',      w: _cvWin(a.dimensions.trunkVolume, b.dimensions.trunkVolume, true) },
+      { label: 'надёжности',    prio: 'надёжность',    w: _cvWin(a.ratings.reliability, b.ratings.reliability, true) },
+      { label: 'безопасности',  prio: 'безопасность',  w: _cvWin(a.ratings.safety, b.ratings.safety, true) },
+      { label: 'комфорту',      prio: 'комфорт',       w: _cvWin(a.ratings.comfort, b.ratings.comfort, true) },
     ];
     const aW = dims.filter((d) => d.w === 'a'), bW = dims.filter((d) => d.w === 'b');
     let s1;
@@ -6313,7 +6313,7 @@ function compareVerdict(cars) {
       s1 = `${nm(a)} и ${nm(b)} очень близки по ключевым параметрам.`;
     let s2;
     if (aW.length && bW.length)
-      s2 = `Если важнее ${aW.slice(0, 2).map((d) => d.prio).join(', ')} — бери ${nm(a)}; если ${bW.slice(0, 2).map((d) => d.prio).join(', ')} — ${nm(b)}.`;
+      s2 = `Если важнее ${aW.slice(0, 2).map((d) => d.prio).join(' и ')} — бери ${nm(a)}; если ${bW.slice(0, 2).map((d) => d.prio).join(' и ')} — ${nm(b)}.`;
     else
       s2 = `По совокупности характеристик выигрывает ${_cvAvg(a) >= _cvAvg(b) ? nm(a) : nm(b)}.`;
     return { lines: [s1, s2], caveat };
