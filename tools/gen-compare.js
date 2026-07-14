@@ -192,9 +192,9 @@ const PAGE_CSS = `
   .vs-tab td.lbl{text-align:left;color:var(--text-2)}
   .vs-tab td.win{color:var(--success);font-weight:700}
   .vs-sec{margin:0 0 16px;font-size:1.3rem}
-  .vs-verdict{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:18px 22px;margin-bottom:32px}
-  .vs-verdict ul{list-style:none;display:grid;gap:8px}
-  .vs-verdict li{color:var(--text-1)}
+  .vs-verdict{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--success);border-radius:var(--r-md);padding:18px 22px;margin-bottom:32px}
+  .vs-verdict p{color:var(--text-1);line-height:1.6}
+  .vs-verdict .vs-caveat{margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light);color:var(--text-2);font-size:.9rem}
   .vs-faq{margin-bottom:32px}
   .vs-faq details{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 16px;margin-bottom:8px}
   .vs-faq summary{cursor:pointer;font-weight:600;color:var(--text-1)}
@@ -217,7 +217,7 @@ function buildPage(a, b, allKeys) {
     .replace('разгon', 'разгон');
   const rows = specRows(a, b);
   const faqItems = faq(a, b);
-  const vd = verdict(a, b);
+  const vd = sandbox.compareVerdict([a, b]);
   const related = relatedFor(a.id, allKeys).concat(relatedFor(b.id, allKeys))
     .filter((k) => k !== `${a.id}__${b.id}`)
     .filter((v, i, arr) => arr.indexOf(v) === i)
@@ -306,8 +306,11 @@ ${navHTML()}
     </tbody>
   </table>
 
-  <h2 class="vs-sec">Итог: кто в чём выигрывает</h2>
-  <div class="vs-verdict"><ul>${vd.map((v) => `<li>${v}</li>`).join('')}</ul></div>
+  <h2 class="vs-sec">Итог</h2>
+  <div class="vs-verdict">
+    <p>${vd.lines.join(' ')}</p>
+    ${vd.caveat ? `<p class="vs-caveat">⚠️ ${esc(vd.caveat)}</p>` : ''}
+  </div>
 
   <h2 class="vs-sec">Частые вопросы</h2>
   <div class="vs-faq">${faqHTML}

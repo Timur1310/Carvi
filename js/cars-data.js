@@ -6263,6 +6263,73 @@ function marketplaceHTML(car, opts = {}) {
     `</div>`;
 }
 
+/* ─── Auto "Итог" verdict for a comparison (2 or 3 cars) ───
+   Returns { lines: [..], caveat: str|null }. Pure data → shared by
+   compare.html (runtime) and the /vs/ generator (sandbox). */
+function _cvAvg(c) { const v = Object.values(c.ratings); return v.reduce((a, b) => a + b, 0) / v.length; }
+function _cvWin(av, bv, higherBetter) {
+  if (av === bv) return 'tie';
+  return (higherBetter ? av > bv : av < bv) ? 'a' : 'b';
+}
+function _cvJoin(arr) {
+  arr = arr.filter(Boolean);
+  if (arr.length <= 1) return arr[0] || '';
+  return arr.slice(0, -1).join(', ') + ' и ' + arr[arr.length - 1];
+}
+function compareVerdict(cars) {
+  cars = cars.filter(Boolean);
+  const nm = (c) => `${c.brand} ${c.model}`;
+  const prices = cars.map((c) => c.price.min);
+  const caveat = (Math.max(...prices) / Math.min(...prices) > 1.30)
+    ? 'Разница в цене между машинами больше 30% — это фактически разные ценовые классы, поэтому сравнение не совсем равное.'
+    : null;
+
+  if (cars.length === 2) {
+    const [a, b] = cars;
+    let dyn = _cvWin(a.performance.power, b.performance.power, true);
+    if (dyn === 'tie') dyn = _cvWin(a.performance.acceleration, b.performance.acceleration, false);
+    let eco = 'tie';
+    if (a.engine.consumption.combined > 0 && b.engine.consumption.combined > 0)
+      eco = _cvWin(a.engine.consumption.combined, b.engine.consumption.combined, false);
+    const dims = [
+      { label: 'динамике',      prio: 'мотор и динамика',   w: dyn },
+      { label: 'цене',          prio: 'бюджет',             w: _cvWin(a.price.min, b.price.min, false) },
+      { label: 'экономичности', prio: 'расход топлива',     w: eco },
+      { label: 'клиренсу',      prio: 'плохие дороги',      w: _cvWin(a.dimensions.groundClearance, b.dimensions.groundClearance, true) },
+      { label: 'багажнику',     prio: 'практичность',       w: _cvWin(a.dimensions.trunkVolume, b.dimensions.trunkVolume, true) },
+      { label: 'надёжности',    prio: 'надёжность',         w: _cvWin(a.ratings.reliability, b.ratings.reliability, true) },
+      { label: 'безопасности',  prio: 'безопасность',       w: _cvWin(a.ratings.safety, b.ratings.safety, true) },
+      { label: 'комфорту',      prio: 'комфорт и оснащение', w: _cvWin(a.ratings.comfort, b.ratings.comfort, true) },
+    ];
+    const aW = dims.filter((d) => d.w === 'a'), bW = dims.filter((d) => d.w === 'b');
+    let s1;
+    if (aW.length && bW.length)
+      s1 = `${nm(a)} выигрывает по ${_cvJoin(aW.map((d) => d.label))}, ${nm(b)} — по ${_cvJoin(bW.map((d) => d.label))}.`;
+    else if (aW.length)
+      s1 = `${nm(a)} выигрывает по ${_cvJoin(aW.map((d) => d.label))}; у ${nm(b)} явных преимуществ в ключевых параметрах нет.`;
+    else if (bW.length)
+      s1 = `${nm(b)} выигрывает по ${_cvJoin(bW.map((d) => d.label))}; у ${nm(a)} явных преимуществ в ключевых параметрах нет.`;
+    else
+      s1 = `${nm(a)} и ${nm(b)} очень близки по ключевым параметрам.`;
+    let s2;
+    if (aW.length && bW.length)
+      s2 = `Если важнее ${aW.slice(0, 2).map((d) => d.prio).join(', ')} — бери ${nm(a)}; если ${bW.slice(0, 2).map((d) => d.prio).join(', ')} — ${nm(b)}.`;
+    else
+      s2 = `По совокупности характеристик выигрывает ${_cvAvg(a) >= _cvAvg(b) ? nm(a) : nm(b)}.`;
+    return { lines: [s1, s2], caveat };
+  }
+
+  // 3+ cars: name the leader per key metric
+  const byMin = (f) => cars.reduce((x, y) => (f(y) < f(x) ? y : x));
+  const byMax = (f) => cars.reduce((x, y) => (f(y) > f(x) ? y : x));
+  const s1 = `Самый доступный — ${nm(byMin((c) => c.price.min))}, ` +
+    `мощнее всех — ${nm(byMax((c) => c.performance.power))}, ` +
+    `выше клиренс у ${nm(byMax((c) => c.dimensions.groundClearance))}, ` +
+    `вместительнее ${nm(byMax((c) => c.dimensions.trunkVolume))}.`;
+  const s2 = `По совокупности рейтингов лидирует ${nm(byMax(_cvAvg))}.`;
+  return { lines: [s1, s2], caveat };
+}
+
 /* ─── Prices: base data is USD, the site shows RUBLES ONLY ───
    Single editorial rate — change here to reprice the whole site
    (then re-run tools/gen-compare.js). Rounded to 10 000 ₽. */

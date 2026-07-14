@@ -329,7 +329,7 @@
 <div class="compare-selectors animate-up delay-1" id="pickersWrap">
   <div class="pickers-row" id="pickersRow"></div>
   <div class="pickers-actions">
-    <button class="btn btn-ghost btn-sm" id="addCarBtn" onclick="addPicker()">＋ Добавить машину</button>
+    <button class="btn btn-ghost btn-sm" id="addCarBtn" onclick="addPicker()">＋ Добавить третью машину</button>
     <button class="btn btn-primary" onclick="runCompare()" data-i18n="compare.btn">⚡ Сравнить</button>
   </div>
 </div>
@@ -351,6 +351,9 @@
 <!-- Full comparison table -->
 <div class="compare-full-table" id="compareTable" style="display:none;"></div>
 
+<!-- Verdict -->
+<div id="verdictBox" style="display:none;max-width:900px;margin:0 auto;padding:0 24px 56px;"></div>
+
 <footer>
   <p>Carvi — <span>В образовательных целях · <a href="cars.html">← Все машины</a></span> · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
 </footer>
@@ -359,7 +362,7 @@
 <script src="js/i18n.js?v=2"></script>
 <script>
 const cars = getAllCars();
-const MAX_CARS = 4;
+const MAX_CARS = 3;
 let selectedCars = [null, null];
 
 /* ── Brand grouping ── */
@@ -575,6 +578,7 @@ function runCompare() {
   buildHeroCards(carObjs);
   buildSummary(carObjs);
   buildTable(carObjs);
+  renderVerdict(carObjs);
 
   document.getElementById('compareArt').style.display = 'none';
   document.getElementById('heroCards').style.display = '';
@@ -653,9 +657,9 @@ function buildTable(carObjs) {
       [t('compare.r.drive'),  carObjs.map(c=>c.performance.driveType),              null, null],
     ]},
     { title: t('compare.s.engine'), rows: [
-      [t('compare.r.disp'),   carObjs.map(c=>c.engine.displacement+' L'),           carObjs.map(c=>c.engine.displacement),         true],
+      [t('compare.r.disp'),   carObjs.map(c=>c.engine.displacement+' L'),           null, null],
       [t('compare.r.config'), carObjs.map(c=>c.engine.configuration),               null, null],
-      [t('compare.r.cyl'),    carObjs.map(c=>c.engine.cylinders.toString()),        carObjs.map(c=>c.engine.cylinders),            true],
+      [t('compare.r.cyl'),    carObjs.map(c=>c.engine.cylinders.toString()),        null, null],
       [t('compare.r.fuel'),   carObjs.map(c=>c.engine.fuelType),                   null, null],
       [t('compare.r.asp'),    carObjs.map(c=>c.engine.aspiration),                  null, null],
       [t('compare.r.comp'),   carObjs.map(c=>c.engine.compression),                 null, null],
@@ -666,13 +670,13 @@ function buildTable(carObjs) {
       [t('compare.r.comb'),   carObjs.map(c=>c.engine.consumption.combined+' '+lkm),carObjs.map(c=>c.engine.consumption.combined),false],
     ]},
     { title: t('compare.s.dim'), rows: [
-      [t('compare.r.weight'), carObjs.map(c=>c.dimensions.weight+' kg'),            carObjs.map(c=>c.dimensions.weight),          false],
+      [t('compare.r.weight'), carObjs.map(c=>c.dimensions.weight+' kg'),            null, null],
       [t('compare.r.length'), carObjs.map(c=>c.dimensions.length+' mm'),            null, null],
-      [t('compare.r.width'),  carObjs.map(c=>c.dimensions.width+' mm'),             carObjs.map(c=>c.dimensions.width),           true],
+      [t('compare.r.width'),  carObjs.map(c=>c.dimensions.width+' mm'),             null, null],
       [t('compare.r.height'), carObjs.map(c=>c.dimensions.height+' mm'),            null, null],
-      [t('compare.r.wb'),     carObjs.map(c=>c.dimensions.wheelbase+' mm'),         carObjs.map(c=>c.dimensions.wheelbase),       true],
+      [t('compare.r.wb'),     carObjs.map(c=>c.dimensions.wheelbase+' mm'),         null, null],
       [t('compare.r.gc'),     carObjs.map(c=>c.dimensions.groundClearance+' mm'),   carObjs.map(c=>c.dimensions.groundClearance), true],
-      [t('compare.r.tank'),   carObjs.map(c=>c.dimensions.fuelTank+' L'),           carObjs.map(c=>c.dimensions.fuelTank),        true],
+      [t('compare.r.tank'),   carObjs.map(c=>c.dimensions.fuelTank+' L'),           null, null],
       [t('compare.r.trunk'),  carObjs.map(c=>c.dimensions.trunkVolume+' L'),        carObjs.map(c=>c.dimensions.trunkVolume),     true],
     ]},
     { title: t('compare.s.price'), rows: [
@@ -697,15 +701,13 @@ function buildTable(carObjs) {
     const rowsHtml = sec.rows.map(([label, vals, nums, higherBetter]) => {
       const cells = vals.map((v, i) => {
         let cls = 'cr-val';
-        if (nums && higherBetter !== null) {
+        // highlight only the BEST value (green); skip when a 0 is present
+        // (e.g. electric fuel consumption) so it isn't wrongly marked best
+        if (nums && higherBetter !== null && !nums.some(x => x === 0)) {
           const n = nums[i];
-          const maxN = Math.max(...nums), minN = Math.min(...nums);
-          if (maxN !== minN) {
-            if (higherBetter  && n === maxN) cls += ' better';
-            else if (higherBetter  && n === minN) cls += ' worse';
-            else if (!higherBetter && n === minN) cls += ' better';
-            else if (!higherBetter && n === maxN) cls += ' worse';
-          }
+          const best = higherBetter ? Math.max(...nums) : Math.min(...nums);
+          const worst = higherBetter ? Math.min(...nums) : Math.max(...nums);
+          if (best !== worst && n === best) cls += ' better';
         }
         return `<div class="${cls}">${v}</div>`;
       }).join('');
@@ -717,13 +719,21 @@ function buildTable(carObjs) {
   }).join('');
 
   document.getElementById('compareTable').innerHTML = headerRow + tableRows +
-    `<div style="margin-top:32px;padding:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);">
-      <div style="font-size:.8rem;color:var(--text-3);margin-bottom:8px;">${t('compare.legend')}</div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:.85rem;">
-        <div><span style="color:var(--success);font-weight:600;">${t('compare.green')}</span></div>
-        <div><span style="color:var(--danger);">${t('compare.red')}</span></div>
-      </div>
+    `<div style="margin-top:24px;font-size:.82rem;color:var(--text-3);">
+      <span style="color:var(--success);font-weight:700;">Зелёным</span> отмечено лучшее значение в строке.
     </div>`;
+}
+
+/* ── Итог ── */
+function renderVerdict(carObjs) {
+  const v = compareVerdict(carObjs);
+  const box = document.getElementById('verdictBox');
+  box.innerHTML = `<div class="verdict-card">
+    <div class="verdict-title">📋 Итог</div>
+    <p class="verdict-text">${v.lines.join(' ')}</p>
+    ${v.caveat ? `<p class="verdict-caveat">⚠️ ${v.caveat}</p>` : ''}
+  </div>`;
+  box.style.display = '';
 }
 
 function avg(car) {

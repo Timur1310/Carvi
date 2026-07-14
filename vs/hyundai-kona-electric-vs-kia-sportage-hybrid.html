@@ -40,9 +40,9 @@
   .vs-tab td.lbl{text-align:left;color:var(--text-2)}
   .vs-tab td.win{color:var(--success);font-weight:700}
   .vs-sec{margin:0 0 16px;font-size:1.3rem}
-  .vs-verdict{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:18px 22px;margin-bottom:32px}
-  .vs-verdict ul{list-style:none;display:grid;gap:8px}
-  .vs-verdict li{color:var(--text-1)}
+  .vs-verdict{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--success);border-radius:var(--r-md);padding:18px 22px;margin-bottom:32px}
+  .vs-verdict p{color:var(--text-1);line-height:1.6}
+  .vs-verdict .vs-caveat{margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light);color:var(--text-2);font-size:.9rem}
   .vs-faq{margin-bottom:32px}
   .vs-faq details{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 16px;margin-bottom:8px}
   .vs-faq summary{cursor:pointer;font-weight:600;color:var(--text-1)}
@@ -128,8 +128,11 @@
     </tbody>
   </table>
 
-  <h2 class="vs-sec">Итог: кто в чём выигрывает</h2>
-  <div class="vs-verdict"><ul><li>✓ <b>Hyundai Kona Electric</b> дешевле при покупке</li><li>✓ <b>Hyundai Kona Electric</b> быстрее разгоняется</li><li>✓ <b>Kia Sportage Hybrid</b> мощнее</li><li>✓ <b>Kia Sportage Hybrid</b> экономичнее по топливу</li><li>✓ <b>Kia Sportage Hybrid</b> выше клиренс для плохих дорог</li><li>✓ <b>Kia Sportage Hybrid</b> вместительнее багажник</li></ul></div>
+  <h2 class="vs-sec">Итог</h2>
+  <div class="vs-verdict">
+    <p>Hyundai Kona Electric выигрывает по цене, Kia Sportage Hybrid — по динамике, экономичности, клиренсу, багажнику и надёжности. Если важнее бюджет — бери Hyundai Kona Electric; если мотор и динамика, расход топлива — Kia Sportage Hybrid.</p>
+    
+  </div>
 
   <h2 class="vs-sec">Частые вопросы</h2>
   <div class="vs-faq">
