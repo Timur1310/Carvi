@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="no-referrer">
   <title>Carvi — подбор автомобиля по бюджету и приоритетам</title>
@@ -55,11 +55,15 @@
     .pick-go:hover { opacity: 0.92; transform: translateY(-1px); }
     .pick-hint { font-size: 0.8rem; color: var(--text-3); margin-top: 10px; text-align: center; }
 
-    .hero-art { margin: 4px 0 26px; }
+    .hero-art { margin: 4px 0 26px; position: relative; }
     .hero-art img {
       width: 100%; aspect-ratio: 21/9; object-fit: cover; object-position: 50% 76%;
       border-radius: var(--r-lg); display: block; border: 1px solid var(--border-light);
+      transition: opacity 0.5s ease;
     }
+    .hero-3d { position: absolute; inset: 0; z-index: 1; }
+    .hero-3d canvas { border-radius: var(--r-lg); }
+    .hero-art.show3d img { opacity: 0; }
     @media (max-width: 680px) { .hero-art img { aspect-ratio: 16/9; } }
 
     /* cyclic brand marquee */
@@ -162,6 +166,7 @@
 <div class="pick-wrap">
   <div class="hero-art animate-up delay-1">
     <img src="img/design/hero-mustang.jpg" alt="Классический автомобиль — иллюстрация Carvi" loading="eager">
+    <div class="hero-3d" id="hero3d" aria-hidden="true"></div>
   </div>
 
   <div class="brand-strip animate-up" id="brandStrip"><div class="brand-track" id="brandTrack"></div></div>
@@ -314,5 +319,6 @@ function runPick() {
 }
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
+<script defer src="js/hero3d.js"></script>
 </body>
 </html>
