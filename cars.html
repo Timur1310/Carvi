@@ -34,21 +34,23 @@
   <div class="nav-links">
     <a href="index.html" class="nav-link">Подбор</a>
     <a href="cars.html" class="nav-link active">Машины</a>
-    <a href="tops.html" class="nav-link">Топы</a>
     <a href="compare.html" class="nav-link">Сравнение</a>
+    <a href="tops.html" class="nav-link">Топы</a>
+    <a href="learn.html" class="nav-link">Обучение</a>
+    <a href="battle.html" class="nav-link">Игры</a>
   </div>
 </nav>
 
 <div class="page-hero animate-up">
-  <h1 data-i18n="cars.hero.title">Car Database</h1>
-  <p data-i18n="cars.hero.sub">Explore detailed specs and ratings for every car in our catalogue.</p>
+  <h1 data-i18n="cars.hero.title">База машин</h1>
+  <p data-i18n="cars.hero.sub">Изучай характеристики и рейтинги каждой машины в каталоге.</p>
 </div>
 
 <div class="section" style="padding-top: 0;">
   <div class="filters-bar">
     <div class="search-wrap">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" class="search-input" id="searchInput" data-i18n-ph="cars.search" placeholder="Search brand or model…">
+      <input type="text" class="search-input" id="searchInput" data-i18n-ph="cars.search" placeholder="Поиск по марке или модели…">
     </div>
     <select class="select-custom" id="regionFilter" style="width: auto; min-width: 150px;">
       <option value="" data-i18n="region.allCountries">Все страны</option>
@@ -62,29 +64,29 @@
       <option value="europe">🇪🇺 Европа</option>
     </select>
     <select class="select-custom" id="categoryFilter" style="width: auto; min-width: 180px;">
-      <option value="" data-i18n="cars.cat.all">All Categories</option>
-      <option value="Subcompact">Subcompact</option>
-      <option value="Compact">Compact</option>
-      <option value="Mid-size">Mid-size</option>
-      <option value="Luxury">Luxury</option>
-      <option value="Sports">Sports</option>
-      <option value="SUV">SUV</option>
+      <option value="" data-i18n="cars.cat.all">Все категории</option>
+      <option value="Subcompact">Субкомпакт</option>
+      <option value="Compact">Компакт</option>
+      <option value="Mid-size">Среднеразмерные</option>
+      <option value="Luxury">Люкс</option>
+      <option value="Sports">Спорт</option>
+      <option value="SUV">Кроссоверы и внедорожники</option>
     </select>
     <select class="select-custom" id="sortFilter" style="width: auto; min-width: 160px;">
-      <option value="name" data-i18n="cars.sort.name">Sort: Name A–Z</option>
-      <option value="power" data-i18n="cars.sort.power">Sort: Most Power</option>
-      <option value="acceleration" data-i18n="cars.sort.accel">Sort: Fastest 0–100</option>
-      <option value="economy" data-i18n="cars.sort.econ">Sort: Most Economical</option>
-      <option value="price" data-i18n="cars.sort.price">Sort: Lowest Price</option>
+      <option value="name" data-i18n="cars.sort.name">Сортировка: А–Я</option>
+      <option value="power" data-i18n="cars.sort.power">Сортировка: Мощность</option>
+      <option value="acceleration" data-i18n="cars.sort.accel">Сортировка: Разгон 0–100</option>
+      <option value="economy" data-i18n="cars.sort.econ">Сортировка: Экономичность</option>
+      <option value="price" data-i18n="cars.sort.price">Сортировка: Цена</option>
     </select>
   </div>
 
   <div class="cars-grid" id="carsGrid"></div>
-  <p id="noResults" style="display:none; color: var(--text-3); text-align:center; padding: 48px 0;" data-i18n="cars.none">No cars match your search.</p>
+  <p id="noResults" style="display:none; color: var(--text-3); text-align:center; padding: 48px 0;" data-i18n="cars.none">Машины не найдены.</p>
 </div>
 
 <footer>
-  <p>Carvi — <span data-lang="en">For educational purposes. Help future buyers make informed decisions.</span><span data-lang="ru">В образовательных целях. Помогаем покупателям принимать взвешенные решения.</span> · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
+  <p>Carvi — <span>В образовательных целях. Помогаем покупателям принимать взвешенные решения.</span> · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
 </footer>
 
 <script src="js/cars-data.js?v=2"></script>
@@ -136,7 +138,7 @@ function renderGrid() {
         <div class="car-card-brand">${car.brand}</div>
         <div class="car-card-name">${car.model}</div>
         <div class="car-card-meta">
-          <span class="badge badge-neutral">${car.category}</span>
+          <span class="badge badge-neutral">${categoryRu(car.category)}</span>
           <span class="badge badge-green">★ ${avg}</span>
         </div>
         <div class="car-card-stats">

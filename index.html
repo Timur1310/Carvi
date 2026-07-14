@@ -8,6 +8,7 @@
   <meta name="referrer" content="no-referrer">
   <title>Carvi — подбор автомобиля по бюджету и приоритетам</title>
   <meta name="description" content="Введи бюджет и приоритеты — получи 3 подходящие машины с объяснением почему. 242 модели, сравнение по цифрам, без воды.">
+  <link rel="canonical" href="https://carvi.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Carvi">
   <meta property="og:locale" content="ru_RU">
@@ -144,8 +145,10 @@
   <div class="nav-links">
     <a href="index.html" class="nav-link active">Подбор</a>
     <a href="cars.html" class="nav-link">Машины</a>
-    <a href="tops.html" class="nav-link">Топы</a>
     <a href="compare.html" class="nav-link">Сравнение</a>
+    <a href="tops.html" class="nav-link">Топы</a>
+    <a href="learn.html" class="nav-link">Обучение</a>
+    <a href="battle.html" class="nav-link">Игры</a>
   </div>
 </nav>
 
@@ -213,7 +216,7 @@
 </div>
 
 <footer>
-  <p>Carvi — <span data-lang="ru">В образовательных целях. Помогаем покупателям принимать взвешенные решения.</span>
+  <p>Carvi — <span>В образовательных целях. Помогаем покупателям принимать взвешенные решения.</span>
   · <a href="battle.html">Игровая версия</a> · <a href="quiz.html">Викторина</a> · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
 </footer>
 
@@ -293,7 +296,7 @@ function runPick() {
         <div>
           <div class="res-place">${PLACES[i]}</div>
           <div class="res-name">${x.c.brand} ${x.c.model}</div>
-          <div class="res-price">${x.c.category} · ${x.c.year}</div>
+          <div class="res-price">${categoryRu(x.c.category)} · ${x.c.year}</div>
           <div class="res-why">${x.why.map((w) => `<span>${w}</span>`).join('')}</div>
         </div>
         <div class="res-score"><div class="v">${x.s.toFixed(1)}</div><div class="l">балл</div></div>

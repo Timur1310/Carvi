@@ -313,22 +313,24 @@
   <div class="nav-links">
     <a href="index.html" class="nav-link">Подбор</a>
     <a href="cars.html" class="nav-link">Машины</a>
-    <a href="tops.html" class="nav-link">Топы</a>
     <a href="compare.html" class="nav-link active">Сравнение</a>
+    <a href="tops.html" class="nav-link">Топы</a>
+    <a href="learn.html" class="nav-link">Обучение</a>
+    <a href="battle.html" class="nav-link">Игры</a>
   </div>
 </nav>
 
 <div class="page-hero animate-up">
-  <h1 data-i18n="compare.hero.title">Compare Two Cars</h1>
-  <p data-i18n="compare.hero.sub">Select two cars to see a detailed head-to-head comparison of every spec.</p>
+  <h1 data-i18n="compare.hero.title">Сравнение машин</h1>
+  <p data-i18n="compare.hero.sub">Выбери две машины — покажем детальное сравнение всех характеристик.</p>
 </div>
 
 <!-- Brand/Model Pickers -->
 <div class="compare-selectors animate-up delay-1" id="pickersWrap">
   <div class="pickers-row" id="pickersRow"></div>
   <div class="pickers-actions">
-    <button class="btn btn-ghost btn-sm" id="addCarBtn" onclick="addPicker()">＋ Add Car</button>
-    <button class="btn btn-primary" onclick="runCompare()" data-i18n="compare.btn">⚡ Compare Now</button>
+    <button class="btn btn-ghost btn-sm" id="addCarBtn" onclick="addPicker()">＋ Добавить машину</button>
+    <button class="btn btn-primary" onclick="runCompare()" data-i18n="compare.btn">⚡ Сравнить</button>
   </div>
 </div>
 
@@ -350,7 +352,7 @@
 <div class="compare-full-table" id="compareTable" style="display:none;"></div>
 
 <footer>
-  <p>Carvi — <span data-lang="en">For educational purposes · <a href="cars.html">← All Cars</a></span><span data-lang="ru">В образовательных целях · <a href="cars.html">← Все машины</a></span> · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
+  <p>Carvi — <span>В образовательных целях · <a href="cars.html">← Все машины</a></span> · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
 </footer>
 
 <script src="js/cars-data.js?v=2"></script>
@@ -518,14 +520,14 @@ function renderPickersRow() {
       <div class="car-picker" id="picker${idx}">
         <div class="picker-trigger" id="trigger${idx}" onclick="togglePicker(${idx})">
           <div style="flex:1;min-width:0;">
-            <div class="picker-hint">Car ${idx + 1}</div>
-            <div class="picker-label" id="label${idx}">Select brand &amp; model…</div>
+            <div class="picker-hint">Машина ${idx + 1}</div>
+            <div class="picker-label" id="label${idx}">Выбери марку и модель…</div>
           </div>
-          ${showRemove ? `<button class="picker-remove-btn" onclick="removePicker(${idx});event.stopPropagation();" title="Remove">✕</button>` : ''}
+          ${showRemove ? `<button class="picker-remove-btn" onclick="removePicker(${idx});event.stopPropagation();" title="Убрать">✕</button>` : ''}
           <span class="picker-arrow">▼</span>
         </div>
         <div class="picker-dropdown" id="dropdown${idx}">
-          <input class="picker-search" id="search${idx}" type="text" placeholder="Search brand or model…"
+          <input class="picker-search" id="search${idx}" type="text" placeholder="Поиск марки или модели…"
                  oninput="filterPicker(${idx},this.value)" autocomplete="off">
           <div class="picker-brands" id="brands${idx}"></div>
         </div>
@@ -589,7 +591,7 @@ function buildHeroCards(carObjs) {
       <div style="margin-bottom:12px;">${carImageHTML(c, 160)}</div>
       <div class="ch-brand">${c.brand}</div>
       <div class="ch-name">${c.model}</div>
-      <div class="ch-cat">${c.year} · ${c.category}</div>
+      <div class="ch-cat">${c.year} · ${categoryRu(c.category)}</div>
       <div style="margin-top:10px;">${avgs[i] >= maxAvg ? `<span class="winner-badge">${t('compare.winner')}</span>` : `<span class="loser-badge">${t('compare.loser')}</span>`}</div>
     </div>
   `).join('');

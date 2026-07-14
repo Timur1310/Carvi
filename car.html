@@ -108,8 +108,10 @@
   <div class="nav-links">
     <a href="index.html" class="nav-link">Подбор</a>
     <a href="cars.html" class="nav-link active">Машины</a>
-    <a href="tops.html" class="nav-link">Топы</a>
     <a href="compare.html" class="nav-link">Сравнение</a>
+    <a href="tops.html" class="nav-link">Топы</a>
+    <a href="learn.html" class="nav-link">Обучение</a>
+    <a href="battle.html" class="nav-link">Игры</a>
   </div>
 </nav>
 
@@ -141,12 +143,12 @@
 <div class="car-detail-content animate-up delay-1">
   <div class="car-tabs-wrap">
     <div class="tabs car-tabs" id="carTabs">
-      <button class="tab-btn active" onclick="switchTab(this,'overview')" data-i18n="car.tab.overview">Overview</button>
-      <button class="tab-btn" onclick="switchTab(this,'specs')" data-i18n="car.tab.specs">Full Specs</button>
-      <button class="tab-btn" onclick="switchTab(this,'exterior')" data-i18n="car.tab.exterior">Exterior</button>
-      <button class="tab-btn" onclick="switchTab(this,'interior')" data-i18n="car.tab.interior">Interior</button>
-      <button class="tab-btn" onclick="switchTab(this,'safety')" data-i18n="car.tab.safety">Safety</button>
-      <button class="tab-btn" onclick="switchTab(this,'check')" data-i18n="car.tab.check">Buyer's Guide</button>
+      <button class="tab-btn active" onclick="switchTab(this,'overview')" data-i18n="car.tab.overview">Обзор</button>
+      <button class="tab-btn" onclick="switchTab(this,'specs')" data-i18n="car.tab.specs">Характеристики</button>
+      <button class="tab-btn" onclick="switchTab(this,'exterior')" data-i18n="car.tab.exterior">Экстерьер</button>
+      <button class="tab-btn" onclick="switchTab(this,'interior')" data-i18n="car.tab.interior">Интерьер</button>
+      <button class="tab-btn" onclick="switchTab(this,'safety')" data-i18n="car.tab.safety">Безопасность</button>
+      <button class="tab-btn" onclick="switchTab(this,'check')" data-i18n="car.tab.check">Гайд покупателя</button>
     </div>
   </div>
 
@@ -154,16 +156,16 @@
   <div class="tab-panel active" id="tab-overview">
     <div class="overview-grid">
       <div class="overview-panel">
-        <h3 data-i18n="car.s.ratings">Performance Ratings</h3>
+        <h3 data-i18n="car.s.ratings">Рейтинги</h3>
         <div id="ratingsPanel"></div>
       </div>
       <div class="overview-panel">
-        <h3 data-i18n="car.s.proscons">Pros & Cons</h3>
+        <h3 data-i18n="car.s.proscons">Плюсы и минусы</h3>
         <div id="prosConsPanel"></div>
       </div>
     </div>
     <div style="margin-top:24px;" class="overview-panel" id="descriptionPanel">
-      <h3 data-i18n="car.s.about">About This Car</h3>
+      <h3 data-i18n="car.s.about">Об автомобиле</h3>
       <p id="fullDesc" style="font-size:0.9rem;line-height:1.75;color:var(--text-2);margin-top:12px;"></p>
     </div>
   </div>
@@ -208,9 +210,9 @@
       <div id="extSvgLarge" style="display:flex;justify-content:center;align-items:center;padding:20px 0;"></div>
     </div>
     <div class="overview-panel">
-      <h3 data-i18n="car.s.extdesign">Exterior Design</h3>
+      <h3 data-i18n="car.s.extdesign">Дизайн экстерьера</h3>
       <p id="extDesc" style="font-size:0.9rem;color:var(--text-2);line-height:1.75;margin:12px 0 16px;"></p>
-      <h3 style="margin-top:20px;" data-i18n="car.s.extfeat">Notable Features</h3>
+      <h3 style="margin-top:20px;" data-i18n="car.s.extfeat">Особенности</h3>
       <ul class="pro-con-list" id="extFeatures" style="margin-top:10px;"></ul>
     </div>
   </div>
@@ -219,21 +221,21 @@
   <div class="tab-panel" id="tab-interior">
     <div class="overview-grid">
       <div class="overview-panel">
-        <h3 data-i18n="car.s.cabin">Cabin Description</h3>
+        <h3 data-i18n="car.s.cabin">Описание салона</h3>
         <p id="intDesc" style="font-size:0.9rem;color:var(--text-2);line-height:1.75;margin-top:10px;"></p>
         <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
           <div class="spec-row">
-            <span class="spec-key" data-i18n="car.sp.seating">Seating Capacity</span>
+            <span class="spec-key" data-i18n="car.sp.seating">Вместимость</span>
             <span class="spec-val" id="intSeats"></span>
           </div>
           <div class="spec-row">
-            <span class="spec-key" data-i18n="car.sp.info">Infotainment</span>
+            <span class="spec-key" data-i18n="car.sp.info">Мультимедиа</span>
             <span class="spec-val" id="intInfo"></span>
           </div>
         </div>
       </div>
       <div class="overview-panel">
-        <h3 data-i18n="car.s.intfeat">Interior Features</h3>
+        <h3 data-i18n="car.s.intfeat">Особенности интерьера</h3>
         <ul class="pro-con-list" id="intFeatures" style="margin-top:10px;"></ul>
       </div>
     </div>
@@ -243,10 +245,10 @@
   <div class="tab-panel" id="tab-safety">
     <div class="overview-grid">
       <div class="overview-panel">
-        <h3 data-i18n="car.s.saferating">Safety Rating</h3>
+        <h3 data-i18n="car.s.saferating">Рейтинг безопасности</h3>
         <div style="padding:20px;text-align:center;">
           <div id="safetyRating" style="font-size:2.5rem;font-weight:900;color:var(--success);"></div>
-          <p style="font-size:0.8rem;color:var(--text-3);margin-top:4px;" data-i18n="car.crashlabel">Official crash test rating</p>
+          <p style="font-size:0.8rem;color:var(--text-3);margin-top:4px;" data-i18n="car.crashlabel">Официальный рейтинг краш-теста</p>
         </div>
         <div style="margin-top:8px;">
           <div class="rating-row">
@@ -257,7 +259,7 @@
         </div>
       </div>
       <div class="overview-panel">
-        <h3 data-i18n="car.s.safesys">Safety Systems</h3>
+        <h3 data-i18n="car.s.safesys">Системы безопасности</h3>
         <ul class="pro-con-list" id="safetyFeatures" style="margin-top:10px;"></ul>
       </div>
     </div>
@@ -266,16 +268,13 @@
   <!-- Tab: Buyer's Guide -->
   <div class="tab-panel" id="tab-check">
     <div class="overview-panel" style="margin-bottom:20px;">
-      <h3 data-i18n="car.check.title">⚠️ What to Check When Buying Used</h3>
-      <p style="font-size:0.88rem;color:var(--text-2);margin:12px 0;line-height:1.6;" data-i18n="car.check.sub">
-        These are the known issues and critical inspection points specific to this model.
-        Always get a pre-purchase inspection from an independent mechanic.
-      </p>
+      <h3 data-i18n="car.check.title">⚠️ Что проверить при покупке с пробегом</h3>
+      <p style="font-size:0.88rem;color:var(--text-2);margin:12px 0;line-height:1.6;" data-i18n="car.check.sub">Это известные проблемы и ключевые точки осмотра данной модели. Всегда заказывайте независимую предпродажную диагностику.</p>
       <ul id="checkList" class="checklist" style="margin-top:12px;"></ul>
     </div>
     <div class="overview-panel">
-      <h3 data-i18n="car.uni.title">📋 Universal Inspection Checklist</h3>
-      <p style="font-size:0.85rem;color:var(--text-2);margin:10px 0 14px;" data-i18n="car.uni.sub">Applies to any used car purchase:</p>
+      <h3 data-i18n="car.uni.title">📋 Универсальный чеклист осмотра</h3>
+      <p style="font-size:0.85rem;color:var(--text-2);margin:10px 0 14px;" data-i18n="car.uni.sub">Применимо к любой покупке б/у авто:</p>
       <ul class="checklist">
         <li><span class="ci">🔍</span><span class="ct"><strong>VIN Check</strong><span>Run the VIN through a history service to reveal accidents, mileage fraud, or outstanding finance</span></span></li>
         <li><span class="ci">🛢️</span><span class="ct"><strong>Engine Oil</strong><span>Check level and color — milky oil = head gasket failure; dark sludge = poor maintenance</span></span></li>
@@ -291,7 +290,7 @@
 </div>
 
 <footer>
-  <p>Carvi — <span data-lang="en">For educational purposes · <a href="cars.html">← Back to all cars</a></span><span data-lang="ru">В образовательных целях · <a href="cars.html">← Все машины</a></span> · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
+  <p>Carvi — <span>В образовательных целях · <a href="cars.html">← Все машины</a></span> · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
 </footer>
 
 <script src="js/cars-data.js?v=2"></script>
@@ -314,7 +313,7 @@ function buildPage() {
   /* Hero */
   document.getElementById('heroBgText').textContent = car.brand;
   document.getElementById('heroSvg').innerHTML = carImageHTML(car, 260);
-  document.getElementById('categoryBadge').innerHTML = `<span class="badge badge-purple" style="margin-bottom:12px;">${car.category}</span>`;
+  document.getElementById('categoryBadge').innerHTML = `<span class="badge badge-purple" style="margin-bottom:12px;">${categoryRu(car.category)}</span>`;
   document.getElementById('carTitle').textContent = `${car.brand} ${car.model} (${car.year})`;
   document.getElementById('carDesc').textContent = car.description.split('.')[0] + '.';
   document.getElementById('priceTag').innerHTML = `💰 ${fmtRub(car.price.min)} – ${fmtRub(car.price.max)}`;

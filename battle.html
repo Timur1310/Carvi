@@ -15,7 +15,7 @@
   <meta property="og:title" content="Carvi — сравни машины и выбери свою">
   <meta property="og:description" content="Свайп-баттлы, сравнение по характеристикам и база из 242 автомобилей. Выбери, что купить — по цифрам.">
   <meta property="og:image" content="https://carvi.vercel.app/og.png">
-  <meta property="og:url" content="https://carvi.vercel.app/">
+  <meta property="og:url" content="https://carvi.vercel.app/battle.html">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Carvi — сравни машины и выбери свою">
   <meta name="twitter:description" content="Свайп-баттлы, сравнение по характеристикам и база из 242 автомобилей. Выбери, что купить — по цифрам.">
@@ -97,16 +97,18 @@
     Carvi
   </a>
   <div class="nav-links">
-    <a href="battle.html" class="nav-link active">Батл</a>
-    <a href="quiz.html" class="nav-link">Викторина</a>
+    <a href="index.html" class="nav-link">Подбор</a>
+    <a href="cars.html" class="nav-link">Машины</a>
+    <a href="compare.html" class="nav-link">Сравнение</a>
+    <a href="tops.html" class="nav-link">Топы</a>
     <a href="learn.html" class="nav-link">Обучение</a>
-    <a href="index.html" class="nav-link">Подбор машины</a>
+    <a href="battle.html" class="nav-link active">Игры</a>
   </div>
 </nav>
 
 <!-- Hero -->
 <div class="battle-hero animate-up">
-  <h1 data-i18n-html="battle.hero.title">Which car would <span>you choose?</span></h1>
+  <h1 data-i18n-html="battle.hero.title">Какую машину <span>ты выберешь?</span></h1>
 </div>
 
 <!-- Region filter -->
@@ -167,16 +169,17 @@
 <div class="battle-result-bar" id="resultBar">
   <div class="result-inner">
     <div class="result-text" id="resultText"></div>
-    <a id="compareLink" class="btn btn-secondary btn-sm" data-i18n="battle.result.compare">📊 Full Comparison</a>
-    <button class="btn btn-primary btn-sm" onclick="nextBattle()" data-i18n="battle.result.next">Next Battle →</button>
+    <a id="compareLink" class="btn btn-secondary btn-sm" data-i18n="battle.result.compare">📊 Сравнение</a>
+    <button class="btn btn-primary btn-sm" onclick="nextBattle()" data-i18n="battle.result.next">Следующий →</button>
   </div>
 </div>
 
 <!-- Footer buttons -->
 <div class="battle-footer">
-  <button class="btn btn-ghost btn-sm" onclick="nextBattle()" data-i18n="battle.footer.new">↻ New Matchup</button>
-  <a href="cars.html" class="btn btn-ghost btn-sm" data-i18n="battle.footer.browse">Browse All Cars</a>
-  <a href="compare.html" class="btn btn-outline btn-sm" data-i18n="battle.footer.compare">📊 Detailed Compare</a>
+  <button class="btn btn-ghost btn-sm" onclick="nextBattle()" data-i18n="battle.footer.new">↻ Новая пара</button>
+  <a href="cars.html" class="btn btn-ghost btn-sm" data-i18n="battle.footer.browse">Все машины</a>
+  <a href="compare.html" class="btn btn-outline btn-sm" data-i18n="battle.footer.compare">📊 Сравнить</a>
+  <a href="quiz.html" class="btn btn-ghost btn-sm">🧠 Викторина</a>
 </div>
 
 <!-- Toast -->
@@ -232,7 +235,7 @@ function renderCar(side, car) {
 
   brand.textContent = car.brand;
   model.textContent = car.model;
-  year.textContent  = car.year + ' · ' + car.category;
+  year.textContent  = car.year + ' · ' + categoryRu(car.category);
   bgTxt.textContent = car.brand;
   svg.innerHTML     = carImageHTML(car, 160);
 

@@ -8,6 +8,7 @@
   <meta name="referrer" content="no-referrer">
   <title>Топы по странам — Carvi</title>
   <meta name="description" content="Лучшие автомобили по сегментам: Китай, СНГ, Германия, Япония, Корея, США, Италия, Европа. Рейтинги по надёжности, комфорту и цене.">
+  <link rel="canonical" href="https://carvi.vercel.app/tops.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Carvi">
   <meta property="og:locale" content="ru_RU">
@@ -67,20 +68,22 @@
   <div class="nav-links">
     <a href="index.html" class="nav-link">Подбор</a>
     <a href="cars.html" class="nav-link">Машины</a>
-    <a href="tops.html" class="nav-link active">Топы</a>
     <a href="compare.html" class="nav-link">Сравнение</a>
+    <a href="tops.html" class="nav-link active">Топы</a>
+    <a href="learn.html" class="nav-link">Обучение</a>
+    <a href="battle.html" class="nav-link">Игры</a>
   </div>
 </nav>
 
 <div class="page-hero animate-up">
   <h1 data-i18n="tops.hero.title">🏆 Топы по странам</h1>
-  <p data-i18n="tops.hero.sub">Лучшие машины каждого сегмента по среднему рейтингу (производительность, надёжность, комфорт, цена, безопасность).</p>
+  <p data-i18n="tops.hero.sub">Лучшие машины по соотношению цена/качество: 65% — рейтинг (динамика, надёжность, комфорт, безопасность), 35% — доступность по цене.</p>
 </div>
 
 <div class="tops-wrap" id="topsWrap"></div>
 
 <footer>
-  <p>Carvi — <span data-lang="en">For educational purposes. Ratings are editorial averages, not sales data.</span><span data-lang="ru">В образовательных целях. Рейтинги — редакционные средние, не данные продаж.</span> · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
+  <p>Carvi — <span>В образовательных целях. Рейтинги — редакционные средние, не данные продаж.</span> · <a href="https://t.me/+L7u6oPMltUFkODVi" rel="noopener">Telegram</a> · <a href="https://vk.com/public221880789" rel="noopener">ВКонтакте</a></p>
 </footer>
 
 <script src="js/cars-data.js?v=2"></script>
@@ -116,7 +119,7 @@ function renderTops() {
         <div class="top-name">
           <div class="tb">${x.c.brand}</div>
           <div class="tm">${x.c.model}</div>
-          <div class="tc">${x.c.category} · ${x.c.year} · от ${fmtRub(x.c.price.min)}</div>
+          <div class="tc">${categoryRu(x.c.category)} · ${x.c.year} · от ${fmtRub(x.c.price.min)}</div>
         </div>
         <div class="top-score">
           <div class="sv">${x.s.toFixed(1)}</div>

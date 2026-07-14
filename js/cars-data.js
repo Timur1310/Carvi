@@ -6157,6 +6157,49 @@ function getCarsByRegion(region) {
   return all.filter(c => carRegion(c) === region);
 }
 
+/* ─── Russian display names for car categories (data stays English) ─── */
+const CATEGORY_RU = {
+  '3-Row SUV':'Трёхрядный кроссовер','Budget Compact SUV':'Бюджетный компактный кроссовер',
+  'Budget Hatchback':'Бюджетный хэтчбек','City Car':'Ситикар','Compact Car / Estate':'Компакт / универсал',
+  'Compact Coupe Sedan':'Компактный купе-седан','Compact Coupe-SUV':'Компактный купе-кроссовер',
+  'Compact Executive Sedan':'Компактный бизнес-седан','Compact Hatchback':'Компактный хэтчбек',
+  'Compact Liftback':'Компактный лифтбек','Compact Luxury SUV':'Компактный люкс-кроссовер',
+  'Compact Luxury Sedan':'Компактный люкс-седан','Compact MPV / Estate':'Компактвэн / универсал',
+  'Compact Pickup Hybrid':'Компактный пикап-гибрид','Compact SUV':'Компактный кроссовер',
+  'Compact SUV / Off-roader':'Компактный кроссовер / внедорожник','Compact Sedan':'Компактный седан',
+  'Crossover Wagon':'Кросс-универсал','Electric Compact SUV':'Компактный электрокроссовер',
+  'Electric Crossover':'Электрокроссовер','Electric Fastback':'Электрофастбек',
+  'Electric Hatchback':'Электрохэтчбек','Electric Luxury SUV':'Люксовый электрокроссовер',
+  'Electric Luxury Sedan':'Люксовый электроседан','Electric Pickup':'Электропикап',
+  'Electric SUV':'Электрокроссовер','Electric Sedan':'Электроседан',
+  'Electric Sports Sedan':'Спортивный электроседан','Electric Subcompact SUV':'Субкомпактный электрокроссовер',
+  'Executive Fastback':'Бизнес-фастбек','Executive Sedan':'Бизнес-седан',
+  'Extended Range SUV':'Кроссовер с увелич. запасом хода','Full-Size SUV':'Полноразмерный внедорожник',
+  'Full-size Luxury SUV':'Полноразмерный люкс-внедорожник','Full-size Off-road SUV':'Полноразмерный внедорожник',
+  'Full-size Pickup':'Полноразмерный пикап','Full-size SUV':'Полноразмерный внедорожник',
+  'Grand Tourer':'Гран-турер','Luxury 3-Row SUV':'Люксовый трёхрядный кроссовер',
+  'Luxury Compact SUV':'Люксовый компактный кроссовер','Luxury Coupe SUV':'Люксовый купе-кроссовер',
+  'Luxury Executive Sedan':'Люксовый бизнес-седан','Luxury Full-size SUV':'Люксовый полноразмерный внедорожник',
+  'Luxury GT':'Люксовый гран-турер','Luxury Mid-size SUV':'Люксовый среднеразмерный кроссовер',
+  'Luxury Off-roader':'Люксовый внедорожник','Luxury Performance SUV':'Люксовый спорт-кроссовер',
+  'Luxury SUV':'Люксовый кроссовер','Luxury Sedan':'Люксовый седан',
+  'Mid-size 3-Row SUV':'Среднеразмерный трёхрядный кроссовер','Mid-size Pickup':'Среднеразмерный пикап',
+  'Mid-size SUV':'Среднеразмерный кроссовер','Mid-size SUV / Off-roader':'Среднеразмерный кроссовер / внедорожник',
+  'Mid-size Sedan':'Среднеразмерный седан','Mid-size Sedan / Estate':'Среднеразмерный седан / универсал',
+  'Midsize SUV':'Среднеразмерный кроссовер','Midsize Sedan':'Среднеразмерный седан',
+  'Mini Off-road SUV':'Мини-внедорожник','Mini Off-roader':'Мини-внедорожник','Minivan':'Минивэн',
+  'Muscle Car':'Маслкар','Muscle Car Sedan':'Маслкар-седан','Off-Road SUV':'Внедорожник',
+  'Off-road SUV':'Внедорожник','Performance Estate':'Спорт-универсал','Performance Sedan':'Спорт-седан',
+  'Pickup Truck':'Пикап','Pickup Truck / Off-roader':'Пикап / внедорожник',
+  'Premium Hatchback':'Премиум-хэтчбек','Premium Supermini':'Премиум-ситикар','Roadster':'Родстер',
+  'Sports Car':'Спорткар','Sports Coupe':'Спорткупе','Sports Roadster':'Спорт-родстер',
+  'Sports Sedan':'Спорт-седан','Subcompact Crossover':'Субкомпактный кроссовер',
+  'Subcompact Hatchback':'Субкомпактный хэтчбек','Subcompact SUV':'Субкомпактный кроссовер',
+  'Subcompact Sedan':'Субкомпактный седан','Supercar':'Суперкар','Supermini':'Ситикар',
+  'Ultra-luxury SUV':'Ультралюкс-внедорожник','Ultra-luxury Sedan':'Ультралюкс-седан',
+};
+function categoryRu(cat) { return CATEGORY_RU[cat] || cat; }
+
 /* ─── Car visual: real photo if img/cars/{id}.webp exists, SVG fallback ───
    Photos are generated in batches (tools/gen-car-images.mjs); until a photo
    lands, the <img> errors out silently and the SVG shows instead. */
