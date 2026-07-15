@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="no-referrer">
   <title>Carvi — подбор автомобиля по бюджету и приоритетам</title>
@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="css/themes.css">
   <script src="js/theme.js"></script>
   <style>
-    .pick-wrap { max-width: 880px; margin: 0 auto; padding: 0 20px 64px; }
+    .pick-wrap { max-width: 880px; margin: 0 auto; padding: 40px 20px 64px; }
     .pick-hero { text-align: center; padding: 44px 20px 28px; }
     .pick-hero h1 { margin-bottom: 10px; }
     .pick-hero p { font-size: 1.05rem; max-width: 560px; margin: 0 auto; }
@@ -55,47 +55,10 @@
     .pick-go:hover { opacity: 0.92; transform: translateY(-1px); }
     .pick-hint { font-size: 0.8rem; color: var(--text-3); margin-top: 10px; text-align: center; }
 
-    .hero-art { margin: 4px 0 26px; position: relative; }
-    .hero-art img {
-      width: 100%; aspect-ratio: 21/9; object-fit: cover; object-position: 50% 76%;
-      border-radius: var(--r-lg); display: block; border: 1px solid var(--border-light);
-      transition: opacity 0.5s ease;
-    }
-    .hero-3d { position: absolute; inset: 0; z-index: 1; }
-    .hero-3d canvas { border-radius: var(--r-lg); }
-    .hero-art.show3d img { opacity: 0; }
-    @media (max-width: 680px) { .hero-art img { aspect-ratio: 16/9; } }
-
-    /* cyclic brand marquee */
-    .brand-strip {
-      overflow: hidden; position: relative;
-      padding: 14px 0; color: var(--text-3);
-      font-size: 0.95rem; font-weight: 600; letter-spacing: 0.02em;
-      border-top: 1px solid var(--border-light);
-      border-bottom: 1px solid var(--border-light);
-      margin-bottom: 30px;
-      -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    }
-    .brand-track {
-      display: flex; gap: 46px; width: max-content;
-      animation: brandmarquee 36s linear infinite;
-    }
-    .brand-track span { opacity: 0.75; white-space: nowrap; }
-    @keyframes brandmarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    @media (max-width: 680px) { .brand-strip { font-size: 0.82rem; } .brand-track { gap: 26px; } }
-
     /* priorities row — larger tap targets */
     #prioRow { gap: 12px; }
     #prioRow .pick-btn { padding: 14px 24px; font-size: 1.02rem; border-radius: 12px; }
 
-    /* bottom art — blue coupe from the design */
-    .bottom-art { margin-top: 44px; }
-    .bottom-art img {
-      width: 100%; aspect-ratio: 21/9; object-fit: cover; object-position: 50% 56%;
-      border-radius: var(--r-lg); display: block; border: 1px solid var(--border-light);
-    }
-    @media (max-width: 680px) { .bottom-art img { aspect-ratio: 16/9; } }
 
     /* results */
     .res-title { margin: 40px 0 6px; }
@@ -158,19 +121,7 @@
   </div>
 </nav>
 
-<div class="pick-hero animate-up">
-  <h1>Машина, <em>которая тебе идёт</em></h1>
-  <p>Назови бюджет и что для тебя важно — подберём три варианта и честно объясним выбор.</p>
-</div>
-
 <div class="pick-wrap">
-  <div class="hero-art animate-up delay-1">
-    <img src="img/design/hero-mustang.jpg" alt="Классический автомобиль — иллюстрация Carvi" loading="eager">
-    <div class="hero-3d" id="hero3d" aria-hidden="true"></div>
-  </div>
-
-  <div class="brand-strip animate-up" id="brandStrip"><div class="brand-track" id="brandTrack"></div></div>
-
   <div class="pick-card animate-up delay-1">
     <div class="pick-label">Бюджет</div>
     <div class="pick-row" id="budgetRow">
@@ -217,9 +168,6 @@
 
   <div id="results"></div>
 
-  <div class="bottom-art animate-up">
-    <img src="img/design/porsche-blue.webp" alt="Классическое купе — иллюстрация Carvi" loading="lazy">
-  </div>
 </div>
 
 <footer>
@@ -248,13 +196,6 @@ wireRow('budgetRow', false);
 wireRow('bodyRow', false);
 wireRow('fuelRow', false);
 wireRow('prioRow', true);
-
-/* cyclic brand marquee: list duplicated for a seamless loop */
-const BRANDS = ['Mercedes-Benz','BMW','Audi','Porsche','Lexus','Toyota','Honda','Mazda','Nissan',
-  'Volkswagen','Skoda','Renault','Hyundai','Kia','Genesis','Haval','Geely','Chery','Changan',
-  'Exeed','Tank','Omoda','Jetour','Lada','УАЗ'];
-document.getElementById('brandTrack').innerHTML =
-  BRANDS.concat(BRANDS).map((b) => `<span>${b}</span>`).join('');
 
 /* ── scoring ── */
 function runPick() {
@@ -319,6 +260,5 @@ function runPick() {
 }
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
-<script defer src="js/hero3d.js"></script>
 </body>
 </html>
